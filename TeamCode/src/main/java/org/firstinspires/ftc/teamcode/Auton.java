@@ -16,30 +16,29 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import java.util.List;
 
 //This will be cleaned up eventually I swear
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Working Auton", group="Auton Finalization")
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Working Auton", group = "Auton Finalization")
 public class Auton extends LinearOpMode {
-    DcMotor leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor, flyWheelMotor, pickupMotor;
-    Servo pushServo;
-    BNO055IMU imu;
-    Orientation lastAngles = new Orientation();
+    public static double posCoord;
+    public static double negCoord;
+    public static double servoPos = 0.6;
     public double leftFrontMotorPos, leftFrontDistanceTraveled = 0, deltaLeftFrontMotorPos = 0, previousLeftFrontMotorPos, leftFrontPower;
     public double rightFrontMotorPos, rightFrontDistanceTraveled = 0, deltaRightFrontMotorPos = 0, previousRightFrontMotorPos, rightFrontPower;
     public double leftBackMotorPos, leftBackDistanceTraveled = 0, deltaLeftBackMotorPos = 0, previousLeftBackMotorPos, leftBackPower;
     public double rightBackMotorPos, rightBackDistanceTraveled = 0, deltaRightBackMotorPos = 0, previousRightBackMotorPos, rightBackPower;
+    DcMotor leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor, flyWheelMotor, pickupMotor;
+    Servo pushServo;
+    BNO055IMU imu;
+    Orientation lastAngles = new Orientation();
     double positiveDistanceTraveled, negativeDistanceTraveled;
     double distancePerTick = (2 * Math.PI * 48) / 537.6;
     int instruction = 1;
     double globalAngle = 0;
     double kP = 0.01;
+
+    // Static variables for tuning with ftcdashboard
     int target = 0;
     ElapsedTime runtime = new ElapsedTime();
     AutonLogic logicHelper;
-
-    // Static variables for tuning with ftcdashboard
-
-    public static double posCoord;
-    public static double negCoord;
-    public static double servoPos = 0.6;
 
     @Override
     public void runOpMode() {
@@ -52,8 +51,7 @@ public class Auton extends LinearOpMode {
 
         runtime.reset();
 
-        while (opModeIsActive())
-        {
+        while (opModeIsActive()) {
             // For debug
             telemetry.addData("1 positiveDistanceTraveled", positiveDistanceTraveled);
             telemetry.addData("2 negativeDistanceTraveled", negativeDistanceTraveled);
@@ -64,9 +62,6 @@ public class Auton extends LinearOpMode {
 
             logicHelper = new AutonLogic();
             logicHelper.initVuforia();
-
-
-
 
 
             move(-1293, -1293, 1);
@@ -90,8 +85,7 @@ public class Auton extends LinearOpMode {
         }
     }
 
-    private void initializeHardware()
-    {
+    private void initializeHardware() {
         //Init motors
         leftFrontMotor = hardwareMap.dcMotor.get("leftFrontMotor");
         leftFrontMotor.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -139,8 +133,7 @@ public class Auton extends LinearOpMode {
         imu.initialize(parameters);
     }
 
-    void getMotorPositions()
-    {
+    void getMotorPositions() {
         // Update the positions of each individual motor
         leftFrontMotorPos = leftFrontMotor.getCurrentPosition();
         deltaLeftFrontMotorPos = distancePerTick * (leftFrontMotorPos - previousLeftFrontMotorPos);
@@ -163,9 +156,8 @@ public class Auton extends LinearOpMode {
         previousRightBackMotorPos = rightBackMotorPos;
     }
 
-    void move(double posTarget, double negTarget, int step)
-    {
-        if(instruction == step) {
+    void move(double posTarget, double negTarget, int step) {
+        if (instruction == step) {
             getMotorPositions();
 
             positiveDistanceTraveled = (leftFrontDistanceTraveled + rightBackDistanceTraveled) / 2;
@@ -217,32 +209,27 @@ public class Auton extends LinearOpMode {
         }
     }
 
-    void checkIfFinished(double positiveError, double negativeError)
-    {
+    void checkIfFinished(double positiveError, double negativeError) {
         boolean posFinished = false, negFinished = false;
         // Stop if we reach the target position
-        if (positiveError > -10 && positiveError < 10)
-        {
+        if (positiveError > -10 && positiveError < 10) {
             leftFrontPower = 0;
             rightBackPower = 0;
             posFinished = true;
         }
 
-        if (negativeError > -10 && negativeError < 10)
-        {
+        if (negativeError > -10 && negativeError < 10) {
             rightFrontPower = 0;
             leftBackPower = 0;
             negFinished = true;
         }
 
-        if (posFinished && negFinished)
-        {
+        if (posFinished && negFinished) {
             instruction++;
         }
     }
 
-    void turn(double degrees)
-    {
+    void turn(double degrees) {
         // Get the current orientation of the bot
         double angle = getAngle();
 
@@ -254,8 +241,7 @@ public class Auton extends LinearOpMode {
             rightFrontPower = -(degrees - angle);
             leftBackPower = (degrees - angle);
             rightBackPower = -(degrees - angle);
-        } else
-        {
+        } else {
             leftFrontPower = 0;
             rightFrontPower = 0;
             leftBackPower = 0;
@@ -269,8 +255,7 @@ public class Auton extends LinearOpMode {
         rightBackMotor.setPower(rightBackPower + getCorrectionValue());
     }
 
-    private double getAngle()
-    {
+    private double getAngle() {
         // Get the orientation from the gyroscope
         Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
@@ -299,8 +284,7 @@ public class Auton extends LinearOpMode {
         }
     }
 
-    public void resetServo(int step)
-    {
+    public void resetServo(int step) {
         if (instruction == step) {
             pushServo.setPosition(0.6);
             sleep(1000);
@@ -308,10 +292,8 @@ public class Auton extends LinearOpMode {
         }
     }
 
-    public void end(int step)
-    {
-        if (instruction == step)
-        {
+    public void end(int step) {
+        if (instruction == step) {
             leftFrontMotor.setPower(0);
             rightFrontMotor.setPower(0);
             leftBackMotor.setPower(0);

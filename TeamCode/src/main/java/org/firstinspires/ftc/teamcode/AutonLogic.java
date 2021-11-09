@@ -24,15 +24,27 @@ public class AutonLogic extends Core
 
         TFObjectDetector.Parameters tfParams = new TFObjectDetector.Parameters();
         tfParams.minResultConfidence = 0.7f;
+        tfParams.isModelTensorFlow2 = true;
+        tfParams.inputSize = 320;
         objectDetector = ClassFactory.getInstance().createTFObjectDetector(tfParams, vuforiaLocalizer);
-        //objectDetector.loadModelFromFile();
+        objectDetector.loadModelFromFile("FreightFrenzy_BCDM.tflite",
+                "Ball",
+                "Cube",
+                "Duck",
+                "Marker");
+
+        if (objectDetector != null) {
+            objectDetector.activate();
+            objectDetector.setZoom(2.5, 16.0/9.0);
+        }
     }
 
     public List<Recognition> getRecognitions()
     {
-        List<Recognition> recognitions = objectDetector.getUpdatedRecognitions();
-        if (recognitions != null)
+        if (objectDetector != null) {
+            List<Recognition> recognitions = objectDetector.getUpdatedRecognitions();
             return recognitions;
+        }
         return null;
     }
 
@@ -56,6 +68,7 @@ public class AutonLogic extends Core
 
             }
         }
+
 
         angleToElement = recognition.estimateAngleToObject(AngleUnit.RADIANS);
         return elementLocation.Center;
