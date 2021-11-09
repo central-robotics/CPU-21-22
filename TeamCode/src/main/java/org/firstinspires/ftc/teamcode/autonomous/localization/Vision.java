@@ -23,9 +23,9 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 public class Vision {
     private static final String key = "AS0ENI3/////AAABmRrhaZtkGkSMi4tGQFf9azI3tZlg7Xv8GCAFy/EtV7oDQmsVBBNgiQNq035C7ShFgSt1Y9dtgOUrPHhlgoI/8sqhoBUnr3WRm/ex/gPsScPYlpy4mqBUZEIQxI2hndIuFrxPSc5gCMC4kyay2RWUWthzUygnp/22kgrq2u7xyKLwsUIctziWB1T3xreY6LcdSuqgPx6qMeiOmPkqLrIm+BbJovtmoVA7d/PqPoIeoo6O/CurFZVUeJq7zkPRB9OzsoF3Iyxyd3jGi1xlPes828QsbIcx1UYQIyR+q52fLVAt69FPPQ6AO8YMfgc0z+qF7pSA1Vee1LIyF+HCMh67gXj3YntVhvlnSeflrFtVB7vl";
 
-    private VuforiaLocalizer vuforiaLocalizer; //Vuforia instance
-    private VuforiaTrackables targets; //Vuforia image
-    private List<VuforiaTrackable> trackables;
+    public VuforiaLocalizer vuforiaLocalizer; //Vuforia instance
+    public VuforiaTrackables targets; //Vuforia image
+    public List<VuforiaTrackable> trackables;
     private VuforiaLocalizer.Parameters params;
 
     public OpenGLMatrix location;
@@ -35,8 +35,7 @@ public class Vision {
     private static final float halfTile         = 304.8f;
     private static final float oneAndHalfTile   = 914.4f;
 
-    private Boolean hasInitialized = false;
-    private Boolean targetVisible = false;
+    public Boolean targetVisible = false;
 
     public void initializeLocalizer()
     {
@@ -49,17 +48,6 @@ public class Vision {
         targets = vuforiaLocalizer.loadTrackablesFromAsset("FreightFrenzy");
         trackables = new ArrayList<>();
         trackables.addAll(targets);
-
-        hasInitialized = true;
-
-    }
-
-    public void Start() throws Exception {
-        if (!hasInitialized) {
-            throw new Exception(
-                    "Initialization has not been completed or failed to complete."
-            );
-        }
 
         identifyTarget(0, "Blue Storage",       -halfField,  oneAndHalfTile, mmTargetHeight, 90, 0, 90);
         identifyTarget(1, "Blue Alliance Wall",  halfTile,   halfField,      mmTargetHeight, 90, 0, 0);
@@ -74,24 +62,13 @@ public class Vision {
         {
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setCameraLocationOnRobot(params.cameraName, cameraLocation);
         }
+    }
 
-        targets.activate();
+    public void Start()
+    {
 
-        for (VuforiaTrackable trackable : trackables) {
-            if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
-                //Target is visible
 
-                targetVisible = true;
 
-                // getUpdatedRobotLocation() will return null if no new information is available since
-                // the last time that call was made, or if the trackable is not currently visible.
-                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
-                if (robotLocationTransform != null) {
-                    location = robotLocationTransform;
-                }
-                break;
-            }
-        }
 
     }
 

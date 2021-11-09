@@ -7,10 +7,10 @@ public final class HardwareUtil {
     public static Gyro gyro;
     public static Webcam webcam;
 
-    public void InitializeRobot()
+    public void initializeRobot()
     {
         motors = new Motors();
-        motors.InitializeMotors();
+        motors.initializeMotors();
         gyro = new Gyro();
         gyro.initializeIMU();
         webcam = new Webcam();

@@ -10,7 +10,7 @@ public class AutonCore extends LinearOpMode {
     @Override
     public void runOpMode() {
         hardwareUtil = new HardwareUtil();
-        hardwareUtil.InitializeRobot();
+        hardwareUtil.initializeRobot();
 
         waitForStart();
     }

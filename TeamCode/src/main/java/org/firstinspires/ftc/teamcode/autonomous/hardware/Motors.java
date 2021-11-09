@@ -9,7 +9,7 @@ public final class Motors extends AutonCore {
 
     public static DcMotor leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor;
 
-    public void InitializeMotors()
+    public void initializeMotors()
     {
         leftFrontMotor = hardwareMap.dcMotor.get("leftFrontMotor");
         leftFrontMotor.setDirection(DcMotorSimple.Direction.FORWARD);
