@@ -54,7 +54,7 @@ public class Localizer {
        return null;
     }
 
-    class Location
+    public class Location
     {
         VectorF translation;
         Orientation orientation;
