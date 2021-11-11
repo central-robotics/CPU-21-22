@@ -8,13 +8,24 @@ public class AutonCore extends LinearOpMode {
 
     public static HardwareUtil hardwareUtil;
     public static Localizer.Location robotLocation;
+    private Localizer localizer;
 
     @Override
     public void runOpMode() {
         hardwareUtil = new HardwareUtil();
         hardwareUtil.initializeRobot();
+        localizer = new Localizer();
+        localizer.initializeLocalizer();
+
 
         waitForStart();
+
+        while(!isStopRequested())
+        {
+            robotLocation = localizer.getRobotPosition();
+
+
+        }
 
 
     }

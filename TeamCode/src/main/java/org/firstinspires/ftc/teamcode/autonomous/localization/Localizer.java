@@ -48,8 +48,11 @@ public class Localizer {
             Location location = new Location();
             location.orientation = orientation;
             location.translation = translation;
+
             return location;
         }
+
+        vision.targetVisible =false;
 
        return null;
     }
