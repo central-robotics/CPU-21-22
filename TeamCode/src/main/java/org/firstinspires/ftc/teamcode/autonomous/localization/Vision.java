@@ -64,14 +64,6 @@ public class Vision {
         }
     }
 
-    public void Start()
-    {
-
-
-
-
-    }
-
     //Set location of targets and give the names for trackables
     private void identifyTarget(int targetIndex, String targetName, float dx, float dy, float dz, float rx, float ry, float rz) {
         VuforiaTrackable aTarget = targets.get(targetIndex);
