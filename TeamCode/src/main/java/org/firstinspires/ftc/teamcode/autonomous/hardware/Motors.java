@@ -32,7 +32,4 @@ public final class Motors extends AutonCore {
         rightBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
-
-
-    }
 }

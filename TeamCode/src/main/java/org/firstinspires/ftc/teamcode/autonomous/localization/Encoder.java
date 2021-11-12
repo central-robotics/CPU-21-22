@@ -42,10 +42,6 @@ public class Encoder {
 
         public void getEncoderPosition() {
 
-            HardwareUtil.motors.
-
 
         }
-    }
-
 }
