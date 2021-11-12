@@ -39,9 +39,4 @@ public class Encoder {
         previousRightBackMotorPos = rightBackMotorPos;
 
     }
-
-        public void getEncoderPosition() {
-
-
-        }
 }
