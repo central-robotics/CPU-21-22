@@ -37,8 +37,8 @@ public class Core extends OpMode {
     public void move(double posinput, double neginput)
     {
         leftfront.setPower(posinput);
-        rightfront.setPower(-neginput);
-        leftback.setPower(neginput);
+        rightfront.setPower(neginput);
+        leftback.setPower(-neginput);
         rightback.setPower(-posinput);
     }
 
