@@ -9,6 +9,7 @@ public final class Motors extends AutonCore {
 
     public static DcMotor leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor;
 
+
     public void initializeMotors()
     {
         leftFrontMotor = hardwareMap.dcMotor.get("leftFrontMotor");
@@ -30,5 +31,8 @@ public final class Motors extends AutonCore {
         rightBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         rightBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+
     }
 }
