@@ -12,6 +12,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefau
 import java.util.Vector;
 
 public class Localizer {
+    public Position robotPos;
+
     private Vision vision;
     private Encoder encoder;
 
@@ -19,11 +21,10 @@ public class Localizer {
     {
         vision = new Vision();
         vision.initializeLocalizer();
-
         vision.targets.activate();
     }
 
-    public Location getRobotPosition()
+    private Location getRobotPosition()
     {
         for (VuforiaTrackable trackable : vision.trackables) {
             if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
@@ -57,9 +58,22 @@ public class Localizer {
        return null;
     }
 
-    public class Location
+    public void updatePosition()
+    {
+        if (robotPos == null)
+            robotPos = new Position();
+
+
+    }
+
+    private class Location //Position relative to vision targets
     {
         VectorF translation;
         Orientation orientation;
+    }
+
+    private class Position //Position of robot on field (x, y, theta)
+    {
+        Float x, y, t;
     }
 }
