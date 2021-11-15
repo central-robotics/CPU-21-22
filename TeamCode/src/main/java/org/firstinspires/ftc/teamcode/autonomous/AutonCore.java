@@ -28,8 +28,9 @@ public class AutonCore extends LinearOpMode {
         while(!isStopRequested())
         {
             localizer.updatePosition();
-
-
+            telemetry.addData("X", localizer.robotPos.x);
+            telemetry.addData("Y", localizer.robotPos.y);
+            telemetry.addData("angle", localizer.robotPos.t);
         }
 
 

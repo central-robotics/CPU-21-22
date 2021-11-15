@@ -104,7 +104,12 @@ public class Localizer {
                 actualDisplacement.get(3)) /
                 (2 * Math.sqrt(2)));
 
-        float rotation = (float) ((avgDisp / 57.757f /*CIRCUMFERENCE OF WHEEL DIAGONALS*/) * (2 * Math.sqrt(2)));
+        //NOT CONFIDENT ON ROBOT DIAMETER. USING IMU UNTIL ISSUE IS FIXED
+
+        //float rotation = (float) ((avgDisp / 57.757f /*CIRCUMFERENCE OF WHEEL DIAGONALS*/) * (2 * Math.sqrt(2)));
+
+        float rotation = Gyro.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).firstAngle;
+
         float theta = previousTheta - rotation;
         previousTheta = theta;
 
@@ -136,8 +141,8 @@ public class Localizer {
         }
     }
 
-    private class Position //Position of robot on field (x, y, theta)
+    public class Position //Position of robot on field (x, y, theta)
     {
-        Float x, y, t;
+        public Float x, y, t;
     }
 }
