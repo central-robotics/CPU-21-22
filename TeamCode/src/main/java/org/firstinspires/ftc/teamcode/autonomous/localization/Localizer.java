@@ -60,10 +60,12 @@ public class Localizer {
             position.y = translation.get(1) / 25.4f;
             position.t = orientation.thirdAngle;
 
+            vision.targetVisible = false;
+
             return position;
         }
 
-        vision.targetVisible =false;
+        vision.targetVisible = false;
 
         return null;
     }
