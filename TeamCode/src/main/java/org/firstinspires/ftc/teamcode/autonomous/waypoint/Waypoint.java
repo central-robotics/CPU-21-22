@@ -1,13 +1,14 @@
 package org.firstinspires.ftc.teamcode.autonomous.waypoint;
 
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localizer;
+import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
 
 public class Waypoint {
-    private Localizer.Position _targetLocation;
-    private Localizer.Position _startingPosition;
+    private Position _targetLocation;
+    private Position _startingPosition;
     private int _instruction;
 
-    public Waypoint(Localizer.Position currentPosition, Localizer.Position startingPosition, Localizer.Position targetLocation, int instruction)
+    public Waypoint(Position currentPosition, Position startingPosition, Position targetLocation, int instruction)
     {
         _startingPosition = startingPosition;
         _targetLocation = targetLocation;

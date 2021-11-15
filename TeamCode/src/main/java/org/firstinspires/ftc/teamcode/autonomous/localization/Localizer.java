@@ -128,9 +128,4 @@ public class Localizer {
             return encoderPos;
         }
     }
-
-    public class Position //Position of robot on field (x, y, theta)
-    {
-        public Float x, y, t;
-    }
 }
