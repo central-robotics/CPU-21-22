@@ -12,7 +12,7 @@ public class AutonCore extends LinearOpMode {
 
     public static HardwareUtil hardwareUtil;
     public static ElapsedTime runtime;
-    private Localizer localizer;
+    public static  Localizer localizer;
     private int instruction;
 
     @Override
@@ -40,7 +40,7 @@ public class AutonCore extends LinearOpMode {
             Position startingPos = new Position();
             Position targetPos = new Position();
 
-            Waypoint testWaypoint = new Waypoint(localizer.robotPos, startingPos, targetPos, instruction);
+            Waypoint testWaypoint = new Waypoint(startingPos, targetPos, instruction);
         }
 
 
