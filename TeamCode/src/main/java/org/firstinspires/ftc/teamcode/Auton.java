@@ -20,7 +20,7 @@ import java.util.List;
 public class Auton extends LinearOpMode {
     public static double posCoord;
     public static double negCoord;
-    public static double servoPos = 0.6;
+    public static final double servoPos = 0.6;
     public double leftFrontMotorPos, leftFrontDistanceTraveled = 0, deltaLeftFrontMotorPos = 0, previousLeftFrontMotorPos, leftFrontPower;
     public double rightFrontMotorPos, rightFrontDistanceTraveled = 0, deltaRightFrontMotorPos = 0, previousRightFrontMotorPos, rightFrontPower;
     public double leftBackMotorPos, leftBackDistanceTraveled = 0, deltaLeftBackMotorPos = 0, previousLeftBackMotorPos, leftBackPower;
@@ -30,14 +30,14 @@ public class Auton extends LinearOpMode {
     BNO055IMU imu;
     Orientation lastAngles = new Orientation();
     double positiveDistanceTraveled, negativeDistanceTraveled;
-    double distancePerTick = (2 * Math.PI * 48) / 537.6;
+    final double distancePerTick = (2 * Math.PI * 48) / 537.6;
     int instruction = 1;
     double globalAngle = 0;
-    double kP = 0.01;
+    final double kP = 0.01;
 
     // Static variables for tuning with ftcdashboard
-    int target = 0;
-    ElapsedTime runtime = new ElapsedTime();
+    final int target = 0;
+    final ElapsedTime runtime = new ElapsedTime();
     AutonLogic logicHelper;
 
     @Override

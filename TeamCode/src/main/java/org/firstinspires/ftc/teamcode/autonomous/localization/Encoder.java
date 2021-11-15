@@ -1,31 +1,25 @@
 package org.firstinspires.ftc.teamcode.autonomous.localization;
 
-import org.firstinspires.ftc.teamcode.autonomous.AutonCore;
-import org.firstinspires.ftc.teamcode.autonomous.hardware.HardwareUtil;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Motors;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Encoder {
 
+    private final double distancePerTick = (2 * Math.PI * 48) / 537.6;
     private ArrayList<Integer> lastPos; //last recorded
-    private double distancePerTick = (2 * Math.PI * 48) / 537.6;
 
-    public void initializeLocalizer()
-    {
+    public void initializeLocalizer() {
         lastPos = new ArrayList<>();
     }
 
-    public ArrayList<Float> calculateDisplacements()
-    {
+    public ArrayList<Float> calculateDisplacements() {
         ArrayList<Float> motorDisplacements = new ArrayList<>();
         ArrayList<Integer> motorPositions = updateMotorPositions();
 
         int index = 0;
 
-        for (Integer pos : motorPositions)
-        {
+        for (Integer pos : motorPositions) {
             motorDisplacements.add((float) ((pos - lastPos.get(index)) * distancePerTick));
             index++;
         }
@@ -33,8 +27,7 @@ public class Encoder {
         return motorDisplacements;
     }
 
-    private ArrayList<Integer> updateMotorPositions()
-    {
+    private ArrayList<Integer> updateMotorPositions() {
         ArrayList<Integer> motorPositions = new ArrayList<>();
 
         motorPositions.add(Motors.leftFrontMotor.getCurrentPosition()); //0

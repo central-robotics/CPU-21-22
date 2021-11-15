@@ -9,11 +9,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Gyro;
-import org.firstinspires.ftc.teamcode.autonomous.hardware.HardwareUtil;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Vector;
 
 public class Localizer {
     public Position robotPos;
@@ -22,8 +19,7 @@ public class Localizer {
     private Encoder encoder;
     private float previousTheta;
 
-    public void initializeLocalizer()
-    {
+    public void initializeLocalizer() {
         encoder = new Encoder();
         encoder.initializeLocalizer();
         vision = new Vision();
@@ -31,17 +27,16 @@ public class Localizer {
         vision.targets.activate();
     }
 
-    private Position getVisionPos()
-    {
+    private Position getVisionPos() {
         for (VuforiaTrackable trackable : vision.trackables) {
-            if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
+            if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
                 //Target is visible
 
                 vision.targetVisible = true;
 
                 // getUpdatedRobotLocation() will return null if no new information is available since
                 // the last time that call was made, or if the trackable is not currently visible.
-                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
                 if (robotLocationTransform != null) {
                     vision.location = robotLocationTransform;
                 }
@@ -49,8 +44,7 @@ public class Localizer {
             }
         }
 
-        if (vision.targetVisible)
-        {
+        if (vision.targetVisible) {
             VectorF translation = vision.location.getTranslation();
             Orientation orientation = Orientation.getOrientation(vision.location, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS);
 
@@ -70,14 +64,12 @@ public class Localizer {
         return null;
     }
 
-    private Position getEncoderPos()
-    {
+    private Position getEncoderPos() {
         ArrayList<Float> wheelDisplacements = encoder.calculateDisplacements();
 
         float displacementTotal = 0.0f;
 
-        for (float disp : wheelDisplacements)
-        {
+        for (float disp : wheelDisplacements) {
             displacementTotal += disp;
         }
 
@@ -85,23 +77,22 @@ public class Localizer {
 
         ArrayList<Float> actualDisplacement = new ArrayList<>();
 
-        for (float disp : wheelDisplacements)
-        {
+        for (float disp : wheelDisplacements) {
             actualDisplacement.add(disp - avgDisp);
         }
 
-        float robotDeltaX =  (float) ((
+        float robotDeltaX = (float) ((
                 actualDisplacement.get(0) +
-                actualDisplacement.get(1) -
-                actualDisplacement.get(2) -
-                (actualDisplacement.get(3))) /
+                        actualDisplacement.get(1) -
+                        actualDisplacement.get(2) -
+                        (actualDisplacement.get(3))) /
                 (2 * Math.sqrt(2)));
 
-        float robotDeltaY =  (float) ((
+        float robotDeltaY = (float) ((
                 actualDisplacement.get(0) -
-                actualDisplacement.get(1) -
-                actualDisplacement.get(2) +
-                actualDisplacement.get(3)) /
+                        actualDisplacement.get(1) -
+                        actualDisplacement.get(2) +
+                        actualDisplacement.get(3)) /
                 (2 * Math.sqrt(2)));
 
         //NOT CONFIDENT ON ROBOT DIAMETER. USING IMU UNTIL ISSUE IS FIXED
@@ -125,17 +116,14 @@ public class Localizer {
         return position;
     }
 
-    public Position updatePosition()
-    {
+    public Position updatePosition() {
         Position encoderPos = getEncoderPos();
         Position visionPos = getVisionPos();
 
-        if (visionPos != null)
-        {
+        if (visionPos != null) {
             robotPos = visionPos;
             return visionPos;
-        } else
-        {
+        } else {
             robotPos = encoderPos;
             return encoderPos;
         }
