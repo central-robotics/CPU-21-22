@@ -8,7 +8,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
+import org.firstinspires.ftc.teamcode.autonomous.hardware.Gyro;
+import org.firstinspires.ftc.teamcode.autonomous.hardware.HardwareUtil;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class Localizer {
@@ -16,15 +20,18 @@ public class Localizer {
 
     private Vision vision;
     private Encoder encoder;
+    private float previousTheta;
 
     public void initializeLocalizer()
     {
+        encoder = new Encoder();
+        encoder.initializeLocalizer();
         vision = new Vision();
         vision.initializeLocalizer();
         vision.targets.activate();
     }
 
-    private Location getRobotPosition()
+    private Position getVisionPos()
     {
         for (VuforiaTrackable trackable : vision.trackables) {
             if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
@@ -45,31 +52,86 @@ public class Localizer {
         if (vision.targetVisible)
         {
             VectorF translation = vision.location.getTranslation();
-            Orientation orientation = Orientation.getOrientation(vision.location, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
-            Location location = new Location();
-            location.orientation = orientation;
-            location.translation = translation;
+            Orientation orientation = Orientation.getOrientation(vision.location, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS);
 
-            return location;
+            Position position = new Position();
+
+            position.x = translation.get(0) / 25.4f;
+            position.y = translation.get(1) / 25.4f;
+            position.t = orientation.thirdAngle;
+
+            return position;
         }
 
         vision.targetVisible =false;
 
-       return null;
+        return null;
     }
 
-    public void updatePosition()
+    private Position getEncoderPos()
     {
-        if (robotPos == null)
-            robotPos = new Position();
+        ArrayList<Float> wheelDisplacements = encoder.calculateDisplacements();
 
+        float displacementTotal = 0.0f;
 
+        for (float disp : wheelDisplacements)
+        {
+            displacementTotal += disp;
+        }
+
+        float avgDisp = displacementTotal / 4.0f;
+
+        ArrayList<Float> actualDisplacement = new ArrayList<>();
+
+        for (float disp : wheelDisplacements)
+        {
+            actualDisplacement.add(disp - avgDisp);
+        }
+
+        float robotDeltaX =  (float) ((
+                actualDisplacement.get(0) +
+                actualDisplacement.get(1) -
+                actualDisplacement.get(2) -
+                (actualDisplacement.get(3))) /
+                (2 * Math.sqrt(2)));
+
+        float robotDeltaY =  (float) ((
+                actualDisplacement.get(0) -
+                actualDisplacement.get(1) -
+                actualDisplacement.get(2) +
+                actualDisplacement.get(3)) /
+                (2 * Math.sqrt(2)));
+
+        float rotation = (float) ((avgDisp / 57.757f /*CIRCUMFERENCE OF WHEEL DIAGONALS*/) * (2 * Math.sqrt(2)));
+        float theta = previousTheta - rotation;
+        previousTheta = theta;
+
+        //translate robot to field coordinates
+        float fieldDeltaX = (float) (robotDeltaX * Math.cos(theta) - robotDeltaY * Math.sin(theta));
+        float fieldDeltaY = (float) (robotDeltaY * Math.cos(theta) + robotDeltaX * Math.sin(theta));
+
+        Position position = new Position();
+        position.x = fieldDeltaX;
+        position.y = fieldDeltaY;
+        position.t = theta;
+
+        return position;
     }
 
-    private class Location //Position relative to vision targets
+    public Position updatePosition()
     {
-        VectorF translation;
-        Orientation orientation;
+        Position encoderPos = getEncoderPos();
+        Position visionPos = getVisionPos();
+
+        if (visionPos != null)
+        {
+            robotPos = visionPos;
+            return visionPos;
+        } else
+        {
+            robotPos = encoderPos;
+            return encoderPos;
+        }
     }
 
     private class Position //Position of robot on field (x, y, theta)

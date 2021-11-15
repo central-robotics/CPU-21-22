@@ -1,17 +1,20 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.teamcode.autonomous.hardware.HardwareUtil;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localizer;
 
 public class AutonCore extends LinearOpMode {
 
     public static HardwareUtil hardwareUtil;
-    public static Localizer.Location robotLocation;
+    public static ElapsedTime runtime;
     private Localizer localizer;
 
     @Override
     public void runOpMode() {
+        runtime = new ElapsedTime();
         hardwareUtil = new HardwareUtil();
         hardwareUtil.initializeRobot();
         localizer = new Localizer();
@@ -20,9 +23,11 @@ public class AutonCore extends LinearOpMode {
 
         waitForStart();
 
+        runtime.reset();
+
         while(!isStopRequested())
         {
-            robotLocation = localizer.getRobotPosition();
+            localizer.updatePosition();
 
 
         }

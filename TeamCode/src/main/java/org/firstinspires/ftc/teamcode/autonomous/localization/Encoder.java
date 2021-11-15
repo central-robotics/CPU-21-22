@@ -2,41 +2,50 @@ package org.firstinspires.ftc.teamcode.autonomous.localization;
 
 import org.firstinspires.ftc.teamcode.autonomous.AutonCore;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.HardwareUtil;
+import org.firstinspires.ftc.teamcode.autonomous.hardware.Motors;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Encoder {
 
-    public double leftFrontMotorPos, leftFrontDistanceTraveled = 0, deltaLeftFrontMotorPos = 0, previousLeftFrontMotorPos, leftFrontPower;
-    public double rightFrontMotorPos, rightFrontDistanceTraveled = 0, deltaRightFrontMotorPos = 0, previousRightFrontMotorPos, rightFrontPower;
-    public double leftBackMotorPos, leftBackDistanceTraveled = 0, deltaLeftBackMotorPos = 0, previousLeftBackMotorPos, leftBackPower;
-    public double rightBackMotorPos, rightBackDistanceTraveled = 0, deltaRightBackMotorPos = 0, previousRightBackMotorPos, rightBackPower;
-    double distancePerTick = (2 * Math.PI * 48) / 537.6;
+    private ArrayList<Integer> lastPos; //last recorded
+    private double distancePerTick = (2 * Math.PI * 48) / 537.6;
 
-
-    public void getMotorPositions() {
-        // Update the positions of each individual motor
-        List<Double> currentEncoderPos = new ArrayList<>();
-        leftFrontMotorPos = HardwareUtil.motors.leftFrontMotor.getCurrentPosition();
-        deltaLeftFrontMotorPos = distancePerTick * (leftFrontMotorPos - previousLeftFrontMotorPos);
-        leftFrontDistanceTraveled += deltaLeftFrontMotorPos;
-        previousLeftFrontMotorPos = leftFrontMotorPos;
-
-        rightFrontMotorPos = HardwareUtil.motors.rightFrontMotor.getCurrentPosition();
-        deltaRightFrontMotorPos = distancePerTick * (rightFrontMotorPos - previousRightFrontMotorPos);
-        rightFrontDistanceTraveled += deltaRightFrontMotorPos;
-        previousRightFrontMotorPos = rightFrontMotorPos;
-
-        leftBackMotorPos = HardwareUtil.motors.leftBackMotor.getCurrentPosition();
-        deltaLeftBackMotorPos = distancePerTick * (leftBackMotorPos - previousLeftBackMotorPos);
-        leftBackDistanceTraveled += deltaLeftBackMotorPos;
-        previousLeftBackMotorPos = leftBackMotorPos;
-
-        rightBackMotorPos = HardwareUtil.motors.rightBackMotor.getCurrentPosition();
-        deltaRightBackMotorPos = distancePerTick * (rightBackMotorPos - previousRightBackMotorPos);
-        rightBackDistanceTraveled += deltaRightBackMotorPos;
-        previousRightBackMotorPos = rightBackMotorPos;
-
+    public void initializeLocalizer()
+    {
+        lastPos = new ArrayList<>();
     }
+
+    public ArrayList<Float> calculateDisplacements()
+    {
+        ArrayList<Float> motorDisplacements = new ArrayList<>();
+        ArrayList<Integer> motorPositions = updateMotorPositions();
+
+        int index = 0;
+
+        for (Integer pos : motorPositions)
+        {
+            motorDisplacements.add((float) ((pos - lastPos.get(index)) * distancePerTick));
+            index++;
+        }
+
+        return motorDisplacements;
+    }
+
+    private ArrayList<Integer> updateMotorPositions()
+    {
+        ArrayList<Integer> motorPositions = new ArrayList<>();
+
+        motorPositions.add(Motors.leftFrontMotor.getCurrentPosition()); //0
+        motorPositions.add(Motors.rightFrontMotor.getCurrentPosition()); //1
+        motorPositions.add(Motors.rightBackMotor.getCurrentPosition()); //2
+        motorPositions.add(Motors.leftBackMotor.getCurrentPosition()); //3
+
+        lastPos = motorPositions;
+
+        return motorPositions;
+    }
+
+
 }
