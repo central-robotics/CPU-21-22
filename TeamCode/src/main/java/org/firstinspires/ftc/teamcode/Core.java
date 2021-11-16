@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 public class Core extends OpMode {
     DcMotor leftfront, rightfront, leftback, rightback;
     BNO055IMU imu;
-    final BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+    BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
     public void loop(){}
 
