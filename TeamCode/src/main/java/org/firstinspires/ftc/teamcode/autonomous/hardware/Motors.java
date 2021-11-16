@@ -2,15 +2,15 @@ package org.firstinspires.ftc.teamcode.autonomous.hardware;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.autonomous.AutonCore;
 
-public final class Motors extends AutonCore {
+public class Motors {
 
     public static DcMotor leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor;
 
-
-    public void initializeMotors() {
+    public void initializeMotors(HardwareMap hardwareMap) {
         leftFrontMotor = hardwareMap.dcMotor.get("leftFrontMotor");
         leftFrontMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         leftFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

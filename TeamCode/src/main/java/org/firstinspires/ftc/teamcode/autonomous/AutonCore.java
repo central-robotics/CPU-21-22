@@ -21,7 +21,7 @@ public class AutonCore extends LinearOpMode {
 
         runtime = new ElapsedTime();
         hardwareUtil = new HardwareUtil();
-        hardwareUtil.initializeRobot();
+        hardwareUtil.initializeRobot(hardwareMap);
         localizer = new Localizer();
         localizer.initializeLocalizer();
 
