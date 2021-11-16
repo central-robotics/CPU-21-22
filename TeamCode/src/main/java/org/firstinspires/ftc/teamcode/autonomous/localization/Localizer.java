@@ -17,7 +17,7 @@ public class Localizer {
 
     private Vision vision;
     private Encoder encoder;
-    private float previousTheta;
+    private double previousTheta;
 
     public void initializeLocalizer() {
         encoder = new Encoder();
@@ -50,8 +50,8 @@ public class Localizer {
 
             Position position = new Position();
 
-            position.x = translation.get(0) / 25.4f;
-            position.y = translation.get(1) / 25.4f;
+            position.x = translation.get(0) / 25.4;
+            position.y = translation.get(1) / 25.4;
             position.t = orientation.thirdAngle;
 
             vision.targetVisible = false;
@@ -65,48 +65,48 @@ public class Localizer {
     }
 
     private Position getEncoderPos() {
-        ArrayList<Float> wheelDisplacements = encoder.calculateDisplacements();
+        ArrayList<Double> wheelDisplacements = encoder.calculateDisplacements();
 
-        float displacementTotal = 0.0f;
+        double displacementTotal = 0.0;
 
-        for (float disp : wheelDisplacements) {
+        for (double disp : wheelDisplacements) {
             displacementTotal += disp;
         }
 
-        float avgDisp = displacementTotal / 4.0f;
+        double avgDisp = displacementTotal / 4.0;
 
-        ArrayList<Float> actualDisplacement = new ArrayList<>();
+        ArrayList<Double> actualDisplacement = new ArrayList<>();
 
-        for (float disp : wheelDisplacements) {
+        for (double disp : wheelDisplacements) {
             actualDisplacement.add(disp - avgDisp);
         }
 
-        float robotDeltaX = (float) ((
+        double robotDeltaX = (
                 actualDisplacement.get(0) +
                         actualDisplacement.get(1) -
                         actualDisplacement.get(2) -
                         (actualDisplacement.get(3))) /
-                (2 * Math.sqrt(2)));
+                (2 * Math.sqrt(2));
 
-        float robotDeltaY = (float) ((
+        double robotDeltaY = (
                 actualDisplacement.get(0) -
                         actualDisplacement.get(1) -
                         actualDisplacement.get(2) +
                         actualDisplacement.get(3)) /
-                (2 * Math.sqrt(2)));
+                (2 * Math.sqrt(2));
 
         //NOT CONFIDENT ON ROBOT DIAMETER. USING IMU UNTIL ISSUE IS FIXED
 
-        //float rotation = (float) ((avgDisp / 57.757f /*CIRCUMFERENCE OF WHEEL DIAGONALS*/) * (2 * Math.sqrt(2)));
+        //double rotation = (avgDisp / 57.757f /*CIRCUMFERENCE OF WHEEL DIAGONALS*/) * (2 * Math.sqrt(2));
 
-        float rotation = Gyro.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).firstAngle;
+        double rotation = Gyro.imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).thirdAngle;
 
-        float theta = previousTheta - rotation;
+        double theta = previousTheta - rotation;
         previousTheta = theta;
 
         //translate robot to field coordinates
-        float fieldDeltaX = (float) (robotDeltaX * Math.cos(theta) - robotDeltaY * Math.sin(theta));
-        float fieldDeltaY = (float) (robotDeltaY * Math.cos(theta) + robotDeltaX * Math.sin(theta));
+        double fieldDeltaX = (robotDeltaX * Math.cos(theta) - robotDeltaY * Math.sin(theta));
+        double fieldDeltaY = (robotDeltaY * Math.cos(theta) + robotDeltaX * Math.sin(theta));
 
         Position position = new Position();
         position.x = fieldDeltaX;

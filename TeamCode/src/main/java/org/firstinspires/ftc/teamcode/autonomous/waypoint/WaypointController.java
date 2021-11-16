@@ -10,14 +10,14 @@ public final class WaypointController {
 
     private static void driveToStart(Waypoint waypoint)
     {
-        float percentErrorX = Math.abs(((localizer.robotPos.x - waypoint.startingPos.x) / (waypoint.startingPos.x) ) * 100);
-        float percentErrorY = Math.abs(((localizer.robotPos.y - waypoint.startingPos.y) / (waypoint.startingPos.y) ) * 100);
+        double percentErrorX = Math.abs(((localizer.robotPos.x - waypoint.startingPos.x) / (waypoint.startingPos.x) ) * 100);
+        double percentErrorY = Math.abs(((localizer.robotPos.y - waypoint.startingPos.y) / (waypoint.startingPos.y) ) * 100);
 
         if (percentErrorX > 10 || percentErrorY > 10) //As long as error is within 10%, we're not going to bother moving to start location.
         {
-            float dist =  waypoint.resolveDist(localizer.robotPos, waypoint.startingPos);
-            float vectorX =  (float)(0.4 * (waypoint.startingPos.x - localizer.robotPos.x) / dist);
-            float vectorY = (float)(0.4 * (waypoint.startingPos.y - localizer.robotPos.y) / dist);
+            double dist =  waypoint.resolveDist(localizer.robotPos, waypoint.startingPos);
+            double vectorX =  (0.4 * (waypoint.startingPos.x - localizer.robotPos.x) / dist);
+            double vectorY = (0.4 * (waypoint.startingPos.y - localizer.robotPos.y) / dist);
         } else
             return;
 

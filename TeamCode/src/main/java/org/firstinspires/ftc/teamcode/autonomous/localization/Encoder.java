@@ -6,21 +6,22 @@ import java.util.ArrayList;
 
 public class Encoder {
 
-    private final double distancePerTick = (2 * Math.PI * 48) / 537.6;
+    //private final double distancePerTick = (2 * Math.PI * 48) / 537.6;
+    private final double distancePerTick = 537.6;
     private ArrayList<Integer> lastPos; //last recorded
 
     public void initializeLocalizer() {
         lastPos = new ArrayList<>();
     }
 
-    public ArrayList<Float> calculateDisplacements() {
-        ArrayList<Float> motorDisplacements = new ArrayList<>();
+    public ArrayList<Double> calculateDisplacements() {
+        ArrayList<Double> motorDisplacements = new ArrayList<>();
         ArrayList<Integer> motorPositions = updateMotorPositions();
 
         int index = 0;
 
         for (Integer pos : motorPositions) {
-            motorDisplacements.add((float) ((pos - lastPos.get(index)) * distancePerTick));
+            motorDisplacements.add ((pos - lastPos.get(index)) * distancePerTick);
             index++;
         }
 

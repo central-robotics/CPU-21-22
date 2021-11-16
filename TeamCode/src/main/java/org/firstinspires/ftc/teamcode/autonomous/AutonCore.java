@@ -25,7 +25,6 @@ public class AutonCore extends LinearOpMode {
         localizer = new Localizer();
         localizer.initializeLocalizer();
 
-
         waitForStart();
 
         runtime.reset();
