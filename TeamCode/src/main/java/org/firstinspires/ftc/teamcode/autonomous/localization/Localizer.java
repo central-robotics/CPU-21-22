@@ -19,13 +19,13 @@ public class Localizer {
     private Encoder encoder;
     private double previousTheta;
 
-    public void initializeLocalizer() {
+    /*public void initializeLocalizer() {
         encoder = new Encoder();
         encoder.initializeLocalizer();
         vision = new Vision();
         vision.initializeLocalizer();
         vision.targets.activate();
-    }
+    }*/
 
     private Position getVisionPos() {
         for (VuforiaTrackable trackable : vision.trackables) {
