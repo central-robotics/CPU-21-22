@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.autonomous.localization;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.teamcode.autonomous.Constants;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Motors;
@@ -7,6 +10,8 @@ import org.firstinspires.ftc.teamcode.autonomous.hardware.Motors;
 import java.util.ArrayList;
 
 public class Encoder {
+    public Position lastPosition;
+
     private Hardware _hardware; //Contains robot hardware for measuring robot position using motor encoders.
 
     //private final double distancePerTick = (2 * Math.PI * 48) / 537.6;
@@ -17,6 +22,7 @@ public class Encoder {
 
     public Encoder(Hardware hardware)
     {
+        lastPosition = new Position();
         _hardware = hardware;
     }
 
@@ -63,34 +69,30 @@ public class Encoder {
 
         //Holonomic displacement in robot reference frame.
         double deltaX, deltaY;
+
+        //Compute displacement in robot reference frame.
+        deltaX = (lfDisp + robotRfDisp - robotRbDisp - robotLbDisp) / (2 * Math.sqrt(2));
+        deltaY = (lfDisp - robotRfDisp - robotRbDisp + robotLbDisp) / (2 * Math.sqrt(2));
+
+        //Robot theta
+        double theta;
+
+        //Compute robot theta
+        theta = _hardware.gyro.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).thirdAngle;
+
+        //Displacement in field reference frame.
+        double deltaXf;
+        double deltaYf;
+
+        //Compute displacement in field reference frame.
+        deltaXf = deltaX * Math.cos(theta) - deltaY * Math.sin(theta);
+        deltaYf = deltaY * Math.cos(theta) + deltaX * Math.sin(theta);
+
+        Position robotPosition = new Position();
+        robotPosition.x = lastPosition.x + deltaXf;
+        robotPosition.y = lastPosition.y + deltaYf;
+        robotPosition.t = theta;
+
+        return robotPosition;
     }
-
-    public ArrayList<Double> calculateDisplacements() {
-        ArrayList<Double> motorDisplacements = new ArrayList<>();
-        ArrayList<Integer> motorPositions = updateMotorPositions();
-
-        int index = 0;
-
-        for (Integer pos : motorPositions) {
-            motorDisplacements.add ((pos - lastPos.get(index)) * distancePerTick);
-            index++;
-        }
-
-        return motorDisplacements;
-    }
-
-    private ArrayList<Integer> updateMotorPositions() {
-        ArrayList<Integer> motorPositions = new ArrayList<>();
-
-        motorPositions.add(Motors.leftFrontMotor.getCurrentPosition()); //0
-        motorPositions.add(Motors.rightFrontMotor.getCurrentPosition()); //1
-        motorPositions.add(Motors.rightBackMotor.getCurrentPosition()); //2
-        motorPositions.add(Motors.leftBackMotor.getCurrentPosition()); //3
-
-        lastPos = motorPositions;
-
-        return motorPositions;
-    }
-
-
 }
