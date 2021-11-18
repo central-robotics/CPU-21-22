@@ -12,7 +12,12 @@ public class Localization {
     {
         _hardware = hardware;
         encoder = new Encoder(_hardware);
-        vision = new Vision(_hardware);
+        //vision = new Vision(_hardware);
+    }
+
+    public void getRobotPosition()
+    {
+        Position position = encoder.getRobotPosition(robotPosition);
     }
 
 

@@ -10,8 +10,6 @@ import org.firstinspires.ftc.teamcode.autonomous.hardware.Motors;
 import java.util.ArrayList;
 
 public class Encoder {
-    public Position lastPosition;
-
     private Hardware _hardware; //Contains robot hardware for measuring robot position using motor encoders.
 
     //private final double distancePerTick = (2 * Math.PI * 48) / 537.6;
@@ -26,7 +24,7 @@ public class Encoder {
         _hardware = hardware;
     }
 
-    public Position getRobotPosition()
+    public Position getRobotPosition(Position previousPosition)
     {
         //Encoder values. These are in ticks. We will later convert this to a usable distance.
         int lfPos, rfPos, rbPos, lbPos;
@@ -89,8 +87,8 @@ public class Encoder {
         deltaYf = deltaY * Math.cos(theta) + deltaX * Math.sin(theta);
 
         Position robotPosition = new Position();
-        robotPosition.x = lastPosition.x + deltaXf;
-        robotPosition.y = lastPosition.y + deltaYf;
+        robotPosition.x = previousPosition.x + deltaXf;
+        robotPosition.y = previousPosition.y + deltaYf;
         robotPosition.t = theta;
 
         return robotPosition;
