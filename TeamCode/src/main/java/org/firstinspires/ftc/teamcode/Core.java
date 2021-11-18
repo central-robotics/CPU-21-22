@@ -34,21 +34,19 @@ public class Core extends OpMode {
         imu.initialize(parameters);
     }
 
-    public void move(double posinput, double neginput)
+    public void move(double posinput, double neginput, double rotinput)
     {
-        leftfront.setPower(posinput);
-        rightfront.setPower(-neginput);
-        leftback.setPower(neginput);
-        rightback.setPower(-posinput);
+        leftfront.setPower(posinput - rotinput);
+        rightfront.setPower(neginput - rotinput);
+        leftback.setPower(-neginput - rotinput);
+        rightback.setPower(-posinput - rotinput);
     }
 
-    public void pivot(double input)
+/*    public void pivot(double input)
     {
         leftfront.setPower(-input);
         rightfront.setPower(-input);
         leftback.setPower(-input);
         rightback.setPower(-input);
-    }
-
-
+    } */
 }

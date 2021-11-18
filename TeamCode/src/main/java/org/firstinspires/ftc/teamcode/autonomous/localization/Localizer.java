@@ -8,32 +8,35 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
+import org.firstinspires.ftc.teamcode.autonomous.hardware.Gyro;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 public class Localizer {
+    public Position robotPos;
+
     private Vision vision;
     private Encoder encoder;
+    private double previousTheta;
 
-    public void initializeLocalizer()
-    {
+    /*public void initializeLocalizer() {
+        encoder = new Encoder();
+        encoder.initializeLocalizer();
         vision = new Vision();
         vision.initializeLocalizer();
-
         vision.targets.activate();
-    }
+    }*/
 
-    public Location getRobotPosition()
-    {
+    private Position getVisionPos() {
         for (VuforiaTrackable trackable : vision.trackables) {
-            if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
+            if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
                 //Target is visible
 
                 vision.targetVisible = true;
 
                 // getUpdatedRobotLocation() will return null if no new information is available since
                 // the last time that call was made, or if the trackable is not currently visible.
-                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
                 if (robotLocationTransform != null) {
                     vision.location = robotLocationTransform;
                 }
@@ -41,25 +44,88 @@ public class Localizer {
             }
         }
 
-        if (vision.targetVisible)
-        {
+        if (vision.targetVisible) {
             VectorF translation = vision.location.getTranslation();
-            Orientation orientation = Orientation.getOrientation(vision.location, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
-            Location location = new Location();
-            location.orientation = orientation;
-            location.translation = translation;
+            Orientation orientation = Orientation.getOrientation(vision.location, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS);
 
-            return location;
+            Position position = new Position();
+
+            position.x = translation.get(0) / 25.4;
+            position.y = translation.get(1) / 25.4;
+            position.t = orientation.thirdAngle;
+
+            vision.targetVisible = false;
+
+            return position;
         }
 
-        vision.targetVisible =false;
+        vision.targetVisible = false;
 
-       return null;
+        return null;
     }
 
-    public class Location
-    {
-        VectorF translation;
-        Orientation orientation;
+    private Position getEncoderPos() {
+        ArrayList<Double> wheelDisplacements = encoder.calculateDisplacements();
+
+        double displacementTotal = 0.0;
+
+        for (double disp : wheelDisplacements) {
+            displacementTotal += disp;
+        }
+
+        double avgDisp = displacementTotal / 4.0;
+
+        ArrayList<Double> actualDisplacement = new ArrayList<>();
+
+        for (double disp : wheelDisplacements) {
+            actualDisplacement.add(disp - avgDisp);
+        }
+
+        double robotDeltaX = (
+                actualDisplacement.get(0) +
+                        actualDisplacement.get(1) -
+                        actualDisplacement.get(2) -
+                        (actualDisplacement.get(3))) /
+                (2 * Math.sqrt(2));
+
+        double robotDeltaY = (
+                actualDisplacement.get(0) -
+                        actualDisplacement.get(1) -
+                        actualDisplacement.get(2) +
+                        actualDisplacement.get(3)) /
+                (2 * Math.sqrt(2));
+
+        //NOT CONFIDENT ON ROBOT DIAMETER. USING IMU UNTIL ISSUE IS FIXED
+
+        //double rotation = (avgDisp / 57.757f /*CIRCUMFERENCE OF WHEEL DIAGONALS*/) * (2 * Math.sqrt(2));
+
+        double rotation = Gyro.imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).thirdAngle;
+
+        double theta = previousTheta - rotation;
+        previousTheta = theta;
+
+        //translate robot to field coordinates
+        double fieldDeltaX = (robotDeltaX * Math.cos(theta) - robotDeltaY * Math.sin(theta));
+        double fieldDeltaY = (robotDeltaY * Math.cos(theta) + robotDeltaX * Math.sin(theta));
+
+        Position position = new Position();
+        position.x = fieldDeltaX;
+        position.y = fieldDeltaY;
+        position.t = theta;
+
+        return position;
+    }
+
+    public Position updatePosition() {
+        Position encoderPos = getEncoderPos();
+        Position visionPos = getVisionPos();
+
+        if (visionPos != null) {
+            robotPos = visionPos;
+            return visionPos;
+        } else {
+            robotPos = encoderPos;
+            return encoderPos;
+        }
     }
 }
