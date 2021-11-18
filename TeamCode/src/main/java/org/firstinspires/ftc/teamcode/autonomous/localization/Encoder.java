@@ -69,8 +69,8 @@ public class Encoder {
         double deltaX, deltaY;
 
         //Compute displacement in robot reference frame.
-        deltaX = (lfDisp + robotRfDisp - robotRbDisp - robotLbDisp) / (2 * Math.sqrt(2));
-        deltaY = (lfDisp - robotRfDisp - robotRbDisp + robotLbDisp) / (2 * Math.sqrt(2));
+        deltaX = (robotLfDisp + robotRfDisp - robotRbDisp - robotLbDisp) / (2 * Math.sqrt(2));
+        deltaY = (robotLfDisp - robotRfDisp - robotRbDisp + robotLbDisp) / (2 * Math.sqrt(2));
 
         //Robot theta
         double theta;
