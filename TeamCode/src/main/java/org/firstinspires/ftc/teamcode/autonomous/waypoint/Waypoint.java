@@ -12,8 +12,8 @@ public class Waypoint {
         targetPos = targetPosition ;
     }
 
-    public float resolveDist(Position currentPosition, Position targetPosition)
+    public double resolveDist(Position currentPosition, Position targetPosition)
     {
-        return (float) Math.hypot(targetPosition.x - currentPosition.x, targetPosition.y - currentPosition.y);
+        return Math.hypot(targetPosition.x - currentPosition.x, targetPosition.y - currentPosition.y);
     }
 }
