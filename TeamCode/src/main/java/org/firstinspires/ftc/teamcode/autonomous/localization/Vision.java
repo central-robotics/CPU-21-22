@@ -2,12 +2,16 @@ package org.firstinspires.ftc.teamcode.autonomous.localization;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-import org.firstinspires.ftc.teamcode.autonomous.hardware.Webcam;
+import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,12 +22,13 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XZY;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 
 public class Vision {
+    private Hardware _hardware;
+
     private static final String key = "AS0ENI3/////AAABmRrhaZtkGkSMi4tGQFf9azI3tZlg7Xv8GCAFy/EtV7oDQmsVBBNgiQNq035C7ShFgSt1Y9dtgOUrPHhlgoI/8sqhoBUnr3WRm/ex/gPsScPYlpy4mqBUZEIQxI2hndIuFrxPSc5gCMC4kyay2RWUWthzUygnp/22kgrq2u7xyKLwsUIctziWB1T3xreY6LcdSuqgPx6qMeiOmPkqLrIm+BbJovtmoVA7d/PqPoIeoo6O/CurFZVUeJq7zkPRB9OzsoF3Iyxyd3jGi1xlPes828QsbIcx1UYQIyR+q52fLVAt69FPPQ6AO8YMfgc0z+qF7pSA1Vee1LIyF+HCMh67gXj3YntVhvlnSeflrFtVB7vl";
 
     public VuforiaLocalizer vuforiaLocalizer; //Vuforia instance
     public VuforiaTrackables targets; //Vuforia image
     public List<VuforiaTrackable> trackables;
-    private VuforiaLocalizer.Parameters params;
 
     public OpenGLMatrix location;
 
@@ -34,10 +39,54 @@ public class Vision {
 
     public Boolean targetVisible = false;
 
-    public void initializeLocalizer() {
-        params = new VuforiaLocalizer.Parameters();
+    public Vision(Hardware hardware)
+    {
+        _hardware = hardware;
+        initialize();
+    }
+
+    public Position getRobotPosition()
+    {
+        for (VuforiaTrackable trackable : trackables) {
+            if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
+                //Target is visible
+
+                targetVisible = true;
+
+                // getUpdatedRobotLocation() will return null if no new information is available since
+                // the last time that call was made, or if the trackable is not currently visible.
+                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
+                if (robotLocationTransform != null) {
+                    location = robotLocationTransform;
+                }
+                break;
+            }
+        }
+
+        if (targetVisible) {
+            VectorF translation = location.getTranslation();
+            Orientation orientation = Orientation.getOrientation(location, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS);
+
+            Position position = new Position();
+
+            position.x = translation.get(0) / 25.4;
+            position.y = translation.get(1) / 25.4;
+            position.t = orientation.thirdAngle;
+
+            targetVisible = false;
+
+            return position;
+        }
+
+        targetVisible = false;
+
+        return null;
+    }
+
+    private void initialize() {
+        VuforiaLocalizer.Parameters params = new VuforiaLocalizer.Parameters();
         params.vuforiaLicenseKey = key;
-        params.cameraName = Webcam.webcam;
+        params.cameraName = _hardware.camera;
         params.useExtendedTracking = false;
 
         vuforiaLocalizer = ClassFactory.getInstance().createVuforia(params);

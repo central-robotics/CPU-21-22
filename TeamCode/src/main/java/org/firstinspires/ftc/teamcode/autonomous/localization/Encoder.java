@@ -5,9 +5,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.teamcode.autonomous.Constants;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
-import org.firstinspires.ftc.teamcode.autonomous.hardware.Motors;
-
-import java.util.ArrayList;
 
 public class Encoder {
     private Hardware _hardware; //Contains robot hardware for measuring robot position using motor encoders.
@@ -20,7 +17,6 @@ public class Encoder {
 
     public Encoder(Hardware hardware)
     {
-        lastPosition = new Position();
         _hardware = hardware;
     }
 
