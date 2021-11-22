@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.autonomous.localization;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -88,5 +90,17 @@ public class Encoder {
         robotPosition.t = theta;
 
         return robotPosition;
+    }
+
+    public Velocity getRobotVelocity(Position previousPosition, Position currentPosition, double previousTime)
+    {
+        ElapsedTime currentTime = new ElapsedTime();
+        Velocity robotVelocity = new Velocity();
+
+        robotVelocity.dx = (currentPosition.x - previousPosition.x) / (currentTime.milliseconds() - previousTime) * 1000;
+        robotVelocity.dy = (currentPosition.y - previousPosition.y) / (currentTime.milliseconds() - previousTime) * 1000;
+        robotVelocity.dt = (currentPosition.t - previousPosition.t) / (currentTime.milliseconds() - previousTime) * 1000;
+
+        return robotVelocity;
     }
 }

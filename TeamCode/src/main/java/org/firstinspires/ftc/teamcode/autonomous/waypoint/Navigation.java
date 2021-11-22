@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.autonomous.waypoint;
 
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 
-import org.firstinspires.ftc.teamcode.autonomous.PID;
+import org.firstinspires.ftc.teamcode.autonomous.control.Controller;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
 
@@ -12,9 +12,7 @@ public class Navigation {
     private Hardware _hardware;
     private Localization _localization;
 
-    private PID xController;
-    private PID yController;
-    private PID tController;
+    private Controller controller;
 
     /*
     Holds waypoints that we can drive to. This allows for the robot to split a move up into
@@ -32,9 +30,7 @@ public class Navigation {
 
         PIDCoefficients coefficients = new PIDCoefficients(0, 0, 0);
 
-        xController = new PID(coefficients);
-        yController = new PID(coefficients);
-        tController = new PID(coefficients);
+        controller = new Controller(coefficients);
 
         waypoints = new ArrayList<>();
     }
