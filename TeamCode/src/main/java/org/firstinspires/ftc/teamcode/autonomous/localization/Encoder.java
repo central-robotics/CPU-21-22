@@ -92,14 +92,13 @@ public class Encoder {
         return robotPosition;
     }
 
-    public Velocity getRobotVelocity(Position previousPosition, Position currentPosition, double previousTime)
+    public Velocity getRobotVelocity(Position previousPosition, Position currentPosition, double previousTime, double currentTime)
     {
-        ElapsedTime currentTime = new ElapsedTime();
         Velocity robotVelocity = new Velocity();
 
-        robotVelocity.dx = (currentPosition.x - previousPosition.x) / (currentTime.milliseconds() - previousTime) * 1000;
-        robotVelocity.dy = (currentPosition.y - previousPosition.y) / (currentTime.milliseconds() - previousTime) * 1000;
-        robotVelocity.dt = (currentPosition.t - previousPosition.t) / (currentTime.milliseconds() - previousTime) * 1000;
+        robotVelocity.dx = (currentPosition.x - previousPosition.x) / (currentTime - previousTime) * 1000;
+        robotVelocity.dy = (currentPosition.y - previousPosition.y) / (currentTime - previousTime) * 1000;
+        robotVelocity.dt = (currentPosition.t - previousPosition.t) / (currentTime - previousTime) * 1000;
 
         return robotVelocity;
     }

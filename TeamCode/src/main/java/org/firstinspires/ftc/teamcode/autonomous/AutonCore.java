@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
+import org.firstinspires.ftc.teamcode.autonomous.localization.Velocity;
 import org.firstinspires.ftc.teamcode.autonomous.waypoint.Navigation;
 import org.firstinspires.ftc.teamcode.autonomous.waypoint.Waypoint;
 
@@ -14,6 +15,7 @@ public class AutonCore extends LinearOpMode {
     public Hardware hardware;
     public static ElapsedTime runtime;
     public Position robotPosition;
+    public Velocity robotVelocity;
     private Localization localization;
     private Navigation navigation;
     private int instruction;
@@ -24,6 +26,7 @@ public class AutonCore extends LinearOpMode {
         localization = new Localization(hardware);
         navigation = new Navigation(hardware, localization);
         robotPosition = localization.getRobotPosition();
+        robotVelocity = localization.getRobotVelocity();
 
         waitForStart();
 
@@ -31,7 +34,9 @@ public class AutonCore extends LinearOpMode {
 
         while(!isStopRequested())
         {
-
+            localization.increment(robotPosition);
+            robotPosition = localization.getRobotPosition();
+            robotVelocity = localization.getRobotVelocity();
         }
     }
 }
