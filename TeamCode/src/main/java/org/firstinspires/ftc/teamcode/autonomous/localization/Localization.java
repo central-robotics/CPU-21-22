@@ -28,7 +28,6 @@ public class Localization {
         encoder = new Encoder(_hardware);
         vision = new Vision(_hardware);
         runtime = new ElapsedTime();
-        previousTime = 0;
     }
 
     public void increment(Position newPosition)
@@ -47,13 +46,11 @@ public class Localization {
             robotPosition = visionRobotPosition; //This will allow encoder localization to correct to these new values.
             return visionRobotPosition;
         }
-        else
-        {
-            return encoder.getRobotPosition(previousRobotPosition); //If we can't see vision targets, return encoder based location.
-        }
+
+        return encoder.getRobotPosition(robotPosition); //If we can't see vision targets, return encoder based location.
     }
 
-    public Velocity getRobotVelocity()
+    public Velocity getRobotVelocity(ElapsedTime runtime)
     {
         currentTime = runtime.milliseconds();
         return encoder.getRobotVelocity(previousRobotPosition, robotPosition, previousTime, currentTime);

@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.autonomous.localization;
 
-import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -49,7 +47,7 @@ public class Encoder {
         lastLbPos = lbPos;
 
         //Average of displacement values
-        double dispAvg = 0.0;
+        double dispAvg;
 
         //Calculate avg.
         dispAvg = (lfDisp + rfDisp + rbDisp + lbDisp) / 4;
@@ -96,9 +94,9 @@ public class Encoder {
     {
         Velocity robotVelocity = new Velocity();
 
-        robotVelocity.dx = (currentPosition.x - previousPosition.x) / (currentTime - previousTime) * 1000;
-        robotVelocity.dy = (currentPosition.y - previousPosition.y) / (currentTime - previousTime) * 1000;
-        robotVelocity.dt = (currentPosition.t - previousPosition.t) / (currentTime - previousTime) * 1000;
+        robotVelocity.dx = (currentPosition.x - previousPosition.x) / (currentTime - previousTime);
+        robotVelocity.dy = (currentPosition.y - previousPosition.y) / (currentTime - previousTime);
+        robotVelocity.dt = (currentPosition.t - previousPosition.t) / (currentTime - previousTime);
 
         return robotVelocity;
     }
