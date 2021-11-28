@@ -1,5 +1,5 @@
 package org.firstinspires.ftc.teamcode.autonomous.control;
 
-public class PIDOut {
-    public double xOut, yOut, tOut;
+public class RelativeRobotPos {
+    public double pos, neg;
 }

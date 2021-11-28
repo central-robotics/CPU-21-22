@@ -72,7 +72,7 @@ public class Encoder {
         double theta;
 
         //Compute robot theta
-        theta = _hardware.gyro.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).thirdAngle;
+        theta = _hardware.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).secondAngle;
 
         //Displacement in field reference frame.
         double deltaXf;
@@ -86,6 +86,8 @@ public class Encoder {
         robotPosition.x = previousPosition.x + deltaXf;
         robotPosition.y = previousPosition.y + deltaYf;
         robotPosition.t = theta;
+
+        if (robotPosition.x == 0) robotPosition.x = 0.0000001;
 
         return robotPosition;
     }

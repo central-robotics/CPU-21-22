@@ -10,13 +10,12 @@ import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Velocity;
 import org.firstinspires.ftc.teamcode.autonomous.waypoint.Navigation;
+import org.firstinspires.ftc.teamcode.autonomous.waypoint.Waypoint;
 
 @Autonomous
 public class AutonCore extends LinearOpMode {
     public Hardware hardware;
     public static ElapsedTime runtime;
-    public Position robotPosition;
-    public Velocity robotVelocity;
     private Localization localization;
     private Navigation navigation;
     private int instruction;
@@ -25,26 +24,22 @@ public class AutonCore extends LinearOpMode {
     public void runOpMode() {
         hardware = new Hardware(hardwareMap);
         localization = new Localization(hardware);
-        navigation = new Navigation(hardware, localization);
         runtime = new ElapsedTime();
+        navigation = new Navigation(hardware, localization, runtime);
 
         waitForStart();
 
         runtime.reset();
 
-        while(!isStopRequested())
+        navigation.addWayPointToQueue(new Waypoint(new Position(0,0,0), new Position(400, 0,0)));
+        navigation.executeTask();
+
+        /*while(!isStopRequested())
         {
-            robotPosition = localization.getRobotPosition();
-            localization.increment(robotPosition);
-            robotVelocity = localization.getRobotVelocity(runtime);
-            telemetry.addData("runtime", runtime);
-            telemetry.addData("X", robotPosition.x);
-            telemetry.addData("Y", robotPosition.y);
-            telemetry.addData("t", robotPosition.t);
-            telemetry.addData("dX", robotVelocity.dx);
-            telemetry.addData("dY", robotVelocity.dy);
-            telemetry.addData("dt", robotVelocity.dt);
             telemetry.update();
         }
+         */
+
+        stop();
     }
 }

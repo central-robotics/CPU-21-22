@@ -6,24 +6,21 @@ import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Velocity;
 
 public class Controller {
-    PID xController;
-    PID yController;
-    PID tController;
-    PIDOut out;
+    PID posController;
+    PID negController;
+    RelativeRobotPos out;
 
     public Controller(PIDCoefficients coeffs)
     {
-        xController = new PID(coeffs);
-        yController = new PID(coeffs);
-        tController = new PID(coeffs);
-        out = new PIDOut();
+        posController = new PID(coeffs);
+        negController = new PID(coeffs);
+        out = new RelativeRobotPos();
     }
 
-    public PIDOut eval(Position pos, Position target, Velocity vel)
+    public RelativeRobotPos eval(Position pos, Position target, Velocity vel)
     {
-        out.xOut = xController.eval(target.x, pos.x, vel.dx);
-        out.yOut = yController.eval(target.y, pos.y, vel.dy);
-        out.tOut = tController.eval(target.t, pos.t, vel.dt);
+        out.pos = posController.eval(target.positive, pos.positive, vel.dx);
+        out.neg = negController.eval(target.negative, pos.negative, vel.dy);
 
         return out;
     }

@@ -43,6 +43,14 @@ public class Hardware {
         rightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    public void setMotorValues(double posinput, double neginput)
+    {
+        leftFrontMotor.setPower(posinput);
+        rightFrontMotor.setPower(neginput);
+        leftBackMotor.setPower(neginput);
+        rightBackMotor.setPower(-posinput);
+    }
+
     private void initializeGyro(HardwareMap hardware)
     {
         BNO055IMU.Parameters params = new BNO055IMU.Parameters();
