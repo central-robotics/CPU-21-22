@@ -3,8 +3,7 @@ package org.firstinspires.ftc.teamcode.autonomous.waypoint;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.autonomous.control.Controller;
-import org.firstinspires.ftc.teamcode.autonomous.control.RelativeRobotPos;
+import org.firstinspires.ftc.teamcode.autonomous.control.PID;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
@@ -16,10 +15,9 @@ public class Navigation {
     private Hardware _hardware;
     private Localization _localization;
     private ElapsedTime runtime;
-    private Controller controller;
+    private PID controller;
     private Position position = new Position();
     private Velocity velocity = new Velocity();
-    private RelativeRobotPos output = new RelativeRobotPos();
 
     /*
     Holds waypoints that we can drive to. This allows for the robot to split a move up into
@@ -38,7 +36,7 @@ public class Navigation {
 
         PIDCoefficients coefficients = new PIDCoefficients(0.25, 0, 0);
 
-        controller = new Controller(coefficients);
+        controller = new PID(coefficients);
 
         waypoints = new ArrayList<>();
     }
@@ -72,31 +70,13 @@ public class Navigation {
             _localization.increment(position);
             velocity = _localization.getRobotVelocity(runtime);
 
-            double orientation = (position.x > 0) ? (Math.atan(-position.y / position.x) - Math.PI / 4):
-                    (Math.atan(-position.y / position.x) + Math.PI - Math.PI / 4);
+            double output = controller.eval(position, waypoint.startingPos, velocity);
 
-            double targetOrientation = (waypoint.startingPos.x > 0) ? (Math.atan(-waypoint.startingPos.y / waypoint.startingPos.x) - Math.PI / 4):
-                    (Math.atan(-waypoint.startingPos.y / waypoint.startingPos.x) + Math.PI - Math.PI / 4);
-
-            RelativeRobotPos translated_pos = new RelativeRobotPos();
-            RelativeRobotPos translated_target = new RelativeRobotPos();
-
-            // Pass that angle through a pair of wave functions to get the power for each corresponding pair of parallel wheels
-            translated_pos.neg = 0.45 * Math.sin(orientation);
-            translated_pos.pos = (orientation != 0) ? 0.45 * Math.cos(orientation) :
-                    translated_pos.neg;
-
-            translated_target.neg = 0.45 * Math.sin(targetOrientation);
-            translated_target.pos = (targetOrientation != 0) ? 0.45 * Math.cos(targetOrientation) :
-                    translated_target.neg;
-
-            output = controller.eval(translated_pos, translated_target, velocity);
-
-            _hardware.setMotorValues(output.pos, output.neg);
+            _hardware.setMotorValues(0, 0);
         }
     }
 
-    private void driveToTarget(@org.jetbrains.annotations.NotNull Waypoint waypoint)
+    private void driveToTarget(Waypoint waypoint)
     {
         //Assume that starting position has been reached. Drive to target specified by waypoint.
         while((Math.abs(waypoint.targetPos.x - position.x) > 5) ||
@@ -106,9 +86,9 @@ public class Navigation {
             _localization.increment(position);
             velocity = _localization.getRobotVelocity(runtime);
 
-            output = controller.eval(position, waypoint.targetPos, velocity);
+            double output = controller.eval(position, waypoint.targetPos, velocity);
 
-            _hardware.setMotorValues(output.pos, output.neg);
+            _hardware.setMotorValues(0, 0);
         }
     }
 }
