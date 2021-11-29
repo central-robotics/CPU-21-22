@@ -70,9 +70,20 @@ public class Navigation {
             _localization.increment(position);
             velocity = _localization.getRobotVelocity(runtime);
 
-            double output = controller.eval(position, waypoint.startingPos, velocity);
+            double orientation, negOutput, posOutput;
 
-            _hardware.setMotorValues(0, 0);
+            if (waypoint.targetPos.x - position.x > 0)
+                orientation = Math.atan(controller.getSlope(position, waypoint.startingPos)) - Math.PI / 4;
+            else
+                orientation = Math.atan(controller.getSlope(position, waypoint.startingPos)) + Math.PI - Math.PI / 4;
+
+            negOutput = controller.getMagnitude(waypoint.startingPos, position, velocity) * Math.sin(orientation);
+            if (orientation == 0)
+                posOutput = negOutput;
+            else
+                posOutput = controller.getMagnitude(waypoint.startingPos, position, velocity) * Math.cos(orientation);
+
+            _hardware.setMotorValues(posOutput, negOutput);
         }
     }
 
@@ -86,9 +97,20 @@ public class Navigation {
             _localization.increment(position);
             velocity = _localization.getRobotVelocity(runtime);
 
-            double output = controller.eval(position, waypoint.targetPos, velocity);
+            double orientation, negOutput, posOutput;
 
-            _hardware.setMotorValues(0, 0);
+            if (waypoint.targetPos.x - position.x > 0)
+                orientation = Math.atan(controller.getSlope(position, waypoint.targetPos)) - Math.PI / 4;
+            else
+                orientation = Math.atan(controller.getSlope(position, waypoint.targetPos)) + Math.PI - Math.PI / 4;
+
+            negOutput = controller.getMagnitude(waypoint.targetPos, position, velocity) * Math.sin(orientation);
+            if (orientation == 0)
+                posOutput = negOutput;
+            else
+                posOutput = controller.getMagnitude(waypoint.targetPos, position, velocity) * Math.cos(orientation);
+
+            _hardware.setMotorValues(posOutput, negOutput);
         }
     }
 }
