@@ -17,7 +17,7 @@ public class Hardware {
     {
         initializeGyro(hardware);
         initializeMotors(hardware);
-        initializeWebcam(hardware);
+        //initializeWebcam(hardware);
     }
 
     private void initializeMotors(HardwareMap hardware)

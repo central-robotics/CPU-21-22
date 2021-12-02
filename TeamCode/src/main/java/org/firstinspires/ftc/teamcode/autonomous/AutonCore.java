@@ -22,9 +22,9 @@ public class AutonCore extends LinearOpMode {
     @Override
     public void runOpMode() {
         hardware = new Hardware(hardwareMap);
-        localization = new Localization(hardware);
+        localization = new Localization(hardware, this.telemetry);
         runtime = new ElapsedTime();
-        navigation = new Navigation(hardware, localization, runtime);
+        navigation = new Navigation(hardware, localization, runtime, telemetry);
 
         Position position = new Position();
 

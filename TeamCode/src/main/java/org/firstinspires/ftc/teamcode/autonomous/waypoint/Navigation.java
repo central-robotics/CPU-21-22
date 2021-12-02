@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.autonomous.AutonCore;
 import org.firstinspires.ftc.teamcode.autonomous.control.PID;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
@@ -20,6 +21,7 @@ public class Navigation extends AutonCore {
     private PID controller;
     private Position position = new Position();
     private Velocity velocity = new Velocity();
+    private Telemetry telem;
 
     /*
     Holds waypoints that we can drive to. This allows for the robot to split a move up into
@@ -30,8 +32,9 @@ public class Navigation extends AutonCore {
     private ArrayList<Waypoint> waypoints;
     private int index = 0;
 
-    public Navigation(Hardware hardware, Localization localization, ElapsedTime runtime)
+    public Navigation(Hardware hardware, Localization localization, ElapsedTime runtime, Telemetry telemetry)
     {
+        telem = telemetry;
         this.runtime = runtime;
         _hardware = hardware;
         _localization = localization;
@@ -100,9 +103,9 @@ public class Navigation extends AutonCore {
             double orientation, magnitude, negOutput, posOutput;
 
             if (waypoint.targetPos.x - position.x > 0)
-                orientation = Math.atan(controller.getSlope(position, waypoint.targetPos)) - Math.PI / 4;
+                orientation = Math.atan(controller.getSlope(waypoint.targetPos, position)) - Math.PI / 4;
             else
-                orientation = Math.atan(controller.getSlope(position, waypoint.targetPos)) + Math.PI - Math.PI / 4;
+                orientation = Math.atan(controller.getSlope(waypoint.targetPos, position)) + Math.PI - Math.PI / 4;
 
             magnitude = controller.getMagnitude(waypoint.targetPos, position, velocity);
 
@@ -112,9 +115,15 @@ public class Navigation extends AutonCore {
             else
                 posOutput = magnitude * Math.cos(orientation);
 
-            _hardware.setMotorValues(posOutput, negOutput);
+            telem.addData("X", position.x);
+            telem.addData("Y", position.y);
+            telem.addData("T", position.t);
+            telem.addData("Magnitude", magnitude);
+            telem.addData("Orientation", orientation);
+            telem.addData("Velocity", Math.sqrt(Math.pow(velocity.dx, 2) + Math.pow(velocity.dy, 2)));
+            telem.update();
 
-            System.out.println("X: " + position.x + "\tY: " + position.y + "\tT:" + position.t + "\tmagnitude: " + magnitude + "\torientation: " + orientation);
+            _hardware.setMotorValues(posOutput, negOutput);
         }
     }
 }
