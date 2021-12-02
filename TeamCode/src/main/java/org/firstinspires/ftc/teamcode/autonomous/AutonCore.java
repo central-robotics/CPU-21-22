@@ -18,7 +18,6 @@ public class AutonCore extends LinearOpMode {
     public static ElapsedTime runtime;
     private Localization localization;
     private Navigation navigation;
-    private int instruction;
 
     @Override
     public void runOpMode() {
@@ -27,18 +26,24 @@ public class AutonCore extends LinearOpMode {
         runtime = new ElapsedTime();
         navigation = new Navigation(hardware, localization, runtime);
 
+        Position position = new Position();
+
         waitForStart();
 
         runtime.reset();
 
-        navigation.addWayPointToQueue(new Waypoint(new Position(0,0,0), new Position(400, 0,0)));
+        navigation.addWayPointToQueue(new Waypoint(new Position(0,0,0), new Position(-400, 0,0)));
         navigation.executeTask();
 
-        /*while(!isStopRequested())
-        {
+/*        while(!isStopRequested()) {
+            position = localization.getRobotPosition();
+            localization.increment(position);
+
+            telemetry.addData("X", position.x);
+            telemetry.addData("Y", position.y);
+            telemetry.addData("T", position.t);
             telemetry.update();
-        }
-         */
+        }*/
 
         stop();
     }

@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.autonomous.waypoint;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.autonomous.AutonCore;
 import org.firstinspires.ftc.teamcode.autonomous.control.PID;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
@@ -11,7 +13,7 @@ import org.firstinspires.ftc.teamcode.autonomous.localization.Velocity;
 
 import java.util.ArrayList;
 
-public class Navigation {
+public class Navigation extends AutonCore {
     private Hardware _hardware;
     private Localization _localization;
     private ElapsedTime runtime;
@@ -34,7 +36,7 @@ public class Navigation {
         _hardware = hardware;
         _localization = localization;
 
-        PIDCoefficients coefficients = new PIDCoefficients(0.25, 0, 0);
+        PIDCoefficients coefficients = new PIDCoefficients(0.001, 0, 0);
 
         controller = new PID(coefficients);
 
@@ -49,7 +51,6 @@ public class Navigation {
 
     public void executeTask()
     {
-
         for (Waypoint waypoint : waypoints)
         {
             driveToStart(waypoint);
@@ -90,27 +91,30 @@ public class Navigation {
     private void driveToTarget(Waypoint waypoint)
     {
         //Assume that starting position has been reached. Drive to target specified by waypoint.
-        while((Math.abs(waypoint.targetPos.x - position.x) > 5) ||
-                (Math.abs(waypoint.targetPos.y - position.y) > 5))
+        while(((Math.abs(waypoint.targetPos.x - position.x) > 5) || (Math.abs(waypoint.targetPos.y - position.y) > 5)) && !isStopRequested())
         {
             position = _localization.getRobotPosition();
             _localization.increment(position);
             velocity = _localization.getRobotVelocity(runtime);
 
-            double orientation, negOutput, posOutput;
+            double orientation, magnitude, negOutput, posOutput;
 
             if (waypoint.targetPos.x - position.x > 0)
                 orientation = Math.atan(controller.getSlope(position, waypoint.targetPos)) - Math.PI / 4;
             else
                 orientation = Math.atan(controller.getSlope(position, waypoint.targetPos)) + Math.PI - Math.PI / 4;
 
-            negOutput = controller.getMagnitude(waypoint.targetPos, position, velocity) * Math.sin(orientation);
+            magnitude = controller.getMagnitude(waypoint.targetPos, position, velocity);
+
+            negOutput = magnitude * Math.sin(orientation);
             if (orientation == 0)
                 posOutput = negOutput;
             else
-                posOutput = controller.getMagnitude(waypoint.targetPos, position, velocity) * Math.cos(orientation);
+                posOutput = magnitude * Math.cos(orientation);
 
             _hardware.setMotorValues(posOutput, negOutput);
+
+            System.out.println("X: " + position.x + "\tY: " + position.y + "\tT:" + position.t + "\tmagnitude: " + magnitude + "\torientation: " + orientation);
         }
     }
 }
