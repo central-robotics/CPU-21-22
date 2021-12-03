@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.autonomous.localization;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -12,6 +13,8 @@ public class Encoder {
     //private final double distancePerTick = (2 * Math.PI * 48) / 537.6;
     private final double distancePerTick = 537.6;
 
+    private final double INIT_THETA = 1.499;
+
     //Position of encoder on each motor respectively. We need to store this so that we can subtract these values from current position to get displacement.
     private int lastLfPos, lastRfPos, lastRbPos, lastLbPos;
 
@@ -20,7 +23,7 @@ public class Encoder {
         _hardware = hardware;
     }
 
-    public Position getRobotPosition(Position previousPosition)
+    public Position getRobotPosition(Position previousPosition, Telemetry telem)
     {
         //Encoder values. These are in ticks. We will later convert this to a usable distance.
         int lfPos, rfPos, rbPos, lbPos;
@@ -72,7 +75,8 @@ public class Encoder {
         double theta;
 
         //Compute robot theta
-        theta = _hardware.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).secondAngle;
+        theta = _hardware.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).secondAngle - INIT_THETA;
+        telem.addData("T_e", theta);
 
         //Displacement in field reference frame.
         double deltaXf;
@@ -83,8 +87,8 @@ public class Encoder {
         deltaYf = deltaY * Math.cos(theta) + deltaX * Math.sin(theta);
 
         Position robotPosition = new Position();
-        robotPosition.x = previousPosition.x + deltaXf;
-        robotPosition.y = previousPosition.y + deltaYf;
+        robotPosition.x = previousPosition.x - deltaXf;
+        robotPosition.y = previousPosition.y - deltaYf;
         robotPosition.t = theta;
 
         if (robotPosition.x == 0) robotPosition.x = 0.0000001;

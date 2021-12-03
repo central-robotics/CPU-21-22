@@ -23,25 +23,25 @@ public class Hardware {
     private void initializeMotors(HardwareMap hardware)
     {
         leftFrontMotor = hardware.dcMotor.get("leftFrontMotor");
-        leftFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFrontMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         leftFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         leftBackMotor = hardware.dcMotor.get("leftBackMotor");
-        leftBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftBackMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         leftBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         rightFrontMotor = hardware.dcMotor.get("rightFrontMotor");
-        rightFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightFrontMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         rightFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         rightBackMotor = hardware.dcMotor.get("rightBackMotor");
-        rightBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightBackMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         rightBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -49,10 +49,10 @@ public class Hardware {
 
     public void setMotorValues(double posinput, double neginput)
     {
-        leftFrontMotor.setPower(posinput);
-        rightFrontMotor.setPower(-neginput);
-        leftBackMotor.setPower(neginput);
-        rightBackMotor.setPower(-posinput);
+        leftFrontMotor.setPower(-posinput);
+        rightFrontMotor.setPower(neginput);
+        leftBackMotor.setPower(-neginput);
+        rightBackMotor.setPower(posinput);
     }
 
     private void initializeGyro(HardwareMap hardware)

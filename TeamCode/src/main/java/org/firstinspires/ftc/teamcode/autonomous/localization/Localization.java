@@ -38,7 +38,7 @@ public class Localization {
         previousTime = currentTime;
     }
 
-    public Position getRobotPosition()
+    public Position getRobotPosition(Telemetry telem)
     {
         Position visionRobotPosition = null; //vision.getRobotPosition();
 
@@ -48,7 +48,7 @@ public class Localization {
             return visionRobotPosition;
         }
 
-        return encoder.getRobotPosition(newPosition); //If we can't see vision targets, return encoder based location.
+        return encoder.getRobotPosition(newPosition, telem); //If we can't see vision targets, return encoder based location.
     }
 
     public Velocity getRobotVelocity(ElapsedTime runtime)

@@ -70,7 +70,7 @@ public class Navigation extends AutonCore {
         while((Math.abs(waypoint.startingPos.x - position.x) > 5) ||
                 (Math.abs(waypoint.startingPos.y - position.y) > 5))
         {
-            position = _localization.getRobotPosition();
+            position = _localization.getRobotPosition(telem);
             _localization.increment(position);
             velocity = _localization.getRobotVelocity(runtime);
 
@@ -96,7 +96,7 @@ public class Navigation extends AutonCore {
         //Assume that starting position has been reached. Drive to target specified by waypoint.
         while(((Math.abs(waypoint.targetPos.x - position.x) > 5) || (Math.abs(waypoint.targetPos.y - position.y) > 5)) && !isStopRequested())
         {
-            position = _localization.getRobotPosition();
+            position = _localization.getRobotPosition(telem);
             _localization.increment(position);
             velocity = _localization.getRobotVelocity(runtime);
 
@@ -107,6 +107,8 @@ public class Navigation extends AutonCore {
             else
                 orientation = Math.atan(controller.getSlope(waypoint.targetPos, position)) + Math.PI - Math.PI / 4;
 
+            orientation = (Math.PI * 3) / 4;
+
             magnitude = controller.getMagnitude(waypoint.targetPos, position, velocity);
 
             negOutput = magnitude * Math.sin(orientation);
@@ -115,15 +117,17 @@ public class Navigation extends AutonCore {
             else
                 posOutput = magnitude * Math.cos(orientation);
 
+
+
             telem.addData("X", position.x);
             telem.addData("Y", position.y);
             telem.addData("T", position.t);
-            telem.addData("Magnitude", magnitude);
-            telem.addData("Orientation", orientation);
+            //telem.addData("Magnitude", magnitude);
+            //telem.addData("Orientation", orientation);
             telem.addData("Velocity", Math.sqrt(Math.pow(velocity.dx, 2) + Math.pow(velocity.dy, 2)));
             telem.update();
 
-            _hardware.setMotorValues(posOutput, negOutput);
+            //_hardware.setMotorValues(posOutput, negOutput);
         }
     }
 }
