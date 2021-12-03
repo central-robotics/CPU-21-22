@@ -15,36 +15,22 @@ import org.firstinspires.ftc.teamcode.autonomous.waypoint.Waypoint;
 
 @Autonomous
 public class AutonCore extends LinearOpMode {
-    public Hardware hardware;
     public static ElapsedTime runtime;
 
     @Override
     public void runOpMode() {
-        hardware = new Hardware(hardwareMap);
         runtime = new ElapsedTime();
+        Hardware hardware = new Hardware(hardwareMap);
         Localization localization = new Localization(hardware, this.telemetry);
-        Actions actions = new Actions(hardware, localization);
-
-        actions.addTask(Actions.Action.SPIN_CAROUSEL, 1); //Spin carousel after reaching first target
-
-        Navigation navigation = new Navigation(hardware, localization, runtime, actions, telemetry);
+        Instructions instructions = new Instructions(hardware, localization, runtime, telemetry);
 
         waitForStart();
 
         runtime.reset();
 
-        navigation.addWayPointToQueue(new Waypoint(new Position(0,0,0), new Position(-400, 0,0)));
-        navigation.executeTask();
+        instructions.runTasks();
 
-/*        while(!isStopRequested()) {
-            position = localization.getRobotPosition();
-            localization.increment(position);
-
-            telemetry.addData("X", position.x);
-            telemetry.addData("Y", position.y);
-            telemetry.addData("T", position.t);
-            telemetry.update();
-        }*/
+        instructions.dispose();
 
         stop();
     }
