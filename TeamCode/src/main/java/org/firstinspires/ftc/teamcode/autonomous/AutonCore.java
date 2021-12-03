@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.autonomous.actions.Actions;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
@@ -16,17 +17,17 @@ import org.firstinspires.ftc.teamcode.autonomous.waypoint.Waypoint;
 public class AutonCore extends LinearOpMode {
     public Hardware hardware;
     public static ElapsedTime runtime;
-    private Localization localization;
-    private Navigation navigation;
 
     @Override
     public void runOpMode() {
         hardware = new Hardware(hardwareMap);
-        localization = new Localization(hardware, this.telemetry);
         runtime = new ElapsedTime();
-        navigation = new Navigation(hardware, localization, runtime, telemetry);
+        Localization localization = new Localization(hardware, this.telemetry);
+        Actions actions = new Actions(hardware, localization);
 
-        Position position = new Position();
+        actions.addTask(Actions.Action.SPIN_CAROUSEL, 1); //Spin carousel after reaching first target
+
+        Navigation navigation = new Navigation(hardware, localization, runtime, actions, telemetry);
 
         waitForStart();
 

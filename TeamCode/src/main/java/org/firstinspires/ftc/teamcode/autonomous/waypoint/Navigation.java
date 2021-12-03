@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.autonomous.AutonCore;
+import org.firstinspires.ftc.teamcode.autonomous.actions.Actions;
 import org.firstinspires.ftc.teamcode.autonomous.control.PID;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
@@ -15,14 +16,14 @@ import org.firstinspires.ftc.teamcode.autonomous.localization.Velocity;
 import java.util.ArrayList;
 
 public class Navigation extends AutonCore {
-    private Hardware _hardware;
-    private Localization _localization;
-    private ElapsedTime runtime;
-    private PID controller;
+    private final Hardware _hardware;
+    private final Localization _localization;
+    private final Actions _actions;
+    private final ElapsedTime runtime;
+    private final PID controller;
+    private final Telemetry telem;
     private Position position = new Position();
     private Velocity velocity = new Velocity();
-    private Telemetry telem;
-
     /*
     Holds waypoints that we can drive to. This allows for the robot to split a move up into
     multiple linear movements. This allows the robot to avoid obstacles and for movement to be planned.
@@ -32,10 +33,11 @@ public class Navigation extends AutonCore {
     private ArrayList<Waypoint> waypoints;
     private int index = 0;
 
-    public Navigation(Hardware hardware, Localization localization, ElapsedTime runtime, Telemetry telemetry)
+    public Navigation(Hardware hardware, Localization localization, ElapsedTime runtime, Actions actions, Telemetry telemetry)
     {
         telem = telemetry;
         this.runtime = runtime;
+        _actions = actions;
         _hardware = hardware;
         _localization = localization;
 
@@ -54,14 +56,17 @@ public class Navigation extends AutonCore {
 
     public void executeTask()
     {
+        int index = 1;
         for (Waypoint waypoint : waypoints)
         {
             driveToStart(waypoint);
             driveToTarget(waypoint);
+            _actions.executeTask(index);
+            index++;
         }
 
         waypoints.clear();
-        index = 0;
+        index = 1;
     }
 
     private void driveToStart(Waypoint waypoint)
@@ -107,8 +112,6 @@ public class Navigation extends AutonCore {
             else
                 orientation = Math.atan(controller.getSlope(waypoint.targetPos, position)) + Math.PI - Math.PI / 4;
 
-            orientation = (Math.PI * 3) / 4;
-
             magnitude = controller.getMagnitude(waypoint.targetPos, position, velocity);
 
             negOutput = magnitude * Math.sin(orientation);
@@ -116,8 +119,6 @@ public class Navigation extends AutonCore {
                 posOutput = negOutput;
             else
                 posOutput = magnitude * Math.cos(orientation);
-
-
 
             telem.addData("X", position.x);
             telem.addData("Y", position.y);
@@ -127,7 +128,7 @@ public class Navigation extends AutonCore {
             telem.addData("Velocity", Math.sqrt(Math.pow(velocity.dx, 2) + Math.pow(velocity.dy, 2)));
             telem.update();
 
-            //_hardware.setMotorValues(posOutput, negOutput);
+            _hardware.setMotorValues(posOutput, negOutput);
         }
     }
 }

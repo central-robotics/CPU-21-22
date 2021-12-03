@@ -8,12 +8,9 @@ import org.firstinspires.ftc.teamcode.autonomous.Constants;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 
 public class Encoder {
-    private Hardware _hardware; //Contains robot hardware for measuring robot position using motor encoders.
+    private final Hardware _hardware; //Contains robot hardware for measuring robot position using motor encoders.
 
-    //private final double distancePerTick = (2 * Math.PI * 48) / 537.6;
-    private final double distancePerTick = 537.6;
 
-    private final double INIT_THETA = 1.499;
 
     //Position of encoder on each motor respectively. We need to store this so that we can subtract these values from current position to get displacement.
     private int lastLfPos, lastRfPos, lastRbPos, lastLbPos;
@@ -75,7 +72,7 @@ public class Encoder {
         double theta;
 
         //Compute robot theta
-        theta = _hardware.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).secondAngle - INIT_THETA;
+        theta = _hardware.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).secondAngle - Constants.INIT_THETA;
         telem.addData("T_e", theta);
 
         //Displacement in field reference frame.

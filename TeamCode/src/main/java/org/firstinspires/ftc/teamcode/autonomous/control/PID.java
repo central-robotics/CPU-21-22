@@ -6,7 +6,10 @@ import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Velocity;
 
 public class PID {
-    double kP, kI, kD;
+    private final double kP;
+    private final double kI;
+    private final double kD;
+    private double errorSum;
 
     public PID(PIDCoefficients coeffs)
     {
@@ -15,13 +18,11 @@ public class PID {
         kD = coeffs.d;
     }
 
-    double error, errorSum, speed;
-
     public double getMagnitude(Position target, Position position, Velocity _speed)
     {
-        error = Math.sqrt(Math.pow(target.y - position.y, 2) + Math.pow(target.x - position.x, 2));
+        double error = Math.sqrt(Math.pow(target.y - position.y, 2) + Math.pow(target.x - position.x, 2));
         errorSum += error;
-        speed = Math.sqrt(Math.pow(_speed.dy, 2) + Math.pow(_speed.dx, 2));
+        double speed = Math.sqrt(Math.pow(_speed.dy, 2) + Math.pow(_speed.dx, 2));
 
         return (kP * error) + (kI * errorSum) - (kD * speed);
     }

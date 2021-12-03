@@ -10,17 +10,19 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
 public class Hardware {
     public DcMotor leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor;
+    public DcMotor carouselMotor;
     public BNO055IMU gyro;
     public WebcamName camera;
 
     public Hardware (HardwareMap hardware)
     {
         initializeGyro(hardware);
-        initializeMotors(hardware);
-        //initializeWebcam(hardware);
+        initializeDriveMotors(hardware);
+        initializeAccessoryMotors(hardware);
+        initializeWebcam(hardware);
     }
 
-    private void initializeMotors(HardwareMap hardware)
+    private void initializeDriveMotors(HardwareMap hardware)
     {
         leftFrontMotor = hardware.dcMotor.get("leftFrontMotor");
         leftFrontMotor.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -53,6 +55,15 @@ public class Hardware {
         rightFrontMotor.setPower(neginput);
         leftBackMotor.setPower(-neginput);
         rightBackMotor.setPower(posinput);
+    }
+
+    private void initializeAccessoryMotors(HardwareMap hardware)
+    {
+        carouselMotor = hardware.dcMotor.get("carouselMotor");
+        carouselMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        carouselMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        carouselMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        carouselMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     private void initializeGyro(HardwareMap hardware)
