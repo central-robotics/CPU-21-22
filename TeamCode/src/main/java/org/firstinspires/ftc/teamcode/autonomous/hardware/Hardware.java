@@ -7,6 +7,10 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.teamcode.autonomous.Constants;
 
 public class Hardware {
     public DcMotor leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor;
@@ -18,8 +22,8 @@ public class Hardware {
     {
         initializeGyro(hardware);
         initializeDriveMotors(hardware);
-        initializeAccessoryMotors(hardware);
-        initializeWebcam(hardware);
+        //initializeAccessoryMotors(hardware);
+        //initializeWebcam(hardware);
     }
 
     private void initializeDriveMotors(HardwareMap hardware)
@@ -55,6 +59,14 @@ public class Hardware {
         rightFrontMotor.setPower(neginput);
         leftBackMotor.setPower(-neginput);
         rightBackMotor.setPower(posinput);
+    }
+
+    public void setAllMotorPowers(double input)
+    {
+        leftFrontMotor.setPower(input);
+        rightFrontMotor.setPower(input);
+        leftBackMotor.setPower(input);
+        rightBackMotor.setPower(input);
     }
 
     private void initializeAccessoryMotors(HardwareMap hardware)

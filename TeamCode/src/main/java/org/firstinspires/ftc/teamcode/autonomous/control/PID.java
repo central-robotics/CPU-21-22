@@ -18,13 +18,9 @@ public class PID {
         kD = coeffs.d;
     }
 
-    public double getMagnitude(Position target, Position position, Velocity _speed)
-    {
-        double error = Math.sqrt(Math.pow(target.y - position.y, 2) + Math.pow(target.x - position.x, 2));
+    public double getOutput(double error, double dError) {
         errorSum += error;
-        double speed = Math.sqrt(Math.pow(_speed.dy, 2) + Math.pow(_speed.dx, 2));
-
-        return (kP * error) + (kI * errorSum) - (kD * speed);
+        return (kP * error) + (kI * errorSum) - (kD * dError);
     }
 
     public double getSlope(Position target, Position position)

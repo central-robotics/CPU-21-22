@@ -9,7 +9,7 @@ public class Localization {
     private Position newPosition; //Current robot position. This is used for comparing current robot position to previously recorded robot position.
     private Position previousRobotPosition;
     private final Encoder encoder; //Contains all logic for encoder based localization.
-    private final Vision vision; //Contains all logic for vision based localization.
+    private Vision vision; //Contains all logic for vision based localization.
     private final ElapsedTime runtime;
     private double currentTime;
     private double previousTime;
@@ -26,7 +26,7 @@ public class Localization {
         previousRobotPosition.x = 0;
         previousRobotPosition.t = 0;
         encoder = new Encoder(hardware);
-        vision = new Vision(hardware);
+        //vision = new Vision(hardware);
         runtime = new ElapsedTime();
     }
 
@@ -39,7 +39,7 @@ public class Localization {
 
     public Position getRobotPosition(Telemetry telem)
     {
-        Position visionRobotPosition = vision.getRobotPosition(); //vision.getRobotPosition();
+        Position visionRobotPosition = null; //vision.getRobotPosition();
 
         if (visionRobotPosition != null)
         {
