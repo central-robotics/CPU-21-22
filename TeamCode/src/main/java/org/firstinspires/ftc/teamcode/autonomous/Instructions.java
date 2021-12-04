@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.autonomous.actions.Actions;
+import org.firstinspires.ftc.teamcode.autonomous.actions.SpinCarouselAction;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
@@ -32,7 +33,7 @@ public class Instructions {
     {
         actions = new Actions(hardware, localization);
 
-        actions.addTask(Actions.Action.SPIN_CAROUSEL, 1);
+        actions.addTask(new SpinCarouselAction(1));
     }
 
     //Enter initial navigation waypoints here.
