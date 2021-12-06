@@ -45,10 +45,6 @@ public class Instructions {
         navigation.addWayPointToQueue(new Waypoint(new Position(0,4000,0), new Position(2000,2000,0)));
         navigation.addWayPointToQueue(new Waypoint(new Position(2000,2000,0), new Position(0,0,0)));
         navigation.addWayPointToQueue(new Waypoint(new Position(0,0,0), new Position(-2000,2000, 0)));
-//        navigation.addWayPointToQueue(new Waypoint(new Position(0,1524,0), new Position(1524,1524,0)));
-//        navigation.addWayPointToQueue(new Waypoint(new Position(400,400,Math.PI/2), new Position(-300,0,Math.PI)));
-//        navigation.addWayPointToQueue(new Waypoint(new Position(-300,0, Math.PI), new Position(120, 20,Math.PI/3)));
-//        navigation.addWayPointToQueue(new Waypoint(new Position(120,20,Math.PI/3), new Position(0,1000,0)));
 
     }
 
