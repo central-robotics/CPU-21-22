@@ -11,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import org.firstinspires.ftc.teamcode.autonomous.Constants;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 
 import java.util.ArrayList;
@@ -23,8 +24,6 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 
 public class Vision {
     private Hardware _hardware;
-
-    private static final String key = "AS0ENI3/////AAABmRrhaZtkGkSMi4tGQFf9azI3tZlg7Xv8GCAFy/EtV7oDQmsVBBNgiQNq035C7ShFgSt1Y9dtgOUrPHhlgoI/8sqhoBUnr3WRm/ex/gPsScPYlpy4mqBUZEIQxI2hndIuFrxPSc5gCMC4kyay2RWUWthzUygnp/22kgrq2u7xyKLwsUIctziWB1T3xreY6LcdSuqgPx6qMeiOmPkqLrIm+BbJovtmoVA7d/PqPoIeoo6O/CurFZVUeJq7zkPRB9OzsoF3Iyxyd3jGi1xlPes828QsbIcx1UYQIyR+q52fLVAt69FPPQ6AO8YMfgc0z+qF7pSA1Vee1LIyF+HCMh67gXj3YntVhvlnSeflrFtVB7vl";
 
     public VuforiaLocalizer vuforiaLocalizer; //Vuforia instance
     public VuforiaTrackables targets; //Vuforia image
@@ -71,7 +70,7 @@ public class Vision {
 
             position.x = translation.get(0) / 25.4;
             position.y = translation.get(1) / 25.4;
-            position.t = orientation.thirdAngle;
+            position.t = orientation.thirdAngle - Constants.INIT_THETA;
 
             targetVisible = false;
 
@@ -85,7 +84,7 @@ public class Vision {
 
     private void initialize() {
         VuforiaLocalizer.Parameters params = new VuforiaLocalizer.Parameters();
-        params.vuforiaLicenseKey = key;
+        params.vuforiaLicenseKey = Constants.VUFORIA_KEY;
         params.cameraName = _hardware.camera;
         params.useExtendedTracking = false;
 
