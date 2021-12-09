@@ -5,11 +5,7 @@ import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.teamcode.autonomous.AutonCore;
-import org.firstinspires.ftc.teamcode.autonomous.Constants;
 import org.firstinspires.ftc.teamcode.autonomous.actions.Actions;
 import org.firstinspires.ftc.teamcode.autonomous.control.PID;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
@@ -17,10 +13,9 @@ import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Velocity;
 
-import java.net.PortUnreachableException;
 import java.util.ArrayList;
 
-public class Navigation extends AutonCore {
+public class Navigation {
     private final Hardware _hardware;
     private final Localization _localization;
     private final Actions _actions;
@@ -37,8 +32,9 @@ public class Navigation extends AutonCore {
      */
     private ArrayList<Waypoint> waypoints;
     private int index = 0;
+    private final LinearOpMode opMode;
 
-    public Navigation(Hardware hardware, Localization localization, ElapsedTime runtime, Actions actions, Telemetry telemetry)
+    public Navigation(Hardware hardware, Localization localization, ElapsedTime runtime, Actions actions, Telemetry telemetry, LinearOpMode opMode)
     {
         telem = telemetry;
         this.runtime = runtime;
@@ -53,6 +49,7 @@ public class Navigation extends AutonCore {
         thetaController = new PID(thetaCoefficients);
 
         waypoints = new ArrayList<>();
+        this.opMode = opMode;
     }
 
     public void addWayPointToQueue(Waypoint waypoint)
@@ -65,17 +62,17 @@ public class Navigation extends AutonCore {
     {
         for (Waypoint waypoint : waypoints)
         {
-            if (isStopRequested())
+            if (opMode.isStopRequested())
                 break;
 
             driveToStart(waypoint);
 
-            if (isStopRequested())
+            if (opMode.isStopRequested())
                 break;
 
             driveToTarget(waypoint);
 
-            if (isStopRequested())
+            if (opMode.isStopRequested())
                 break;
 
             _actions.executeTask(index);
@@ -89,7 +86,7 @@ public class Navigation extends AutonCore {
     {
         //Drive to starting location of waypoint. Robot will take the shortest possible path.
         while((Math.abs(waypoint.startingPos.x - position.x) > 5) ||
-                (Math.abs(waypoint.startingPos.y - position.y) > 5) && !isStopRequested())
+                (Math.abs(waypoint.startingPos.y - position.y) > 5) && !opMode.isStopRequested())
         {
            moveToTarget(waypoint.startingPos);
         }
@@ -98,14 +95,14 @@ public class Navigation extends AutonCore {
     private void driveToTarget(Waypoint waypoint)
     {
         //Assume that starting position has been reached. Drive to target specified by waypoint.
-        while(((Math.abs(waypoint.targetPos.x - position.x) > 5) || (Math.abs(waypoint.targetPos.y - position.y) > 5)) && !isStopRequested()) {
+        while(((Math.abs(waypoint.targetPos.x - position.x) > 5) || (Math.abs(waypoint.targetPos.y - position.y) > 5)) && !opMode.isStopRequested()) {
             moveToTarget(waypoint.targetPos);
         }
     }
 
     private void moveToTarget(Position waypointPos)
     {
-        if (isStopRequested())
+        if (opMode.isStopRequested())
             return;
 
         position = _localization.getRobotPosition(telem);
