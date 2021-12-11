@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class Core extends OpMode {
-    DcMotor leftfront, rightfront, leftback, rightback;
+    DcMotor leftfront, rightfront, leftback, rightback, armMotor;
     BNO055IMU imu;
     BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
@@ -25,6 +25,10 @@ public class Core extends OpMode {
 
         rightback = hardwareMap.dcMotor.get("rightBackMotor");
         rightback.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        armMotor = hardwareMap.dcMotor.get("armMotor");
+        armMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         parameters.mode = BNO055IMU.SensorMode.IMU;
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;

@@ -14,8 +14,13 @@ public class Drive extends Core {
     double orientation;
     Orientation gyro_angles;
 
-    public void loop(){
+    public void loop() {
 
+        if (gamepad1.right_trigger > 0) {
+            armMotor.setPower(gamepad1.right_trigger);
+        } else if (gamepad1.left_trigger > 0) {
+            armMotor.setPower(-gamepad1.left_trigger);
+        }
         // Get all the info we from the gamepad
         joystick_y = gamepad1.left_stick_y;
         joystick_x = (gamepad1.left_stick_x == 0) ? 0.000001 :
@@ -27,10 +32,13 @@ public class Drive extends Core {
 
         // Pull raw orientation values from the gyro
         gyro_angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
+        double theta = gyro_angles.firstAngle; // Add pi for CPU's robot
+        telemetry.addData("theta", theta);
+        telemetry.update();
 
         // Turn the joystick coordinates into an angle in radians
-        orientation = (joystick_x > 0) ? (Math.atan(-joystick_y / joystick_x) - Math.PI / 4) - gyro_angles.firstAngle :
-                (Math.atan(-joystick_y / joystick_x) + Math.PI - Math.PI / 4) - gyro_angles.firstAngle;
+        orientation = (joystick_x > 0) ? (Math.atan(-joystick_y / joystick_x) - Math.PI / 4) - theta :
+                (Math.atan(-joystick_y / joystick_x) + Math.PI - Math.PI / 4) - theta;
 
         // Pass that angle through a pair of wave functions to get the power for each corresponding pair of parallel wheels
         negative_power = 0.45 * (joystick_power * Math.sin(orientation));
