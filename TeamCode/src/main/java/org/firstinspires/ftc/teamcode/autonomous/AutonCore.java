@@ -17,32 +17,26 @@ import org.firstinspires.ftc.teamcode.autonomous.localization.Velocity;
 import org.firstinspires.ftc.teamcode.autonomous.waypoint.Navigation;
 import org.firstinspires.ftc.teamcode.autonomous.waypoint.Waypoint;
 
-@Autonomous
-public class AutonCore extends LinearOpMode {
+public class AutonCore {
     public static ElapsedTime runtime;
 
-    @Override
-    public void runOpMode() {
+    public void runCore(double initialX, LinearOpMode opMode) {
         runtime = new ElapsedTime();
-        Hardware hardware = new Hardware(hardwareMap);
-        Localization localization = new Localization(hardware, this.telemetry);
-        Instructions instructions = new Instructions(hardware, localization, runtime, telemetry);
+        Hardware hardware = new Hardware(opMode.hardwareMap);
+        Localization localization = new Localization(hardware, opMode.telemetry, initialX, Constants.INITIAL_Y);
+        Instructions instructions = new Instructions(hardware, localization, runtime, opMode.telemetry, opMode);
 
-        waitForStart();
+        opMode.waitForStart();
 
         runtime.reset();
 
-        while (runtime.milliseconds() < 500)
-        {
+        do {
             Constants.INIT_THETA = hardware.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).secondAngle;
-        }
+        } while (runtime.milliseconds() < 500);
 
         runtime.reset();
 
         instructions.runTasks();
-
-        instructions.dispose();
-
-        stop();
+        opMode.stop();
     }
 }

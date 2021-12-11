@@ -5,6 +5,7 @@ public class Position {
     public double x, y, t;
 
     public Position(){}
+
     public Position(double x, double y, double t)
     {
         this.x = x;
