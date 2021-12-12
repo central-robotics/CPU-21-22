@@ -64,11 +64,22 @@ public class ObjectDetector {
 
             double bardcodeDist = rightMost - leftMost;
 
-            if (bardcodeDist < 510 && bardcodeDist > 450) //Distance between rightmost and leftmost barcode. If this margin is around 500mm, we know object is in center.
+            if (bardcodeDist > 450) //Distance between rightmost and leftmost barcode. If this margin is around 500mm, we know object is in center.
             {
                 return BarcodeLocation.CENTER;
             } else
             {
+                if (Constants.isLeftOpMode)
+                {
+                    if (leftMost > 230)
+                        return BarcodeLocation.LEFT;
+                    else
+                        return BarcodeLocation.RIGHT;
+                } else if (leftMost > 100)
+                    return BarcodeLocation.LEFT;
+                else
+                    return BarcodeLocation.RIGHT;
+
                 //FIGURE OUT IF ITS ON RIGHT OR LEFT SIDE.
             }
         }

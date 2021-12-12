@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.autonomous.actions.Actions;
+import org.firstinspires.ftc.teamcode.autonomous.actions.PlaceCubeAction;
 import org.firstinspires.ftc.teamcode.autonomous.actions.SpinCarouselAction;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
@@ -33,6 +34,7 @@ public class Instructions {
     private void registerActions(Hardware hardware, Localization localization)
     {
         actions = new Actions(hardware, localization);
+        actions.addTask(new PlaceCubeAction(3, navigation));
 
         //actions.addTask(new SpinCarouselAction(1));
     }

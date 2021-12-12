@@ -100,7 +100,7 @@ public class Navigation {
         }
     }
 
-    private void moveToTarget(Position waypointPos)
+    public void moveToTarget(Position waypointPos)
     {
         if (opMode.isStopRequested())
             return;

@@ -20,18 +20,19 @@ public class Drive extends Core {
     boolean hasTargetArmPos;
     boolean isArmMoving;
     long prevTime = System.currentTimeMillis();
-    private PID armPID = new PID(new PIDCoefficients(0.1, 0.0, 0.0));
+    private PID armPID = new PID(new PIDCoefficients(-0.05, 0.0, 0));
+    double lastPIDOutput = 0;
 
     public void loop() {
         double armPos = armMotor.getCurrentPosition();
-
+        boolean usePID = Math.abs(armPos) > 5;
         if (gamepad1.right_trigger > 0) {
-            armMotor.setPower(gamepad1.right_trigger);
+            armMotor.setPower(0.5 * gamepad1.right_trigger);
             isArmMoving = true;
             hasTargetArmPos = false;
             prevArmPos = armPos;
         } else if (gamepad1.left_trigger > 0) {
-            armMotor.setPower(-gamepad1.left_trigger);
+            armMotor.setPower((usePID ? lastPIDOutput : 0) + 0.5 * -gamepad1.left_trigger);
             isArmMoving = true;
             hasTargetArmPos = false;
             prevArmPos = armPos;
@@ -40,11 +41,12 @@ public class Drive extends Core {
             hasTargetArmPos = true;
             targetArmPos = armPos;
         }
-        if (hasTargetArmPos) {
+        if (hasTargetArmPos && usePID) {
             double armPosError = armPos - targetArmPos;
             double dArmPosError = (prevArmPos - targetArmPos) / (System.currentTimeMillis() - prevTime);
             double output = armPID.getOutput(armPosError, dArmPosError);
-            armMotor.setPower(output);
+            lastPIDOutput = output;
+            armMotor.setPower(0.5 * output);
             prevArmPos = armPos;
         }
         prevTime = System.currentTimeMillis();
