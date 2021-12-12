@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.PIDCoefficients;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.autonomous.control.PID;
 
 @TeleOp
 public class Drive extends Core {
@@ -13,14 +15,39 @@ public class Drive extends Core {
     double joystick_x, joystick_y, joystick_power;
     double orientation;
     Orientation gyro_angles;
+    double prevArmPos;
+    double targetArmPos;
+    boolean hasTargetArmPos;
+    boolean isArmMoving;
+    long prevTime = System.currentTimeMillis();
+    private PID armPID = new PID(new PIDCoefficients(0.1, 0.0, 0.0));
 
     public void loop() {
+        double armPos = armMotor.getCurrentPosition();
 
         if (gamepad1.right_trigger > 0) {
             armMotor.setPower(gamepad1.right_trigger);
+            isArmMoving = true;
+            hasTargetArmPos = false;
+            prevArmPos = armPos;
         } else if (gamepad1.left_trigger > 0) {
             armMotor.setPower(-gamepad1.left_trigger);
+            isArmMoving = true;
+            hasTargetArmPos = false;
+            prevArmPos = armPos;
+        } else if (isArmMoving) {
+            isArmMoving = false;
+            hasTargetArmPos = true;
+            targetArmPos = armPos;
         }
+        if (hasTargetArmPos) {
+            double armPosError = armPos - targetArmPos;
+            double dArmPosError = (prevArmPos - targetArmPos) / (System.currentTimeMillis() - prevTime);
+            double output = armPID.getOutput(armPosError, dArmPosError);
+            armMotor.setPower(output);
+            prevArmPos = armPos;
+        }
+        prevTime = System.currentTimeMillis();
         // Get all the info we from the gamepad
         joystick_y = gamepad1.left_stick_y;
         joystick_x = (gamepad1.left_stick_x == 0) ? 0.000001 :
