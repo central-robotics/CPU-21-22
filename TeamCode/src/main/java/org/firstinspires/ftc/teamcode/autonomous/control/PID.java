@@ -27,4 +27,8 @@ public class PID {
     {
         return (target.y - position.y) / (target.x - position.x);
     }
+
+    public void resetSum() {
+        errorSum = 0;
+    }
 }

@@ -61,6 +61,14 @@ public class Hardware {
         rightBackMotor.setPower(posinput);
     }
 
+    public void setMotorValuesWithRotation(double posinput, double neginput, double rotinput)
+    {
+        leftFrontMotor.setPower(-posinput-rotinput);
+        rightFrontMotor.setPower(neginput-rotinput);
+        leftBackMotor.setPower(-neginput-rotinput);
+        rightBackMotor.setPower(posinput-rotinput);
+    }
+
     public void setAllMotorPowers(double input)
     {
         leftFrontMotor.setPower(input);

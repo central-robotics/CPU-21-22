@@ -9,7 +9,8 @@ public class LeftOpMode extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Constants.isLeftOpMode = true;
-        new AutonCore().runCore(Constants.FIELD_LENGTH / 2 - Constants.OFFSET_FROM_CENTER, this);
+        //new AutonCore().runCore(Constants.FIELD_LENGTH / 2 - Constants.OFFSET_FROM_CENTER, this);
+        new AutonCore().runCore(0, this);
     }
 
 }

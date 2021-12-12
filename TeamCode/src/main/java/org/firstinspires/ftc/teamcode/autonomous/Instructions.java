@@ -34,7 +34,7 @@ public class Instructions {
     private void registerActions(Hardware hardware, Localization localization)
     {
         actions = new Actions(hardware, localization);
-        actions.addTask(new PlaceCubeAction(3, navigation));
+        //actions.addTask(new PlaceCubeAction(3, navigation));
 
         //actions.addTask(new SpinCarouselAction(1));
     }
@@ -44,10 +44,12 @@ public class Instructions {
     {
         navigation = new Navigation(hardware, localization, runtime, actions, telemetry, opMode);
 
-        navigation.addWayPointToQueue(new Waypoint(new Position(0,0,0), new Position(400,400,0)));
-        navigation.addWayPointToQueue(new Waypoint(new Position(0,4000,0), new Position(2000,2000,0)));
-        navigation.addWayPointToQueue(new Waypoint(new Position(2000,2000,0), new Position(0,0,0)));
-        navigation.addWayPointToQueue(new Waypoint(new Position(0,0,0), new Position(-2000,2000, 0)));
+        navigation.addWayPointToQueue(new Waypoint(new Position(0,0,0), new Position(0,-600,0)));
+        navigation.addWayPointToQueue(new Waypoint(new Position(0,-600,0), new Position(600,-600,Math.PI /2 )));
+        navigation.addWayPointToQueue(new Waypoint(new Position(600,-600,Math.PI /2), new Position(600,600, Math.PI)));
+        navigation.addWayPointToQueue(new Waypoint(new Position(600,600,Math.PI), new Position(-600,600, Math.PI /2)));
+        navigation.addWayPointToQueue(new Waypoint(new Position(-600,600,Math.PI / 2 ), new Position(-600,-600, 0)));
+        navigation.addWayPointToQueue(new Waypoint(new Position(-600,-600,0), new Position(0,0, 0)));
 
     }
 

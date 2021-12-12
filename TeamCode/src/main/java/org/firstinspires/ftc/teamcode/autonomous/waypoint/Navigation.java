@@ -5,6 +5,9 @@ import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.teamcode.autonomous.AutonCore;
 import org.firstinspires.ftc.teamcode.autonomous.actions.Actions;
 import org.firstinspires.ftc.teamcode.autonomous.control.PID;
@@ -41,8 +44,7 @@ public class Navigation {
         _actions = actions;
         _hardware = hardware;
         _localization = localization;
-
-        PIDCoefficients coefficients = new PIDCoefficients(0.002, 0, 0);
+        PIDCoefficients coefficients = new PIDCoefficients(0.002, 0.00001, 0);
         PIDCoefficients thetaCoefficients = new PIDCoefficients(0.05, 0, 0);
 
         controller = new PID(coefficients);
@@ -65,12 +67,22 @@ public class Navigation {
             if (opMode.isStopRequested())
                 break;
 
+            double time = runtime.milliseconds();
+            _hardware.setAllMotorPowers(0);
+            while (runtime.milliseconds() - time < 500)
+            {
+                //nothing
+            }
+
+
             driveToStart(waypoint);
+            controller.resetSum();
 
             if (opMode.isStopRequested())
                 break;
 
             driveToTarget(waypoint);
+            controller.resetSum();
 
             if (opMode.isStopRequested())
                 break;
@@ -132,6 +144,10 @@ public class Navigation {
         telem.addData("Velocity", Math.sqrt(Math.pow(velocity.dx, 2) + Math.pow(velocity.dy, 2)));
         telem.update();
 
-        _hardware.setMotorValues(0.1 * posOutput, 0.1 * negOutput);
+        double theta = _hardware.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).secondAngle;
+        double thetaError = waypointPos.t - theta;
+        double thetaOutput = thetaController.getOutput(thetaError, 0);
+
+        _hardware.setMotorValuesWithRotation(0.1 * posOutput, 0.1 * negOutput, thetaOutput);
     }
 }
