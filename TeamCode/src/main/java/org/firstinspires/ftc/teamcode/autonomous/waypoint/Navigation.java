@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.teamcode.autonomous.AutonCore;
+import org.firstinspires.ftc.teamcode.autonomous.Constants;
 import org.firstinspires.ftc.teamcode.autonomous.actions.Actions;
 import org.firstinspires.ftc.teamcode.autonomous.control.PID;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
@@ -75,13 +76,13 @@ public class Navigation {
             }
 
 
-            driveToStart(waypoint);
+            driveToTarget(waypoint.startingPos);
             controller.resetSum();
 
             if (opMode.isStopRequested())
                 break;
 
-            driveToTarget(waypoint);
+            driveToTarget(waypoint.targetPos);
             controller.resetSum();
 
             if (opMode.isStopRequested())
@@ -94,22 +95,34 @@ public class Navigation {
         waypoints.clear();
     }
 
-    private void driveToStart(Waypoint waypoint)
+    private void driveToTarget(Position destination)
     {
-        //Drive to starting location of waypoint. Robot will take the shortest possible path.
-        while((Math.abs(waypoint.startingPos.x - position.x) > 5) ||
-                (Math.abs(waypoint.startingPos.y - position.y) > 5) && !opMode.isStopRequested())
+        //Assume that starting position has been reached. Drive to target specified by waypoint.
+        while(((Math.abs(destination.x - position.x) > 5) || (Math.abs(destination.y - position.y) > 5)) && !opMode.isStopRequested()) {
+            moveToTarget(destination);
+        }
+        while(opMode.isStopRequested() ||  Math.abs(destination.t - position.t) > 0.05)
         {
-           moveToTarget(waypoint.startingPos);
+            rotateToTarget(destination);
         }
     }
 
-    private void driveToTarget(Waypoint waypoint)
+    public void rotateToTarget(Position waypointPos)
     {
-        //Assume that starting position has been reached. Drive to target specified by waypoint.
-        while(((Math.abs(waypoint.targetPos.x - position.x) > 5) || (Math.abs(waypoint.targetPos.y - position.y) > 5)) && !opMode.isStopRequested()) {
-            moveToTarget(waypoint.targetPos);
-        }
+        if (opMode.isStopRequested())
+            return;
+
+        position = _localization.getRobotPosition(telem);
+        _localization.increment(position);
+
+        double thetaError = waypointPos.t - position.t;
+        double thetaOutput = thetaController.getOutput(thetaError, 0);
+
+        telem.addData("Raw Theta", _hardware.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).secondAngle);
+        telem.addData("Init Theta", Constants.INIT_THETA);
+        telem.update();
+
+        _hardware.setAllMotorPowers(thetaOutput);
     }
 
     public void moveToTarget(Position waypointPos)
@@ -123,9 +136,9 @@ public class Navigation {
         double orientation, magnitude, negOutput, posOutput;
 
         if (waypointPos.x - position.x > 0)
-            orientation = Math.atan(controller.getSlope(waypointPos, position)) - Math.PI / 4;
+            orientation = Math.atan(controller.getSlope(waypointPos, position)) - Math.PI / 4 - position.t;
         else
-            orientation = Math.atan(controller.getSlope(waypointPos, position)) + Math.PI - Math.PI / 4;
+            orientation = Math.atan(controller.getSlope(waypointPos, position)) + Math.PI - Math.PI / 4 - position.t;
 
         double error = Math.sqrt(Math.pow(waypointPos.y - position.y, 2) + Math.pow(waypointPos.x - position.x, 2));
         double speed = Math.sqrt(Math.pow(velocity.dy, 2) + Math.pow(velocity.dx, 2));
@@ -137,17 +150,15 @@ public class Navigation {
             posOutput = negOutput;
         else
             posOutput = magnitude * Math.cos(orientation);
-
-        telem.addData("X", position.x);
-        telem.addData("Y", position.y);
-        telem.addData("T", position.t);
-        telem.addData("Velocity", Math.sqrt(Math.pow(velocity.dx, 2) + Math.pow(velocity.dy, 2)));
+//
+//        telem.addData("X", position.x);
+//        telem.addData("Y", position.y);
+//        telem.addData("T", position.t);
+        telem.addData("Raw Theta", _hardware.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle);
+        telem.addData("Init Theta", Constants.INIT_THETA);
+//        telem.addData("Velocity", Math.sqrt(Math.pow(velocity.dx, 2) + Math.pow(velocity.dy, 2)));
         telem.update();
 
-        double theta = _hardware.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).secondAngle;
-        double thetaError = waypointPos.t - theta;
-        double thetaOutput = thetaController.getOutput(thetaError, 0);
-
-        _hardware.setMotorValuesWithRotation(0.1 * posOutput, 0.1 * negOutput, thetaOutput);
+        _hardware.setMotorValues(0.1 * posOutput, 0.1 * negOutput);
     }
 }

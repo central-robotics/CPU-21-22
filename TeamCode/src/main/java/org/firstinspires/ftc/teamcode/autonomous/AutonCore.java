@@ -30,9 +30,9 @@ public class AutonCore {
 
         runtime.reset();
 
-        do {
+        /*do {
             Constants.INIT_THETA = hardware.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).secondAngle;
-        } while (runtime.milliseconds() < 500);
+        } while (runtime.milliseconds() < 500);*/
 
         runtime.reset();
 

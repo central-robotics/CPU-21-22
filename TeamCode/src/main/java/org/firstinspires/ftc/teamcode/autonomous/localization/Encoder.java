@@ -72,7 +72,7 @@ public class Encoder {
         double theta;
 
         //Compute robot theta
-        theta = _hardware.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).secondAngle - Constants.INIT_THETA;
+        theta = _hardware.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle - Constants.INIT_THETA;
         telem.addData("T_e", theta);
 
         //Displacement in field reference frame.
