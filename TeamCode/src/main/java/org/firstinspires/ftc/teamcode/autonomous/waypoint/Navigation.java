@@ -57,6 +57,13 @@ public class Navigation {
 
     public void addWayPointToQueue(Waypoint waypoint)
     {
+        if (!Constants.IS_BLUE_TEAM)
+        {
+            waypoint.targetPos.x *= -1;
+            waypoint.targetPos.t *= -1;
+        }
+
+
         waypoints.add(index, waypoint);
         index++;
     }

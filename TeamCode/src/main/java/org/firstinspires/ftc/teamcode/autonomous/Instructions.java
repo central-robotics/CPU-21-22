@@ -43,16 +43,12 @@ public class Instructions {
     private void registerNav(Hardware hardware, Localization localization, ElapsedTime runtime, Actions actions, Telemetry telemetry, LinearOpMode opMode)
     {
         navigation = new Navigation(hardware, localization, runtime, actions, telemetry, opMode);
-
-        navigation.addWayPointToQueue(new Waypoint(new Position(0,0,0), new Position(0,-600,0)));
-        navigation.addWayPointToQueue(new Waypoint(new Position(0,-600,0), new Position(600,-600,Math.PI /2 )));
-        navigation.addWayPointToQueue(new Waypoint(new Position(600,-600,Math.PI /2), new Position(600,600, Math.PI)));
-        navigation.addWayPointToQueue(new Waypoint(new Position(600,600,Math.PI), new Position(-600,600, Math.PI /2)));
-        navigation.addWayPointToQueue(new Waypoint(new Position(-600,600,Math.PI / 2 ), new Position(-600,-600, 0)));
-        navigation.addWayPointToQueue(new Waypoint(new Position(-600,-600,0), new Position(0,0, 0)));
+        if (Constants.IS_LEFT_OPMODE)
+        {
+            navigation.addWayPointToQueue(new Waypoint());
+        }
 
     }
-
     public void runTasks()
     {
         navigation.executeTask();

@@ -54,7 +54,7 @@ public class Drive extends Core {
         joystick_y = gamepad1.left_stick_y;
         joystick_x = (gamepad1.left_stick_x == 0) ? 0.000001 :
                 gamepad1.left_stick_x;
-        rot_power = 0.4 * (gamepad1.right_stick_x);
+        rot_power = 1 * (gamepad1.right_stick_x);
 
         // Find out the distance of the joystick from resting position to control speed
         joystick_power = Math.sqrt(Math.pow(joystick_x, 2) + Math.pow(joystick_y, 2));
@@ -73,8 +73,8 @@ public class Drive extends Core {
         telemetry.update();
 
         // Pass that angle through a pair of wave functions to get the power for each corresponding pair of parallel wheels
-        negative_power = 0.45 * (joystick_power * Math.sin(orientation));
-        positive_power = (orientation != 0) ? 0.45 * (joystick_power * Math.cos(orientation)) :
+        negative_power = 1 * (joystick_power * Math.sin(orientation));
+        positive_power = (orientation != 0) ? 1 * (joystick_power * Math.cos(orientation)) :
                 negative_power;
 
         // This is all we need to actually move the robot, method decs in Core.java
