@@ -69,7 +69,7 @@ public class ObjectDetector {
                 return BarcodeLocation.CENTER;
             } else
             {
-                if (Constants.isLeftOpMode)
+                if (Constants.IS_LEFT_OPMODE)
                 {
                     if (leftMost > 230)
                         return BarcodeLocation.LEFT;

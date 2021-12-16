@@ -82,8 +82,6 @@ public class Hardware {
         carouselMotor = hardware.dcMotor.get("carouselMotor");
         carouselMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         carouselMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        carouselMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        carouselMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     private void initializeGyro(HardwareMap hardware)

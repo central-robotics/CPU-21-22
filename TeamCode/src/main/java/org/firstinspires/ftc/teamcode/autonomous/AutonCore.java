@@ -20,10 +20,10 @@ import org.firstinspires.ftc.teamcode.autonomous.waypoint.Waypoint;
 public class AutonCore {
     public static ElapsedTime runtime;
 
-    public void runCore(double initialX, LinearOpMode opMode) {
+    public void runCore(double initialX, double initialY, LinearOpMode opMode) {
         runtime = new ElapsedTime();
         Hardware hardware = new Hardware(opMode.hardwareMap);
-        Localization localization = new Localization(hardware, opMode.telemetry, initialX, Constants.INITIAL_Y);
+        Localization localization = new Localization(hardware, opMode.telemetry, initialX, initialY);
         Instructions instructions = new Instructions(hardware, localization, runtime, opMode.telemetry, opMode);
 
         opMode.waitForStart();

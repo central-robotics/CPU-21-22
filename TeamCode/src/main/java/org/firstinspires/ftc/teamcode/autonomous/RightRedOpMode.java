@@ -4,13 +4,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 @Autonomous
-public class LeftOpMode extends LinearOpMode {
+public class RightRedOpMode extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Constants.isLeftOpMode = true;
-        //new AutonCore().runCore(Constants.FIELD_LENGTH / 2 - Constants.OFFSET_FROM_CENTER, this);
-        new AutonCore().runCore(0, this);
+        new AutonCore().runCore(Constants.RIGHT_INITIAL_X, Constants.INITIAL_Y, this);
     }
 
 }

@@ -13,8 +13,11 @@ public class SpinCarouselAction extends Action {
     @Override
     public void execute(Hardware hardware, Localization localization)
     {
-        hardware.carouselMotor.setTargetPosition(hardware.carouselMotor.getCurrentPosition() + 1000); //Spin 1000 ticks. We don't care about the exact position, so we'll just add it to our current tick count.
+        long time = System.currentTimeMillis();
         hardware.carouselMotor.setPower(0.4);
+        while(System.currentTimeMillis() - time < 500)
+        {
+        }
+        hardware.carouselMotor.setPower(0);
     }
-
 }
