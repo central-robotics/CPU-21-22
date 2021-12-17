@@ -14,6 +14,7 @@ public class Drive extends Core {
     double positive_power, negative_power, rot_power;
     double joystick_x, joystick_y, joystick_power;
     double orientation;
+    boolean isCarouselMoving = false;
     Orientation gyro_angles;
     double prevArmPos;
     double targetArmPos;
@@ -22,6 +23,7 @@ public class Drive extends Core {
     long prevTime = System.currentTimeMillis();
     private PID armPID = new PID(new PIDCoefficients(-0.05, 0.0, 0));
     double lastPIDOutput = 0;
+
 
     public void loop() {
         double armPos = armMotor.getCurrentPosition();
@@ -49,12 +51,30 @@ public class Drive extends Core {
             armMotor.setPower(0.5 * output);
             prevArmPos = armPos;
         }
+
+        if (gamepad1.a == true)
+        {
+            isCarouselMoving = true;
+        }
+        else
+        {
+            isCarouselMoving = false;
+        }
+        if (isCarouselMoving == true){
+            moveCarousel(0.3);
+        }
+        else{
+            moveCarousel(0);
+        }
+
         prevTime = System.currentTimeMillis();
         // Get all the info we from the gamepad
         joystick_y = gamepad1.left_stick_y;
         joystick_x = (gamepad1.left_stick_x == 0) ? 0.000001 :
                 gamepad1.left_stick_x;
         rot_power = 0.4 * (gamepad1.right_stick_x);
+
+
 
         // Find out the distance of the joystick from resting position to control speed
         joystick_power = Math.sqrt(Math.pow(joystick_x, 2) + Math.pow(joystick_y, 2));

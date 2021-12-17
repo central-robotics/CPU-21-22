@@ -107,7 +107,7 @@ public class Auton extends LinearOpMode {
         rightBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        flyWheelMotor = hardwareMap.dcMotor.get("flyWheelMotor");
+        /* flyWheelMotor = hardwareMap.dcMotor.get("flyWheelMotor");
         flyWheelMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         flyWheelMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -115,7 +115,10 @@ public class Auton extends LinearOpMode {
         pickupMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         pickupMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        pushServo = hardwareMap.servo.get("pushServo");
+        */
+
+
+        // pushServo = hardwareMap.servo.get("pushServo");
 
         // cam.startCamera();
 

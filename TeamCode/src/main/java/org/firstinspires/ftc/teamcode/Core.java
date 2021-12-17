@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class Core extends OpMode {
-    DcMotor leftfront, rightfront, leftback, rightback, armMotor;
+    DcMotor leftfront, rightfront, leftback, rightback, armMotor, carousel;
     BNO055IMU imu;
     BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
@@ -30,6 +30,9 @@ public class Core extends OpMode {
         armMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        carousel = hardwareMap.dcMotor.get("carouselMotor");
+        carousel.setDirection(DcMotorSimple.Direction.FORWARD);
+
         parameters.mode = BNO055IMU.SensorMode.IMU;
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         parameters.loggingEnabled = false;
@@ -46,4 +49,8 @@ public class Core extends OpMode {
         rightback.setPower(posinput-rotinput);
     }
 
+    public void moveCarousel(double carouselpower)
+    {
+            carousel.setPower(carouselpower);
+    }
 }
