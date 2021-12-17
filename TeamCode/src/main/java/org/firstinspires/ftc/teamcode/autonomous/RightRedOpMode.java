@@ -8,7 +8,7 @@ public class RightRedOpMode extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        new AutonCore().runCore(Constants.RIGHT_INITIAL_X, Constants.INITIAL_Y, this);
+        new AutonCore().runCore(Constants.INITIAL_X, Constants.RIGHT_INITIAL_Y, Constants.RED_INITIAL_THETA, this);
     }
 
 }

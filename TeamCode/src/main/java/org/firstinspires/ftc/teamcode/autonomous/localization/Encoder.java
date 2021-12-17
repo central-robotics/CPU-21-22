@@ -14,10 +14,12 @@ public class Encoder {
 
     //Position of encoder on each motor respectively. We need to store this so that we can subtract these values from current position to get displacement.
     private int lastLfPos, lastRfPos, lastRbPos, lastLbPos;
+    private double initialTheta;
 
-    public Encoder(Hardware hardware)
+    public Encoder(Hardware hardware, double initialTheta)
     {
         _hardware = hardware;
+        this.initialTheta = initialTheta;
     }
 
     public Position getRobotPosition(Position previousPosition, Telemetry telem)
@@ -72,16 +74,17 @@ public class Encoder {
         double theta;
 
         //Compute robot theta
-        theta = _hardware.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle - Constants.INIT_THETA;
+        theta = _hardware.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle + initialTheta;
+        if (theta > 2 * Math.PI) {
+            theta -= 2 * Math.PI;
+        } else if (theta < 0) {
+            theta += 2 * Math.PI;
+        }
         telem.addData("T_e", theta);
 
-        //Displacement in field reference frame.
-        double deltaXf;
-        double deltaYf;
-
         //Compute displacement in field reference frame.
-        deltaXf = deltaX * Math.cos(theta) - deltaY * Math.sin(theta);
-        deltaYf = deltaY * Math.cos(theta) + deltaX * Math.sin(theta);
+        double deltaXf = deltaX * Math.cos(theta) - deltaY * Math.sin(theta);
+        double deltaYf = deltaY * Math.cos(theta) + deltaX * Math.sin(theta);
 
         Position robotPosition = new Position();
         robotPosition.x = previousPosition.x - deltaXf;

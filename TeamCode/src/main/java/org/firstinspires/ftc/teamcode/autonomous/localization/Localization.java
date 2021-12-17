@@ -14,18 +14,12 @@ public class Localization {
     private double currentTime;
     private double previousTime;
 
-    public Localization(Hardware hardware, Telemetry telemetry, double xOffset, double yOffset)
+    public Localization(Hardware hardware, Telemetry telemetry, double xOffset, double yOffset, double initialTheta)
     {
         //Robot hardware for passing to encoder and vision classes.
-        newPosition = new Position(xOffset, yOffset, 0);
-        newPosition.y = 0;
-        newPosition.x = 0;
-        newPosition.t = 0;
+        newPosition = new Position(xOffset, yOffset, initialTheta);
         previousRobotPosition = new Position();
-        previousRobotPosition.y = 0;
-        previousRobotPosition.x = 0;
-        previousRobotPosition.t = 0;
-        encoder = new Encoder(hardware);
+        encoder = new Encoder(hardware, initialTheta);
         //vision = new Vision(hardware);
         runtime = new ElapsedTime();
     }

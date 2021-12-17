@@ -58,13 +58,21 @@ public class Navigation {
     public void addWayPointToQueue(Waypoint waypoint)
     {
         waypoints.add(index, waypoint);
-        index++;
+    }
+
+    public void addNewDestination(double x, double y, double t) {
+        if (waypoints.isEmpty()) {
+            throw new RuntimeException("Unable to create Waypoint using addNewDestination without a waypoint to base initial value off of");
+        }
+        Position lastEndpoint = waypoints.get(waypoints.size() - 1).targetPos;
+        addWayPointToQueue(new Waypoint(lastEndpoint, new Position(x, y, t)));
     }
 
     public void executeTask()
     {
-        for (Waypoint waypoint : waypoints)
+        for (int i = 0; i < waypoints.size(); i++)
         {
+            Waypoint waypoint = waypoints.get(0);
             if (opMode.isStopRequested())
                 break;
 
@@ -89,7 +97,6 @@ public class Navigation {
                 break;
 
             _actions.executeTask(index);
-            index++;
         }
 
         waypoints.clear();
@@ -101,7 +108,7 @@ public class Navigation {
         while(((Math.abs(destination.x - position.x) > 5) || (Math.abs(destination.y - position.y) > 5)) && !opMode.isStopRequested()) {
             moveToTarget(destination);
         }
-        while(opMode.isStopRequested() ||  Math.abs(destination.t - position.t) > 0.05)
+        while(opMode.isStopRequested() || Math.abs(destination.t - position.t) > 0.05)
         {
             rotateToTarget(destination);
         }
@@ -151,11 +158,11 @@ public class Navigation {
         else
             posOutput = magnitude * Math.cos(orientation);
 //
-//        telem.addData("X", position.x);
-//        telem.addData("Y", position.y);
-//        telem.addData("T", position.t);
+        telem.addData("X", position.x);
+        telem.addData("Y", position.y);
+        telem.addData("T", position.t);
         telem.addData("Raw Theta", _hardware.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle);
-        telem.addData("Init Theta", Constants.INIT_THETA);
+//        telem.addData("Init Theta", Constants.INIT_THETA);
 //        telem.addData("Velocity", Math.sqrt(Math.pow(velocity.dx, 2) + Math.pow(velocity.dy, 2)));
         telem.update();
 
