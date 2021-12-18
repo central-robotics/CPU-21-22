@@ -23,7 +23,9 @@ public class Drive extends Core {
     long prevTime = System.currentTimeMillis();
     private PID armPID = new PID(new PIDCoefficients(-0.05, 0.0, 0));
     double lastPIDOutput = 0;
-
+    int intakeDirection = 0;
+    long rightBumperDuration = 0;
+    double deltaIntake = -50;
 
     public void loop() {
         double armPos = armMotor.getCurrentPosition();
@@ -50,6 +52,31 @@ public class Drive extends Core {
             lastPIDOutput = output;
             armMotor.setPower(0.5 * output);
             prevArmPos = armPos;
+        }
+
+        if (gamepad1.right_bumper) {
+            if (intakeDirection == -1) {
+                intakeDirection = 0;
+            } else {
+                intakeDirection = -1;
+            }
+        }
+        if (gamepad1.left_bumper) {
+            if (intakeDirection == 1) {
+                intakeDirection = 0;
+            } else {
+                intakeDirection = 1;
+            }
+        }
+        telemetry.addData("intake", intake.getCurrentPosition());
+        if (intakeDirection == -1) {
+            if (Math.abs(intake.getCurrentPosition() - deltaIntake) > 5) {
+                moveIntake(-0.25);
+            }
+        } else if (intakeDirection == 1) {
+            if (Math.abs(intake.getCurrentPosition()) > 5) {
+                moveIntake(0.25);
+            }
         }
 
         if (gamepad1.a == true)

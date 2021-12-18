@@ -60,8 +60,8 @@ public class Navigation {
         if (!Constants.IS_BLUE_TEAM) {
             waypoint.startingPos.x *= -1;
             waypoint.targetPos.x *= -1;
-            waypoint.startingPos.x *= -1;
-            waypoint.targetPos.t *= -1;
+            /*waypoint.startingPos.t = -1 * waypoint.startingPos.t + 2 * Math.PI;
+            waypoint.targetPos.t = -1 * waypoint.targetPos.t + 2 * Math.PI; */
         }
         waypoints.add(waypoint);
     }
@@ -81,6 +81,8 @@ public class Navigation {
                 //nothing
             }
 
+            telem.addData("starting T", waypoint.startingPos.t);
+            telem.addData("target T", waypoint.targetPos.t);
 
             driveToTarget(waypoint.startingPos);
             controller.resetSum();
@@ -157,6 +159,7 @@ public class Navigation {
         telem.addData("Y", position.y);
         telem.addData("T", position.t);
         telem.addData("Orientation", orientation);
+        telem.addData("target T", waypointPos.t);
 //        telem.addData("Raw Theta", _hardware.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle);
 //        telem.addData("Init Theta", Constants.INIT_THETA);
 //        telem.addData("Velocity", Math.sqrt(Math.pow(velocity.dx, 2) + Math.pow(velocity.dy, 2)));

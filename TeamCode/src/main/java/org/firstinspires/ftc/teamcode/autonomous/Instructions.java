@@ -7,6 +7,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.autonomous.actions.Actions;
 import org.firstinspires.ftc.teamcode.autonomous.actions.PlaceCubeAction;
 import org.firstinspires.ftc.teamcode.autonomous.actions.SpinCarouselAction;
+import org.firstinspires.ftc.teamcode.autonomous.actions.SpeedrunAction;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
@@ -34,7 +35,12 @@ public class Instructions {
     private void registerActions(Hardware hardware, Localization localization)
     {
         actions = new Actions(hardware, localization);
-        actions.addTask(new SpinCarouselAction(0));
+        if (!Constants.IS_LEFT_OPMODE) {
+            actions.addTask(new SpinCarouselAction(0));
+        }
+        else{
+            actions.addTask(new SpeedrunAction(0));
+        }
         //actions.addTask(new PlaceCubeAction(3, navigation));
 
         //actions.addTask(new SpinCarouselAction(1));
@@ -44,8 +50,13 @@ public class Instructions {
     private void registerNav(Hardware hardware, Localization localization, ElapsedTime runtime, Actions actions, Telemetry telemetry, LinearOpMode opMode, double initialX, double initialY, double initialTheta)
     {
         navigation = new Navigation(hardware, localization, runtime, actions, telemetry, opMode);
-        navigation.addWayPointToQueue(new Waypoint(new Position(initialX, initialY, initialTheta), new Position(330, 210, 0)));
-        navigation.addWayPointToQueue(new Waypoint(new Position(330, 210, 0), new Position(980, 210, 0)));
+        if (!Constants.IS_LEFT_OPMODE) {
+            navigation.addWayPointToQueue(new Waypoint(new Position(initialX, initialY, initialTheta), new Position(330, 210, 0)));
+            navigation.addWayPointToQueue(new Waypoint(new Position(330, 210, 0), new Position(980, 210, 0)));
+        }
+        else{
+            navigation.addWayPointToQueue(new Waypoint(new Position(initialX, initialY, initialTheta), new Position(330, 2083, initialTheta)));
+        }
     }
 
     public void runTasks()
