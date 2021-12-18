@@ -36,7 +36,7 @@ public class Instructions {
     {
         actions = new Actions(hardware, localization);
         if (!Constants.IS_LEFT_OPMODE) {
-            actions.addTask(new SpinCarouselAction(0));
+             actions.addTask(new SpinCarouselAction(0));
         }
         else{
             actions.addTask(new SpeedrunAction(0));
@@ -50,12 +50,19 @@ public class Instructions {
     private void registerNav(Hardware hardware, Localization localization, ElapsedTime runtime, Actions actions, Telemetry telemetry, LinearOpMode opMode, double initialX, double initialY, double initialTheta)
     {
         navigation = new Navigation(hardware, localization, runtime, actions, telemetry, opMode);
+        double rotation;
         if (!Constants.IS_LEFT_OPMODE) {
-            navigation.addWayPointToQueue(new Waypoint(new Position(initialX, initialY, initialTheta), new Position(330, 210, 0)));
-            navigation.addWayPointToQueue(new Waypoint(new Position(330, 210, 0), new Position(980, 210, 0)));
+            if (!Constants.IS_BLUE_TEAM)
+                rotation = initialTheta;
+            else
+                rotation = 0;
+
+            navigation.addWayPointToQueue(new Waypoint(new Position(initialX, initialY, initialTheta), new Position(330, 230, rotation)));
+            navigation.addWayPointToQueue(new Waypoint(new Position(330, 230, rotation), new Position(905, 210, initialTheta)));
         }
         else{
             navigation.addWayPointToQueue(new Waypoint(new Position(initialX, initialY, initialTheta), new Position(330, 2083, initialTheta)));
+
         }
     }
 
