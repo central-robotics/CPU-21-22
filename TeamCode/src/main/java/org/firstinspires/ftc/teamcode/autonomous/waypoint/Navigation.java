@@ -46,7 +46,7 @@ public class Navigation {
         _hardware = hardware;
         _localization = localization;
         PIDCoefficients coefficients = new PIDCoefficients(0.005, 0.00001, 0);
-        PIDCoefficients thetaCoefficients = new PIDCoefficients(0.05, 0, 0);
+        PIDCoefficients thetaCoefficients = new PIDCoefficients(0.07, 0.0001, 0);
 
         controller = new PID(coefficients);
         thetaController = new PID(thetaCoefficients);
@@ -102,37 +102,31 @@ public class Navigation {
         waypoints.clear();
     }
 
-    private void driveToTarget(Position destination)
+    public void driveToTarget(Position destination)
     {
+        boolean thetaFinished = false;
         //Assume that starting position has been reached. Drive to target specified by waypoint.
-        while(((Math.abs(destination.x - position.x) > 5) || (Math.abs(destination.y - position.y) > 5)) && !opMode.isStopRequested()) {
-            moveToTarget(destination);
-        }
-        while(opMode.isStopRequested() || Math.abs(destination.t - position.t) > 0.05)
-        {
-            rotateToTarget(destination);
+        while(((Math.abs(destination.x - position.x) > 5) || (Math.abs(destination.y - position.y) > 5) || !thetaFinished) && !opMode.isStopRequested()) {
+            thetaFinished = false;
+            double thetaError = destination.t - position.t;
+            boolean isCounterClockwise = false;
+            if ((thetaError) > 0 && (thetaError < Math.PI) ) {
+                isCounterClockwise = true;
+            }
+
+            if ((thetaError) < 0 && (thetaError < -Math.PI)) {
+                isCounterClockwise = true;
+                thetaError = destination.t - position.t + (2 * Math.PI);
+            }
+
+            if (thetaError < 0.05){
+                thetaFinished = true;
+            }
+            moveToTarget(destination, thetaError, isCounterClockwise);
         }
     }
 
-    public void rotateToTarget(Position waypointPos)
-    {
-        if (opMode.isStopRequested())
-            return;
-
-        position = _localization.getRobotPosition(telem);
-        _localization.increment(position);
-
-        double thetaError = waypointPos.t - position.t;
-        double thetaOutput = thetaController.getOutput(thetaError, 0);
-
-        telem.addData("Raw Theta", _hardware.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).secondAngle);
-        telem.addData("Init Theta", Constants.INIT_THETA);
-        telem.update();
-
-        _hardware.setAllMotorPowers(thetaOutput);
-    }
-
-    public void moveToTarget(Position waypointPos)
+    public void moveToTarget(Position waypointPos, double thetaError, boolean isCounterClockwise)
     {
         if (opMode.isStopRequested())
             return;
@@ -151,6 +145,9 @@ public class Navigation {
         double speed = Math.sqrt(Math.pow(velocity.dy, 2) + Math.pow(velocity.dx, 2));
 
         magnitude = controller.getOutput(error, speed);
+        if (error < 3) { // Make magnitude 0 if error is too low to matter
+            magnitude = 0;
+        }
 
         negOutput = magnitude * Math.sin(orientation);
         if (orientation == 0)
@@ -166,6 +163,11 @@ public class Navigation {
 //        telem.addData("Velocity", Math.sqrt(Math.pow(velocity.dx, 2) + Math.pow(velocity.dy, 2)));
         telem.update();
 
-        _hardware.setMotorValues(0.1 * posOutput, 0.1 * negOutput);
+
+        double thetaOutput = thetaController.getOutput(Math.abs(thetaError), 0);
+        if (Math.abs(thetaError) < 0.05) { // Set thetaOutput to 0 if thetaError is negligible
+            thetaOutput = 0;
+        }
+        _hardware.setMotorValuesWithRotation(0.1 * posOutput, 0.1 * negOutput, (isCounterClockwise ? -1 : 1) * thetaOutput);
     }
 }
