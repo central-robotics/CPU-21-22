@@ -24,33 +24,28 @@ public class Instructions {
     public Navigation navigation;
     public Actions actions;
 
-    public Instructions(Hardware hardware, Localization localization, ElapsedTime runtime, Telemetry telemetry, LinearOpMode opMode)
+    public Instructions(Hardware hardware, Localization localization, ElapsedTime runtime, Telemetry telemetry, LinearOpMode opMode, double initialX, double initialY, double initialTheta)
     {
         registerActions(hardware, localization);
-        registerNav(hardware, localization, runtime, actions, telemetry, opMode);
+        registerNav(hardware, localization, runtime, actions, telemetry, opMode, initialX, initialY, initialTheta);
     }
 
     //Enter robot actions into this class.
     private void registerActions(Hardware hardware, Localization localization)
     {
         actions = new Actions(hardware, localization);
+        actions.addTask(new SpinCarouselAction(0));
         //actions.addTask(new PlaceCubeAction(3, navigation));
 
         //actions.addTask(new SpinCarouselAction(1));
     }
 
     //Enter initial navigation waypoints here.
-    private void registerNav(Hardware hardware, Localization localization, ElapsedTime runtime, Actions actions, Telemetry telemetry, LinearOpMode opMode)
+    private void registerNav(Hardware hardware, Localization localization, ElapsedTime runtime, Actions actions, Telemetry telemetry, LinearOpMode opMode, double initialX, double initialY, double initialTheta)
     {
         navigation = new Navigation(hardware, localization, runtime, actions, telemetry, opMode);
-
-        navigation.addWayPointToQueue(new Waypoint(new Position(0,0,0), new Position(0,-600,0)));
-        navigation.addWayPointToQueue(new Waypoint(new Position(0,-600,0), new Position(600,-600,Math.PI /2 )));
-        navigation.addWayPointToQueue(new Waypoint(new Position(600,-600,Math.PI /2), new Position(600,600, Math.PI)));
-        navigation.addWayPointToQueue(new Waypoint(new Position(600,600,Math.PI), new Position(-600,600, Math.PI /2)));
-        navigation.addWayPointToQueue(new Waypoint(new Position(-600,600,Math.PI / 2 ), new Position(-600,-600, 0)));
-        navigation.addWayPointToQueue(new Waypoint(new Position(-600,-600,0), new Position(0,0, 0)));
-
+        navigation.addWayPointToQueue(new Waypoint(new Position(initialX, initialY, initialTheta), new Position(330, 210, 0)));
+        navigation.addWayPointToQueue(new Waypoint(new Position(330, 210, 0), new Position(980, 210, 0)));
     }
 
     public void runTasks()

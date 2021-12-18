@@ -20,15 +20,15 @@ public class PlaceCubeAction extends Action {
         switch (objectDetector.getRecognition())
         {
             case LEFT:
-                navigation.moveToTarget(new Position(0,0,0));
+                navigation.driveToTarget(new Position(0,0,0));
                 //pick cube up
                 break;
             case CENTER:
-                navigation.moveToTarget(new Position(0,0,0));
+                navigation.driveToTarget(new Position(0,0,0));
                 //pick cube up
                 break;
             case RIGHT:
-                navigation.moveToTarget(new Position(0,0,0));
+                navigation.driveToTarget(new Position(0,0,0));
                 //pick cube up
                 break;
         }
