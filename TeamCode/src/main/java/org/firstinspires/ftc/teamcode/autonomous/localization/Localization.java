@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.autonomous.localization;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.autonomous.Constants;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 
 public class Localization {
@@ -17,7 +18,11 @@ public class Localization {
     public Localization(Hardware hardware, Telemetry telemetry, double xOffset, double yOffset, double initialTheta)
     {
         //Robot hardware for passing to encoder and vision classes.
-        newPosition = new Position(xOffset, yOffset, initialTheta);
+        if (Constants.IS_BLUE_TEAM) {
+            newPosition = new Position(xOffset, yOffset, initialTheta);
+        } else {
+            newPosition = new Position(-xOffset, yOffset, -initialTheta + 2 * Math.PI);
+        }
         previousRobotPosition = new Position();
         encoder = new Encoder(hardware, initialTheta);
         //vision = new Vision(hardware);

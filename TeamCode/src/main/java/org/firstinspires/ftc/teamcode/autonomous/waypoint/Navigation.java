@@ -35,8 +35,8 @@ public class Navigation {
     In the future, this feature may be used to add a GUI for motion planning.
      */
     private ArrayList<Waypoint> waypoints;
-    private int index = 0;
     private final LinearOpMode opMode;
+    private static final double THETA_TOLERANCE = 0.025;
 
     public Navigation(Hardware hardware, Localization localization, ElapsedTime runtime, Actions actions, Telemetry telemetry, LinearOpMode opMode)
     {
@@ -57,22 +57,20 @@ public class Navigation {
 
     public void addWayPointToQueue(Waypoint waypoint)
     {
-        waypoints.add(index, waypoint);
-    }
-
-    public void addNewDestination(double x, double y, double t) {
-        if (waypoints.isEmpty()) {
-            throw new RuntimeException("Unable to create Waypoint using addNewDestination without a waypoint to base initial value off of");
+        if (!Constants.IS_BLUE_TEAM) {
+            waypoint.startingPos.x *= -1;
+            waypoint.targetPos.x *= -1;
+            waypoint.startingPos.x *= -1;
+            waypoint.targetPos.t *= -1;
         }
-        Position lastEndpoint = waypoints.get(waypoints.size() - 1).targetPos;
-        addWayPointToQueue(new Waypoint(lastEndpoint, new Position(x, y, t)));
+        waypoints.add(waypoint);
     }
 
     public void executeTask()
     {
         for (int i = 0; i < waypoints.size(); i++)
         {
-            Waypoint waypoint = waypoints.get(0);
+            Waypoint waypoint = waypoints.get(i);
             if (opMode.isStopRequested())
                 break;
 
@@ -96,7 +94,7 @@ public class Navigation {
             if (opMode.isStopRequested())
                 break;
 
-            _actions.executeTask(index);
+            _actions.executeTask(i);
         }
 
         waypoints.clear();
@@ -119,7 +117,7 @@ public class Navigation {
                 thetaError = destination.t - position.t + (2 * Math.PI);
             }
 
-            if (thetaError < 0.05){
+            if (thetaError < THETA_TOLERANCE){
                 thetaFinished = true;
             }
             moveToTarget(destination, thetaError, isCounterClockwise);
@@ -158,14 +156,15 @@ public class Navigation {
         telem.addData("X", position.x);
         telem.addData("Y", position.y);
         telem.addData("T", position.t);
-        telem.addData("Raw Theta", _hardware.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle);
+        telem.addData("Orientation", orientation);
+//        telem.addData("Raw Theta", _hardware.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle);
 //        telem.addData("Init Theta", Constants.INIT_THETA);
 //        telem.addData("Velocity", Math.sqrt(Math.pow(velocity.dx, 2) + Math.pow(velocity.dy, 2)));
         telem.update();
 
 
         double thetaOutput = thetaController.getOutput(Math.abs(thetaError), 0);
-        if (Math.abs(thetaError) < 0.05) { // Set thetaOutput to 0 if thetaError is negligible
+        if (Math.abs(thetaError) < THETA_TOLERANCE) { // Set thetaOutput to 0 if thetaError is negligible
             thetaOutput = 0;
         }
         _hardware.setMotorValuesWithRotation(0.1 * posOutput, 0.1 * negOutput, (isCounterClockwise ? -1 : 1) * thetaOutput);
