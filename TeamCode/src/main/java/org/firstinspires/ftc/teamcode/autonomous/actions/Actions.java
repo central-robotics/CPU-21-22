@@ -25,6 +25,7 @@ public class Actions {
     // Executes the task at the waypoint with a given index
     public void executeTask(int index)
     {
+        hardware.setAllMotorPowers(0);
         for (Action task : actions) {
             if (task.index == index) {
                 task.execute(hardware, localization);

@@ -14,14 +14,19 @@ public class Drive extends Core {
     double positive_power, negative_power, rot_power;
     double joystick_x, joystick_y, joystick_power;
     double orientation;
+    boolean isCarouselMoving = false;
+    boolean isCCW = true;
     Orientation gyro_angles;
     double prevArmPos;
     double targetArmPos;
     boolean hasTargetArmPos;
     boolean isArmMoving;
     long prevTime = System.currentTimeMillis();
-    private PID armPID = new PID(new PIDCoefficients(-0.05, 0.0, 0));
+    private PID armPID = new PID(new PIDCoefficients(-0.05, 0, 0));
     double lastPIDOutput = 0;
+    int intakeDirection = 0;
+    long rightBumperDuration = 0;
+    double deltaIntake = -50;
 
     public void loop() {
         double armPos = armMotor.getCurrentPosition();
@@ -49,12 +54,58 @@ public class Drive extends Core {
             armMotor.setPower(0.5 * output);
             prevArmPos = armPos;
         }
+
+        if (gamepad1.right_bumper) {
+            /*if (intakeDirection == -1) {
+                intakeDirection = 0;
+            } else {
+                intakeDirection = -1;
+            } */
+            intakeDirection = -1;
+        }
+        if (gamepad1.left_bumper) {
+            /*if (intakeDirection == 1) {
+                intakeDirection = 0;
+            } else {
+                intakeDirection = 1;
+            } */
+            intakeDirection = 1;
+        }
+        telemetry.addData("intake", intake.getCurrentPosition());
+        if (intakeDirection == -1) {
+            /*if (Math.abs(intake.getCurrentPosition() - deltaIntake) > 5) {
+                moveIntake(-0.25);
+            } */
+            moveIntake(-0.28);
+
+        } else if (intakeDirection == 1) {
+            /*if (Math.abs(intake.getCurrentPosition()) > 5) {
+                moveIntake(0.25);
+            } */
+            moveIntake(0.28);
+        }
+
+        if (gamepad1.a == true) {
+            moveCarousel(-0.4);
+        }
+        else if (gamepad1.b == true){
+            moveCarousel(0.4);
+        }
+        else{
+            moveCarousel(0);
+        }
+
+        if (gamepad1.square)
+            moveIntake(0);
+
         prevTime = System.currentTimeMillis();
         // Get all the info we from the gamepad
         joystick_y = gamepad1.left_stick_y;
         joystick_x = (gamepad1.left_stick_x == 0) ? 0.000001 :
                 gamepad1.left_stick_x;
         rot_power = 1 * (gamepad1.right_stick_x);
+
+
 
         // Find out the distance of the joystick from resting position to control speed
         joystick_power = Math.sqrt(Math.pow(joystick_x, 2) + Math.pow(joystick_y, 2));
@@ -79,7 +130,11 @@ public class Drive extends Core {
 
         // This is all we need to actually move the robot, method decs in Core.java
 
-
-        move(positive_power, negative_power, rot_power);
+        if (gamepad1.y == true){
+            move(2 * positive_power, 2 * negative_power, 2 * rot_power);
+        }
+        else {
+            move(positive_power, negative_power, rot_power);
+        }
     }
 }

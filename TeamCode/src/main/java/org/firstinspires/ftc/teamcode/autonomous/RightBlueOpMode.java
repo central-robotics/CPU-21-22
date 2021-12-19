@@ -9,7 +9,7 @@ public class RightBlueOpMode extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Constants.IS_BLUE_TEAM = true;
-        new AutonCore().runCore(Constants.RIGHT_INITIAL_X, Constants.INITIAL_Y, this);
+        new AutonCore().runCore(Constants.INITIAL_X, Constants.RIGHT_INITIAL_Y, Constants.BLUE_INITIAL_THETA, this);
     }
 
 }

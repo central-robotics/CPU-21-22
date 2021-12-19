@@ -22,7 +22,7 @@ public class Hardware {
     {
         initializeGyro(hardware);
         initializeDriveMotors(hardware);
-        //initializeAccessoryMotors(hardware);
+        initializeAccessoryMotors(hardware);
         //initializeWebcam(hardware);
     }
 

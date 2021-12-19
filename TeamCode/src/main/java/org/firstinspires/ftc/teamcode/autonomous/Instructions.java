@@ -7,6 +7,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.autonomous.actions.Actions;
 import org.firstinspires.ftc.teamcode.autonomous.actions.PlaceCubeAction;
 import org.firstinspires.ftc.teamcode.autonomous.actions.SpinCarouselAction;
+import org.firstinspires.ftc.teamcode.autonomous.actions.SpeedrunAction;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
@@ -24,31 +25,47 @@ public class Instructions {
     public Navigation navigation;
     public Actions actions;
 
-    public Instructions(Hardware hardware, Localization localization, ElapsedTime runtime, Telemetry telemetry, LinearOpMode opMode)
+    public Instructions(Hardware hardware, Localization localization, ElapsedTime runtime, Telemetry telemetry, LinearOpMode opMode, double initialX, double initialY, double initialTheta)
     {
         registerActions(hardware, localization);
-        registerNav(hardware, localization, runtime, actions, telemetry, opMode);
+        registerNav(hardware, localization, runtime, actions, telemetry, opMode, initialX, initialY, initialTheta);
     }
 
     //Enter robot actions into this class.
     private void registerActions(Hardware hardware, Localization localization)
     {
         actions = new Actions(hardware, localization);
+        if (!Constants.IS_LEFT_OPMODE) {
+             actions.addTask(new SpinCarouselAction(0));
+        }
+        else{
+            actions.addTask(new SpeedrunAction(0));
+        }
         //actions.addTask(new PlaceCubeAction(3, navigation));
 
         //actions.addTask(new SpinCarouselAction(1));
     }
 
     //Enter initial navigation waypoints here.
-    private void registerNav(Hardware hardware, Localization localization, ElapsedTime runtime, Actions actions, Telemetry telemetry, LinearOpMode opMode)
+    private void registerNav(Hardware hardware, Localization localization, ElapsedTime runtime, Actions actions, Telemetry telemetry, LinearOpMode opMode, double initialX, double initialY, double initialTheta)
     {
         navigation = new Navigation(hardware, localization, runtime, actions, telemetry, opMode);
-        if (Constants.IS_LEFT_OPMODE)
-        {
-            navigation.addWayPointToQueue(new Waypoint());
-        }
+        double rotation;
+        if (!Constants.IS_LEFT_OPMODE) {
+            if (!Constants.IS_BLUE_TEAM)
+                rotation = initialTheta;
+            else
+                rotation = 0;
 
+            navigation.addWayPointToQueue(new Waypoint(new Position(initialX, initialY, initialTheta), new Position(330, 230, rotation)));
+            navigation.addWayPointToQueue(new Waypoint(new Position(330, 230, rotation), new Position(905, 210, initialTheta)));
+        }
+        else{
+            navigation.addWayPointToQueue(new Waypoint(new Position(initialX, initialY, initialTheta), new Position(330, 2083, initialTheta)));
+
+        }
     }
+
     public void runTasks()
     {
         navigation.executeTask();

@@ -7,9 +7,11 @@ public final class Constants {
     public static double INIT_THETA = 0; //Value used to subtract from gyro to fix error. This  value is temporary until root problem can be solved.
     public static Boolean IS_LEFT_OPMODE = false;
     public static Boolean IS_BLUE_TEAM = false;
-    public static final double LEFT_INITIAL_X = 1234;
-    public static final double RIGHT_INITIAL_X = 5678;
-    public static final double INITIAL_Y = 9012;
+    public static final double LEFT_INITIAL_Y = 2083;
+    public static final double RIGHT_INITIAL_Y = 889;
+    public static final double INITIAL_X = 229;
+    public static final double BLUE_INITIAL_THETA = 3 * Math.PI/2;
+    public static final double RED_INITIAL_THETA = Math.PI/2;
     public static final double FIELD_LENGTH = 3657.6;
 
 }

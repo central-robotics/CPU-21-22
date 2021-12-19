@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.autonomous.actions;
 
+import org.firstinspires.ftc.teamcode.autonomous.Constants;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
 
@@ -14,8 +15,13 @@ public class SpinCarouselAction extends Action {
     public void execute(Hardware hardware, Localization localization)
     {
         long time = System.currentTimeMillis();
-        hardware.carouselMotor.setPower(0.4);
-        while(System.currentTimeMillis() - time < 500)
+        if (!Constants.IS_BLUE_TEAM)
+            hardware.carouselMotor.setPower(-0.4);
+        else
+            hardware.carouselMotor.setPower(0.4);
+
+
+        while(System.currentTimeMillis() - time < 4000)
         {
         }
         hardware.carouselMotor.setPower(0);
