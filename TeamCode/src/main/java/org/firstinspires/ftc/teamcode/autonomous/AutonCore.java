@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.teamcode.autonomous.Vision.Vuforia;
 import org.firstinspires.ftc.teamcode.autonomous.actions.Actions;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
@@ -23,7 +24,8 @@ public class AutonCore {
     public void runCore(double initialX, double initialY, double initialTheta, LinearOpMode opMode) {
         runtime = new ElapsedTime();
         Hardware hardware = new Hardware(opMode.hardwareMap);
-        Localization localization = new Localization(hardware, opMode.telemetry, initialX, initialY, initialTheta);
+        Vuforia vuforia = new Vuforia(hardware);
+        Localization localization = new Localization(hardware, vuforia, opMode.telemetry, initialX, initialY, initialTheta);
         Instructions instructions = new Instructions(hardware, localization, runtime, opMode.telemetry, opMode, initialX, initialY, initialTheta);
 
         opMode.waitForStart();

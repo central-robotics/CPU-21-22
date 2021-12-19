@@ -12,6 +12,6 @@ public final class Constants {
     public static final double INITIAL_X = 229;
     public static final double BLUE_INITIAL_THETA = 3 * Math.PI/2;
     public static final double RED_INITIAL_THETA = Math.PI/2;
+    public static final double THETA_TOLERANCE = 0.025;
     public static final double FIELD_LENGTH = 3657.6;
-
 }

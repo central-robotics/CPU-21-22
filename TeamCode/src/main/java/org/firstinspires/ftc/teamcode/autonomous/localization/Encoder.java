@@ -22,7 +22,7 @@ public class Encoder {
         this.initialTheta = initialTheta;
     }
 
-    public Position getRobotPosition(Position previousPosition, Telemetry telem)
+    public Position getRobotPosition(Position previousPosition)
     {
         //Encoder values. These are in ticks. We will later convert this to a usable distance.
         int lfPos, rfPos, rbPos, lbPos;
@@ -80,7 +80,6 @@ public class Encoder {
         } else if (theta < 0) {
             theta += 2 * Math.PI;
         }
-        telem.addData("T_e", theta);
 
         //Compute displacement in field reference frame.
         double deltaXf = deltaX * Math.cos(theta) - deltaY * Math.sin(theta);

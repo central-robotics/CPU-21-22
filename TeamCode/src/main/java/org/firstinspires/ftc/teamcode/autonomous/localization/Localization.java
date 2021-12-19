@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.autonomous.Constants;
+import org.firstinspires.ftc.teamcode.autonomous.Vision.Vuforia;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 
 public class Localization {
@@ -15,7 +16,7 @@ public class Localization {
     private double currentTime;
     private double previousTime;
 
-    public Localization(Hardware hardware, Telemetry telemetry, double xOffset, double yOffset, double initialTheta)
+    public Localization(Hardware hardware, Vuforia vuforia, Telemetry telemetry, double xOffset, double yOffset, double initialTheta)
     {
         //Robot hardware for passing to encoder and vision classes.
         if (Constants.IS_BLUE_TEAM) {
@@ -25,7 +26,7 @@ public class Localization {
         }
         previousRobotPosition = new Position();
         encoder = new Encoder(hardware, initialTheta);
-        //vision = new Vision(hardware);
+        vision = new Vision(vuforia);
         runtime = new ElapsedTime();
     }
 
@@ -36,7 +37,7 @@ public class Localization {
         previousTime = currentTime;
     }
 
-    public Position getRobotPosition(Telemetry telem)
+    public Position getRobotPosition()
     {
         Position visionRobotPosition = null; //vision.getRobotPosition();
 
@@ -46,7 +47,7 @@ public class Localization {
             return visionRobotPosition;
         }
 
-        return encoder.getRobotPosition(newPosition, telem); //If we can't see vision targets, return encoder based location.
+        return encoder.getRobotPosition(newPosition); //If we can't see vision targets, return encoder based location.
     }
 
     public Velocity getRobotVelocity(ElapsedTime runtime)
