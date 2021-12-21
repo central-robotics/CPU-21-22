@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.autonomous.localization.Velocity;
 import java.util.ArrayList;
 
 public class Navigation {
-    private final Drive drive;
+    public final Drive drive;
     private final Hardware hardware;
     private final Actions actions;
     private final ElapsedTime runtime;

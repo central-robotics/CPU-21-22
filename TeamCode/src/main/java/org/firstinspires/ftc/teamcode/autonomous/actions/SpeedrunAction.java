@@ -7,6 +7,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.teamcode.autonomous.Constants;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
+import org.firstinspires.ftc.teamcode.autonomous.vision.Vuforia;
 
 
 public class SpeedrunAction extends Action {
@@ -15,7 +16,7 @@ public class SpeedrunAction extends Action {
         super(index);
     }
 
-    public void execute(Hardware hardware, Localization localization){
+    public void execute(Hardware hardware, Localization localization, Vuforia vuforia){
         long time = System.currentTimeMillis();
 
         if (!Constants.IS_BLUE_TEAM) {

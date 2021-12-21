@@ -9,7 +9,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.teamcode.autonomous.Constants;
-import org.firstinspires.ftc.teamcode.autonomous.Vision.Vuforia;
+import org.firstinspires.ftc.teamcode.autonomous.vision.Vuforia;
 
 public class Vision {
     private Vuforia vuforia;

@@ -14,4 +14,6 @@ public final class Constants {
     public static final double RED_INITIAL_THETA = Math.PI/2;
     public static final double THETA_TOLERANCE = 0.025;
     public static final double FIELD_LENGTH = 3657.6;
+    public static final double DIST_TO_BARCODE = 700;
+    public static final double DIST_BETWEEN_BARCODE = 200;
 }

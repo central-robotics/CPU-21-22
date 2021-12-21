@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.autonomous.actions.SpeedrunAction;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
+import org.firstinspires.ftc.teamcode.autonomous.vision.Vuforia;
 import org.firstinspires.ftc.teamcode.autonomous.waypoint.Navigation;
 import org.firstinspires.ftc.teamcode.autonomous.waypoint.Waypoint;
 
@@ -25,16 +26,16 @@ public class Instructions {
     public Navigation navigation;
     public Actions actions;
 
-    public Instructions(Hardware hardware, Localization localization, ElapsedTime runtime, Telemetry telemetry, LinearOpMode opMode, double initialX, double initialY, double initialTheta)
+    public Instructions(Hardware hardware, Localization localization, ElapsedTime runtime, Telemetry telemetry, LinearOpMode opMode, Vuforia vuforia, double initialX, double initialY, double initialTheta)
     {
-        registerActions(hardware, localization);
+        registerActions(hardware, localization, vuforia);
         registerNav(hardware, localization, runtime, actions, telemetry, opMode, initialX, initialY, initialTheta);
     }
 
     //Enter robot actions into this class.
-    private void registerActions(Hardware hardware, Localization localization)
+    private void registerActions(Hardware hardware, Localization localization, Vuforia vuforia)
     {
-        actions = new Actions(hardware, localization);
+        actions = new Actions(hardware, localization, vuforia);
         if (!Constants.IS_LEFT_OPMODE) {
              actions.addTask(new SpinCarouselAction(0));
         }

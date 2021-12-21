@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.autonomous.Vision;
+package org.firstinspires.ftc.teamcode.autonomous.vision;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -53,6 +53,8 @@ public class Vuforia {
         identifyTarget(2, "Red Storage", -halfField, -oneAndHalfTile, mmTargetHeight, 90, 0, 90);
         identifyTarget(3, "Red Alliance Wall", halfTile, -halfField, mmTargetHeight, 90, 0, 180);
 
+        identifyObject(4, "CPU Element");
+
         OpenGLMatrix cameraLocation = OpenGLMatrix //We need to describe where the camera is on the robot.
                 .translation(4.0f /*Forward displacement from center*/, 0.0f /*Left displacement from center*/, 0f  /*Vertical displacement from ground*/)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XZY, DEGREES, 90, 90, 0));
@@ -67,6 +69,12 @@ public class Vuforia {
         aTarget.setName(targetName);
         aTarget.setLocation(OpenGLMatrix.translation(dx, dy, dz)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, rx, ry, rz)));
+    }
+
+    private void identifyObject(int targetIndex, String targetName)
+    {
+        VuforiaTrackable target = targets.get(targetIndex);
+        target.setName(targetName);
     }
 
 }
