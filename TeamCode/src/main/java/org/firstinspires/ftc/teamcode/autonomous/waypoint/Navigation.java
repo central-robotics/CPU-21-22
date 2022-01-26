@@ -1,21 +1,15 @@
 package org.firstinspires.ftc.teamcode.autonomous.waypoint;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.teamcode.autonomous.AutonCore;
 import org.firstinspires.ftc.teamcode.autonomous.Constants;
 import org.firstinspires.ftc.teamcode.autonomous.actions.Actions;
-import org.firstinspires.ftc.teamcode.autonomous.control.PID;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
-import org.firstinspires.ftc.teamcode.autonomous.localization.Velocity;
+import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.Path;
 
 import java.util.ArrayList;
 
@@ -26,9 +20,9 @@ public class Navigation {
     private final ElapsedTime runtime;
 
     private final Telemetry telem;
-    private ArrayList<Waypoint> waypoints;
+    private final ArrayList<Waypoint> waypoints;
+    private final ArrayList<Path> pipeline;
     private final LinearOpMode opMode;
-
     public Navigation(Hardware hardware, Localization localization, ElapsedTime runtime, Actions actions, Telemetry telemetry, LinearOpMode opMode)
     {
         this.opMode = opMode;
@@ -40,6 +34,18 @@ public class Navigation {
         telem = telemetry;
 
         waypoints = new ArrayList<>();
+        pipeline = new ArrayList<>();
+    }
+
+    public void addPathToPipeline(Path path)
+    {
+        if (!Constants.IS_BLUE_TEAM)
+            for (Position pose : path.points)
+            {
+                pose.x *= -1;
+            }
+
+        pipeline.add(path);
     }
 
     public void addWayPointToQueue(Waypoint waypoint)
