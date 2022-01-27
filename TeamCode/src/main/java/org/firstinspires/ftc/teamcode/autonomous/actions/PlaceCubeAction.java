@@ -6,6 +6,7 @@ import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.MotionDetection;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
@@ -30,8 +31,6 @@ public class PlaceCubeAction extends Action {
     public void execute(Hardware hardware, Localization localization, Vuforia vuforia) {
 
         ObjectDetector objectDetector = new ObjectDetector(hardware, vuforia);
-
-        Recognition recognition = objectDetector.getRecognition();
 
         Position position = new Position();
 

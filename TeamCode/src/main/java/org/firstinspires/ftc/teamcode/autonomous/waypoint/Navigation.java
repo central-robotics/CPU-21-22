@@ -59,6 +59,25 @@ public class Navigation {
 
     public void executeTask()
     {
+
+
+        for (int i = 0; i < pipeline.size(); i++)
+        {
+            Path path = pipeline.get(i);
+
+            if (opMode.isStopRequested())
+                break;
+
+            double time = runtime.milliseconds();
+            hardware.setAllMotorPowers(0);
+
+            while (runtime.milliseconds() - time < 500)
+            {
+                //nothing
+            }
+
+            drive.driveAlongPath(path);
+        }
         for (int i = 0; i < waypoints.size(); i++)
         {
             Waypoint waypoint = waypoints.get(i);

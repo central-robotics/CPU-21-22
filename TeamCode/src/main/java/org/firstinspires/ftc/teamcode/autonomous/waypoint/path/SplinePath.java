@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
 import java.util.ArrayList;
 
 public class SplinePath extends Path{
-    public SplinePath(ArrayList<Position> points, Actions actions) {
-        super(points, actions);
+    public SplinePath(ArrayList<Position> points) {
+        super(points);
     }
 }

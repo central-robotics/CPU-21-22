@@ -23,6 +23,7 @@ public class Vuforia {
 
     public VuforiaLocalizer vuforiaLocalizer; //Vuforia instance
     public VuforiaTrackables targets; //Vuforia image
+    public VuforiaLocalizer.Parameters parameters;
     public List<VuforiaTrackable> trackables;
 
     private static final float mmTargetHeight = 152.4f;
@@ -42,6 +43,7 @@ public class Vuforia {
         params.vuforiaLicenseKey = Constants.VUFORIA_KEY;
         params.cameraName = hardware.camera;
         params.useExtendedTracking = false;
+        parameters = params;
 
         vuforiaLocalizer = ClassFactory.getInstance().createVuforia(params);
         targets = vuforiaLocalizer.loadTrackablesFromAsset("FreightFrenzy");

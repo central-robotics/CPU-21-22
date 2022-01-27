@@ -12,47 +12,47 @@ import org.firstinspires.ftc.teamcode.autonomous.Constants;
 import org.firstinspires.ftc.teamcode.autonomous.actions.PlaceCubeAction;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.vision.Vuforia;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
 
 import java.util.List;
 
 public class ObjectDetector {
-    private TFObjectDetector tfod;
-    private Hardware hardware;
     private Vuforia vuforia;
-
+    private OpenCvCamera camera;
+    private ElementPipeline pipeline;
+    private Hardware hardware;
 
     public ObjectDetector(Hardware hardware, Vuforia vuforia)
     {
         this.hardware = hardware;
         this.vuforia = vuforia;
+        pipeline = new ElementPipeline();
 
         initializeObjectDetector();
     }
 
     private void initializeObjectDetector()
     {
-        TFObjectDetector.Parameters params = new TFObjectDetector.Parameters();
-        params.minResultConfidence = 0.7f;
-        params.isModelTensorFlow2 = true;
-        params.inputSize = 320;
-        tfod = ClassFactory.getInstance().createTFObjectDetector(params, vuforia.vuforiaLocalizer);
+        OpenCvCamera camera = OpenCvCameraFactory.getInstance().createVuforiaPassthrough(vuforia.vuforiaLocalizer, vuforia.parameters);
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                camera.startStreaming(1280, 720);
+                camera.setPipeline(pipeline);
+            }
+
+            @Override
+            public void onError(int i) {
+
+            }
+        });
     }
 
     //To allow the robot to figure out the position of any element without training an AI model, we will figure out which barcode we can't see.
-    public Recognition getRecognition()
+    public BarcodeLocation getRecognition()
     {
-        List<Recognition> recognitions = tfod.getUpdatedRecognitions();
-
-        if (recognitions == null)
-            return null;
-
-        for (Recognition recognition : recognitions)
-        {
-            if (recognition.getLabel() == "CPU Custom Element" || recognition.getLabel() == "SIGMA Custom Element")
-                return recognition;
-        }
-
-        return null;
+        return BarcodeLocation.values()[pipeline.getElementIndex()];
     }
 
     public enum BarcodeLocation

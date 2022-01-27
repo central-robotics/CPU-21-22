@@ -7,10 +7,8 @@ import java.util.ArrayList;
 
 public abstract class Path {
     public ArrayList<Position> points;
-    public Actions actions;
 
-    public Path(ArrayList<Position> points, Actions actions) {
+    public Path(ArrayList<Position> points) {
         this.points = points;
-        this.actions = actions;
     }
 }

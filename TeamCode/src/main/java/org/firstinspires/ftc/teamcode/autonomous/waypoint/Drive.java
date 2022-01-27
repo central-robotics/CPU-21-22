@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Velocity;
+import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.Path;
 
 public class Drive {
     private Localization localization;
@@ -106,5 +107,8 @@ public class Drive {
         }
 
         hardware.setMotorValuesWithRotation(0.1 * posOutput, 0.1 * negOutput, (isCounterClockwise ? -1 : 1) * thetaOutput);
+    }
+
+    public void driveAlongPath(Path path) {
     }
 }
