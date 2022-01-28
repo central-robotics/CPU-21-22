@@ -16,6 +16,8 @@ public final class SplineHelper {
             distances[i] = totalDist;
         }
 
+
+
         float dt = totalDist / (outputPoints - 1);
         float[] times = new float[outputPoints];
         times[0] = 0;
@@ -28,8 +30,11 @@ public final class SplineHelper {
 
         Spline xSpline = new Spline(distances, x);
         spline.xs = xSpline.mapSpline(times);
+        spline.xSpline = xSpline;
+
         Spline ySpline = new Spline(distances, y);
         spline.ys = ySpline.mapSpline(times);
+        spline.ySpline = ySpline;
 
         return spline;
     }

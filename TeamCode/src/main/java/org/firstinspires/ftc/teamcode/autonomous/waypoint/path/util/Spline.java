@@ -7,6 +7,7 @@ public class Spline {
     private float[] xOrig, yOrig; //Saved points
     private float firstSlope = Float.NaN;
     private float lastSlope = Float.NaN;
+    private float dist = 0;
     private int lastIndex;
 
     public Spline(float[] x, float[] y, float firstSlope, float lastSlope) throws Exception {
@@ -21,6 +22,23 @@ public class Spline {
         this.x = x;
         this.y = y;
         computeSpline();
+    }
+
+    public float computeDerivative(float x) throws Exception {
+        float qPrime;
+        lastIndex = 0;
+
+        int j = getNextXIndex(x);
+
+        float dx = xOrig[j + 1] - xOrig[j];
+        float dy = yOrig[j + 1] - yOrig[j];
+        float t = (x - xOrig[j]) / dx;
+
+        qPrime = dy / dx
+                + (1 - 2 * t) * (a[j] * (1 - t) + b[j] * t) / dx
+                + t * (1 - t) * (b[j] - a[j]) / dx;
+
+        return qPrime;
     }
 
     private void computeSpline() throws Exception {
@@ -105,6 +123,12 @@ public class Spline {
         }
 
         return y;
+    }
+
+    public float computeY(float x) throws Exception {
+        lastIndex = 0;
+        int nSpline = getNextXIndex(x);
+        return evalSpline(x, nSpline);
     }
 
     private float evalSpline(float x, int j)

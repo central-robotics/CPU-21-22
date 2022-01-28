@@ -10,7 +10,9 @@ import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Velocity;
+import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.LinearPath;
 import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.Path;
+import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.SplinePath;
 
 public class Drive {
     private Localization localization;
@@ -18,6 +20,7 @@ public class Drive {
     private PID controller;
     private PID thetaController;
     private Position position;
+    private Position prevPosition;
     private ElapsedTime runtime;
     private LinearOpMode opMode;
 
@@ -38,6 +41,7 @@ public class Drive {
         thetaController = new PID(thetaCoefficients);
 
         position = new Position();
+        prevPosition = new Position();
     }
 
     public void driveToTarget(Position destination)
@@ -109,6 +113,54 @@ public class Drive {
         hardware.setMotorValuesWithRotation(0.1 * posOutput, 0.1 * negOutput, (isCounterClockwise ? -1 : 1) * thetaOutput);
     }
 
-    public void driveAlongPath(Path path) {
+    public void driveAlongPath(Path path) throws Exception {
+
+        boolean thetaFinished = false;
+
+        if (path.getClass() == LinearPath.class)
+        {
+
+        } else {
+            while (((Math.abs(path.points[path.points.length - 1].x - position.x) > 5) || (Math.abs(path.points[path.points.length - 1].y - position.y) > 5) || !thetaFinished) && !opMode.isStopRequested()) {
+                setSplinePowers(path);
+            }
+        }
+    }
+
+    public void setSplinePowers(Path path) throws Exception {
+        SplinePath sPath = (SplinePath) path;
+        float dist = 0;
+            position = localization.getRobotPosition();
+            localization.increment(position);
+
+            dist += Math.sqrt(Math.pow(position.x - prevPosition.x, 2) + Math.pow(position.y - prevPosition.y, 2));
+            float t = dist / sPath.spline.dist;
+
+            double orientation = Math.atan(sPath.spline.ySpline.computeDerivative(t) / sPath.spline.xSpline.computeDerivative(t)) - Math.PI / 4 - position.t;
+
+            if (path.points[path.points.length - 1].x - position.x < 0)
+                orientation += Math.PI;
+
+            double magnitude = 0.3f; //Random value until PID can be integrated into splines.
+            double negativePower;
+            double positivePower;
+
+            if (orientation == 1)
+                positivePower = 1;
+            else
+                positivePower = magnitude * (1-t) * Math.cos(orientation);
+
+            negativePower = magnitude * (1-t) * Math.sin(orientation);
+
+            hardware.setMotorValues(positivePower, negativePower);
+        }
+    }
+
+    public void setLinearPowers(Path path, int index)
+    {
+        boolean thetaFinished = false;
+
+        while(((Math.abs(path.points[path.points.length - 1].x - position.x) > 5) || (Math.abs(path.points[path.points.length - 1].y - position.y) > 5) || !thetaFinished) && !opMode.isStopRequested()) {
+        }
     }
 }

@@ -14,15 +14,29 @@ public class TestOpMode extends OpMode {
     private DcMotor sliderMotor;
     private Servo boxServo;
     private DcMotor intakeMotor;
+    private DcMotor leftfront, rightfront, leftback, rightback;
 
     @Override
     public void init() {
         intakeMotor = hardwareMap.dcMotor.get("intakeMotor");
         intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        sliderMotor = hardwareMap.dcMotor.get("sliderMotor");
+        sliderMotor = hardwareMap.dcMotor.get("slideMotor");
         sliderMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        boxServo = hardwareMap.servo.get("boxServo");
+        /*boxServo = hardwareMap.servo.get("boxServo");
         boxServo.setDirection(Servo.Direction.FORWARD);
+         */
+        leftfront = hardwareMap.dcMotor.get("leftFrontMotor");
+        leftfront.setDirection(DcMotorSimple.Direction.FORWARD);
+
+
+        rightfront = hardwareMap.dcMotor.get("rightFrontMotor");
+        rightfront.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        leftback = hardwareMap.dcMotor.get("leftBackMotor");
+        leftback.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        rightback = hardwareMap.dcMotor.get("rightBackMotor");
+        rightback.setDirection(DcMotorSimple.Direction.FORWARD);
         intakeMotor.setPower(1);
     }
 

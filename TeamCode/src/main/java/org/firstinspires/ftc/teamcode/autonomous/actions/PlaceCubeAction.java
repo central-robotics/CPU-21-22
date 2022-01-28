@@ -40,28 +40,9 @@ public class PlaceCubeAction extends Action {
 
         Position currentPosition = localization.getRobotPosition();
 
-        if (recognition == null)
-        {
-            position.x = currentPosition.x + Constants.DIST_TO_BARCODE;
-            position.y = currentPosition.y;
-        }
-        double leftDist = recognition.getLeft();
 
         ArmLevel armLevel = ArmLevel.MIDDLE;
 
-        if (leftDist > 300)
-        {
-            //Right case
-            armLevel = ArmLevel.TOP;
-        } else if (leftDist > 200)
-        {
-            //Center case
-            armLevel = ArmLevel.MIDDLE;
-        } else if (leftDist > 100)
-        {
-            //Left case
-            armLevel = ArmLevel.BOTTOM;
-        }
 
         navigation.drive.driveToTarget(position);
 

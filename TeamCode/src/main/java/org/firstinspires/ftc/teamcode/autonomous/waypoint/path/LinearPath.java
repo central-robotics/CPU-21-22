@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
 import java.util.ArrayList;
 
 public class LinearPath extends Path {
-    public LinearPath(ArrayList<Position> points) {
+    public LinearPath(Position[] points) {
         super(points);
     }
 }

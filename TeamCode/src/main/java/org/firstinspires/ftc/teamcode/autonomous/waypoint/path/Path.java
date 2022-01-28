@@ -6,9 +6,10 @@ import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
 import java.util.ArrayList;
 
 public abstract class Path {
-    public ArrayList<Position> points;
+    public Position[] points;
+    public float[] xs, ys;
 
-    public Path(ArrayList<Position> points) {
+    public Path(Position[] points) {
         this.points = points;
     }
 }

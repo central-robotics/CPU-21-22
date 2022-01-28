@@ -26,15 +26,15 @@ public class Core extends OpMode {
         rightback = hardwareMap.dcMotor.get("rightBackMotor");
         rightback.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        armMotor = hardwareMap.dcMotor.get("armMotor");
-        armMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        armMotor = hardwareMap.dcMotor.get("slideMotor");
+        armMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         carousel = hardwareMap.dcMotor.get("carouselMotor");
         carousel.setDirection(DcMotorSimple.Direction.FORWARD);
 
         intake = hardwareMap.dcMotor.get("intakeMotor");
-        intake.setDirection(DcMotorSimple.Direction.FORWARD);
+        intake.setDirection(DcMotorSimple.Direction.REVERSE);
 
         parameters.mode = BNO055IMU.SensorMode.IMU;
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
@@ -59,5 +59,10 @@ public class Core extends OpMode {
 
     public void moveIntake(double power) {
         intake.setPower(power);
+    }
+
+    public void moveSlider(double power)
+    {
+        armMotor.setPower(power);
     }
 }
