@@ -26,7 +26,7 @@ public class Localization {
         }
         previousRobotPosition = new Position();
         encoder = new Encoder(hardware, initialTheta);
-        //vision = new Vision(vuforia);
+        vision = new Vision(vuforia);
         runtime = new ElapsedTime();
     }
 

@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -17,6 +18,7 @@ public class Hardware {
     public DcMotor carouselMotor;
     public DcMotor armMotor;
     public DcMotor intakeMotor;
+    public Servo boxServo, constraintServo;
     public BNO055IMU gyro;
     public WebcamName camera;
 
@@ -84,12 +86,17 @@ public class Hardware {
         carouselMotor = hardware.dcMotor.get("carouselMotor");
         carouselMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         carouselMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         armMotor = hardware.dcMotor.get("slideMotor");
         armMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         intakeMotor = hardware.dcMotor.get("intakeMotor");
         intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        boxServo = hardware.get(Servo.class, "boxServo");
+        constraintServo = hardware.get(Servo.class, "constraintServo");
     }
 
     private void initializeGyro(HardwareMap hardware)

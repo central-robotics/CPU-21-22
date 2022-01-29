@@ -51,8 +51,6 @@ public class Drive extends Core {
                 gamepad1.left_stick_x;
         rot_power = 1 * (gamepad1.right_stick_x);
 
-
-
         // Find out the distance of the joystick from resting position to control speed
         joystick_power = Math.sqrt(Math.pow(joystick_x, 2) + Math.pow(joystick_y, 2));
 

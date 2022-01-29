@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
 import org.firstinspires.ftc.teamcode.autonomous.vision.Vuforia;
 import org.firstinspires.ftc.teamcode.autonomous.waypoint.Navigation;
 import org.firstinspires.ftc.teamcode.autonomous.waypoint.Waypoint;
+import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.LinearPath;
 import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.Path;
 import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.SplinePath;
 import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.util.SplineHelper;
@@ -43,7 +44,7 @@ public class Instructions {
              actions.addTask(new SpinCarouselAction(0));
         }
         else{
-            actions.addTask(new SpeedrunAction(0));
+
         }
         //actions.addTask(new PlaceCubeAction(3, navigation));
 
@@ -61,18 +62,17 @@ public class Instructions {
                 rotation = initialTheta;
             else
                 rotation = 0;
+
+            LinearPath p1 = new LinearPath(new Position[]{
+                    new Position(330, 220, rotation),
+                    new Position(905, 210, initialTheta)
+            });
+
+            navigation.addPathToPipeline(p1);
         }
         else{
             //Some oth
         }
-
-        SplinePath path = new SplinePath(new Position[]{
-                new Position(0, 0, 0),
-                new Position(330, 230, 0),
-                new Position(550, 600, 0),
-        });
-
-        navigation.addPathToPipeline(path);
 
         try {
             navigation.calculateSplines();

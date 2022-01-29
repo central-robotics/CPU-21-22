@@ -38,8 +38,6 @@ public class Core extends OpMode {
         intake = hardwareMap.dcMotor.get("intakeMotor");
         intake.setDirection(DcMotorSimple.Direction.REVERSE);
 
-
-
         parameters.mode = BNO055IMU.SensorMode.IMU;
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         parameters.loggingEnabled = false;
@@ -50,7 +48,7 @@ public class Core extends OpMode {
 
     public void move(double posinput, double neginput, double rotinput)
     {
-        leftfront.setPower(0.5* (posinput+rotinput));
+        leftfront.setPower(0.5* ( posinput+rotinput));
         rightfront.setPower(0.5 * (-neginput+rotinput));
         leftback.setPower(0.5 * (neginput+rotinput));
         rightback.setPower(0.5 * (-posinput+rotinput));
