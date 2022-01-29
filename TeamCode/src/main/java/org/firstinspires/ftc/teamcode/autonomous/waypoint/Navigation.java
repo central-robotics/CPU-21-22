@@ -106,7 +106,7 @@ public class Navigation {
             if (opMode.isStopRequested())
                 break;
 
-            //actions.executeTask(i);
+            actions.executeTask(i);
         }
 
         /*for (int i = 0; i < waypoints.size(); i++)

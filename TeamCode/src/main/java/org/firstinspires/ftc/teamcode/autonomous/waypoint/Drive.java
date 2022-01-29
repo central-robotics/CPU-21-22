@@ -51,6 +51,7 @@ public class Drive {
         boolean thetaFinished = false;
         dist = 0;
 
+
         //Assume that starting position has been reached. Drive to target specified by waypoint.
         while(((Math.abs(destination.x - position.x) > 5) || (Math.abs(destination.y - position.y) > 5) || !thetaFinished) && !opMode.isStopRequested()) {
             position = localization.getRobotPosition();
@@ -81,36 +82,36 @@ public class Drive {
 
     public void driveAlongPath(Path path) throws Exception {
 
-        boolean thetaFinished = false;
-        dist = 0;
-        index = 0;
+        if (path.getClass() == LinearPath.class) {
+            for (int i = 0; i < path.points.length - 1; i++) {
+                boolean thetaFinished = false;
+                dist = 0;
+                index = 0;
 
-        while (((Math.abs(path.points[path.points.length - 1].x - position.x) > 5) || (Math.abs(path.points[path.points.length - 1].y - position.y) > 5)  && !opMode.isStopRequested())) {
+                while (((Math.abs(path.points[i].x - position.x) > 5) || (Math.abs(path.points[i].y - position.y) > 5) || !thetaFinished) && !opMode.isStopRequested()) {
+                    position = localization.getRobotPosition();
+                    localization.increment(position);
+                    thetaFinished = false;
 
-            thetaFinished = false;
-            double thetaError = path.points[path.points.length - 1].t - position.t;
-            boolean isCounterClockwise = false;
-            if ((thetaError) > 0 && (thetaError < Math.PI) ) {
-                isCounterClockwise = true;
+                    double thetaError = path.points[i].t - position.t;
+                    boolean isCounterClockwise = false;
+
+                    if ((thetaError) > 0 && (thetaError < Math.PI)) {
+                        isCounterClockwise = true;
+                    }
+
+                    if ((thetaError) < 0 && (thetaError < -Math.PI)) {
+                        isCounterClockwise = true;
+                        thetaError = path.points[i].t - position.t + (2 * Math.PI);
+                    }
+
+                    if (thetaError < Constants.THETA_TOLERANCE) {
+                        thetaFinished = true;
+                    }
+
+                    setLinearPowers(path, i, thetaError, isCounterClockwise);
+                }
             }
-
-            if ((thetaError) < 0 && (thetaError < -Math.PI)) {
-                isCounterClockwise = true;
-                thetaError = path.points[path.points.length - 1].t - position.t + (2 * Math.PI);
-            }
-
-            if (Math.abs(thetaError) < Constants.THETA_TOLERANCE){
-                thetaFinished = true;
-            }
-
-            if (path.getClass() == SplinePath.class)
-                setSplinePowers(path);
-            else
-                setLinearPowers(path, index);
-
-            controller.resetSum();
-
-            index++;
         }
     }
 
@@ -142,12 +143,7 @@ public class Drive {
         hardware.setMotorValues(positivePower, negativePower);
     }
 
-    public void setLinearPowers(Path path, int index)
-    {
-
-    }
-
-    public void setMotorPowers(Position waypointPos, double thetaError, boolean isCounterClockwise)
+    public void setLinearPowers(Path path, int index, double thetaError, boolean isCounterClockwise)
     {
         if (opMode.isStopRequested())
             return;
@@ -158,12 +154,12 @@ public class Drive {
         Velocity velocity = localization.getRobotVelocity(runtime);
         double orientation, magnitude, negOutput, posOutput;
 
-        if (waypointPos.x - position.x > 0)
-            orientation = Math.atan(controller.getSlope(waypointPos, position)) - Math.PI / 4 - position.t;
+        if (path.points[index].x - position.x > 0)
+            orientation = Math.atan(controller.getSlope(path.points[index], position)) - Math.PI / 4 - position.t;
         else
-            orientation = Math.atan(controller.getSlope(waypointPos, position)) + Math.PI - Math.PI / 4 - position.t;
+            orientation = Math.atan(controller.getSlope(path.points[index], position)) + Math.PI - Math.PI / 4 - position.t;
 
-        double error = Math.sqrt(Math.pow(waypointPos.y - position.y, 2) + Math.pow(waypointPos.x - position.x, 2));
+        double error = Math.sqrt(Math.pow(path.points[index].y - position.y, 2) + Math.pow(path.points[index].x - position.x, 2));
         double speed = Math.sqrt(Math.pow(velocity.dy, 2) + Math.pow(velocity.dx, 2));
 
         magnitude = controller.getOutput(error, speed);
@@ -185,5 +181,10 @@ public class Drive {
         }
 
         hardware.setMotorValuesWithRotation(0.1 * posOutput, 0.1 * negOutput, (isCounterClockwise ? -1 : 1) * thetaOutput);
+    }
+
+    public void setMotorPowers(Position waypointPos, double thetaError, boolean isCounterClockwise)
+    {
+
     }
 }
