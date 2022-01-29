@@ -83,7 +83,7 @@ public class Drive {
     public void driveAlongPath(Path path) throws Exception {
 
         if (path.getClass() == LinearPath.class) {
-            for (int i = 0; i < path.points.length - 1; i++) {
+            for (int i = 0; i < path.points.length; i++) {
                 boolean thetaFinished = false;
                 dist = 0;
                 index = 0;

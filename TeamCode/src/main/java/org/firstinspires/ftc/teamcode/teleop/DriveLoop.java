@@ -38,7 +38,7 @@ public class DriveLoop {
             moveBoxServo(1, hardware);
         } else
         {
-            moveBoxServo(0.5, hardware);
+            moveBoxServo(0.61, hardware);
         }
 
         if (opMode.gamepad1.right_bumper)
@@ -113,9 +113,9 @@ public class DriveLoop {
 
     public void move(double posinput, double neginput, double rotinput, TeleOpHardware hardware)
     {
-        hardware.lf.setPower(0.5* (-posinput+rotinput));
-        hardware.rf.setPower(0.5 * (neginput+rotinput));
-        hardware.lb.setPower(0.5 * (-neginput+rotinput));
-        hardware.rb.setPower(0.5 * (posinput+rotinput));
+        hardware.lf.setPower(.6* (-posinput-rotinput));
+        hardware.rf.setPower(.6 * (neginput-rotinput));
+        hardware.lb.setPower(.6 * (-neginput-rotinput));
+        hardware.rb.setPower(.6 * (posinput-rotinput));
     }
 }

@@ -81,7 +81,7 @@ public class Navigation {
 
     public void executeTask()
     {
-        for (int i = 0; i < pipeline.size(); i++)
+        /*for (int i = 0; i < pipeline.size(); i++)
         {
             Path path = pipeline.get(i);
 
@@ -107,9 +107,9 @@ public class Navigation {
                 break;
 
             actions.executeTask(i);
-        }
+        }*/
 
-        /*for (int i = 0; i < waypoints.size(); i++)
+        for (int i = 0; i < waypoints.size(); i++)
         {
             Waypoint waypoint = waypoints.get(i);
 
@@ -140,6 +140,6 @@ public class Navigation {
             actions.executeTask(i);
         }
 
-        waypoints.clear();*/
+        waypoints.clear();
     }
 }

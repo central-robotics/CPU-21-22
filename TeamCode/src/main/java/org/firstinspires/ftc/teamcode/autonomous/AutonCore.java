@@ -19,7 +19,7 @@ public class AutonCore {
 
         opMode.waitForStart();
 
-        hardware.boxServo.setPosition(1);
+        hardware.constraintServo.setPosition(0);
 
         runtime.reset();
 

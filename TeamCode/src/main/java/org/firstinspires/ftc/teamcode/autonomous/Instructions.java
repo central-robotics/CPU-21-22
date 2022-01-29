@@ -41,7 +41,7 @@ public class Instructions {
     {
         actions = new Actions(hardware, localization, vuforia);
         if (!Constants.IS_LEFT_OPMODE) {
-             actions.addTask(new SpinCarouselAction(0));
+             actions.addTask(new SpeedrunAction(0));
         }
         else{
 
@@ -62,23 +62,16 @@ public class Instructions {
                 rotation = initialTheta;
             else
                 rotation = 0;
-
-            LinearPath p1 = new LinearPath(new Position[]{
-                    new Position(330, 220, rotation),
-                    new Position(905, 210, initialTheta)
-            });
-
-            navigation.addPathToPipeline(p1);
         }
-        else{
-            //Some oth
+        else {
+            navigation.addWayPointToQueue(new Waypoint(new Position(initialX, initialY, initialTheta), new Position(330, 2083, initialTheta)));
         }
 
-        try {
+        /*try {
             navigation.calculateSplines();
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     public void runTasks()

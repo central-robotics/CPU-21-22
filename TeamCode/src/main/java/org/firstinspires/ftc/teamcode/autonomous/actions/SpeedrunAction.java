@@ -41,9 +41,6 @@ public class SpeedrunAction extends Action {
                 hardware.setMotorValuesWithRotation(0, 0, 0.3);
             }
 
-
-
-
                 hardware.setMotorValues(0,0);
     }
 }
