@@ -14,6 +14,9 @@ import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
 import org.firstinspires.ftc.teamcode.autonomous.vision.Vuforia;
 import org.firstinspires.ftc.teamcode.autonomous.waypoint.Navigation;
 import org.firstinspires.ftc.teamcode.autonomous.waypoint.Waypoint;
+import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.Path;
+import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.SplinePath;
+import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.util.SplineHelper;
 
 /*
 The Instructions class contains a map of waypoints and actions. It outlines all of the
@@ -51,19 +54,30 @@ public class Instructions {
     private void registerNav(Hardware hardware, Localization localization, ElapsedTime runtime, Actions actions, Telemetry telemetry, LinearOpMode opMode, double initialX, double initialY, double initialTheta)
     {
         navigation = new Navigation(hardware, localization, runtime, actions, telemetry, opMode);
+
         double rotation;
         if (!Constants.IS_LEFT_OPMODE) {
             if (!Constants.IS_BLUE_TEAM)
                 rotation = initialTheta;
             else
                 rotation = 0;
-
-            navigation.addWayPointToQueue(new Waypoint(new Position(initialX, initialY, initialTheta), new Position(330, 230, rotation)));
-            navigation.addWayPointToQueue(new Waypoint(new Position(330, 230, rotation), new Position(905, 210, initialTheta)));
         }
         else{
-            navigation.addWayPointToQueue(new Waypoint(new Position(initialX, initialY, initialTheta), new Position(330, 2083, initialTheta)));
+            //Some oth
+        }
 
+        SplinePath path = new SplinePath(new Position[]{
+                new Position(0, 0, 0),
+                new Position(330, 230, 0),
+                new Position(550, 600, 0),
+        });
+
+        navigation.addPathToPipeline(path);
+
+        try {
+            navigation.calculateSplines();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

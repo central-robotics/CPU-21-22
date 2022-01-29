@@ -36,6 +36,8 @@ public final class SplineHelper {
         spline.ys = ySpline.mapSpline(times);
         spline.ySpline = ySpline;
 
+        spline.dist = totalDist;
+
         return spline;
     }
 }

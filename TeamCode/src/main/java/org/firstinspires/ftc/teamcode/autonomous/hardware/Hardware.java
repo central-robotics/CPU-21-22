@@ -43,7 +43,7 @@ public class Hardware {
         leftBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         rightFrontMotor = hardware.dcMotor.get("rightFrontMotor");
-        rightFrontMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         rightFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -84,7 +84,7 @@ public class Hardware {
         carouselMotor = hardware.dcMotor.get("carouselMotor");
         carouselMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         carouselMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        armMotor = hardware.dcMotor.get("armMotor");
+        armMotor = hardware.dcMotor.get("slideMotor");
         armMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intakeMotor = hardware.dcMotor.get("intakeMotor");

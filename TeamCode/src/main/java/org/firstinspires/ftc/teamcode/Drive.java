@@ -14,6 +14,7 @@ public class Drive extends Core {
     double positive_power, negative_power, rot_power;
     double joystick_x, joystick_y, joystick_power;
     double orientation;
+    double servoAngle = 0;
     Orientation gyro_angles;
     long prevTime = System.currentTimeMillis();
 
@@ -43,8 +44,6 @@ public class Drive extends Core {
         if (!gamepad1.right_bumper && !gamepad1.left_bumper)
             moveSlider(0.00001);
 
-
-
         prevTime = System.currentTimeMillis();
         // Get all the info we from the gamepad
         joystick_y = gamepad1.left_stick_y;
@@ -58,7 +57,7 @@ public class Drive extends Core {
         joystick_power = Math.sqrt(Math.pow(joystick_x, 2) + Math.pow(joystick_y, 2));
 
         // Pull raw orientation values from the gyro
-        gyro_angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS);
+        gyro_angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
         double theta = gyro_angles.firstAngle; // Add pi for CPU's robot
 
 
@@ -72,8 +71,8 @@ public class Drive extends Core {
         telemetry.update();
 
         // Pass that angle through a pair of wave functions to get the power for each corresponding pair of parallel wheels
-        negative_power = 1 * (joystick_power * Math.sin(orientation));
-        positive_power = (orientation != 0) ? 1 * (joystick_power * Math.cos(orientation)) :
+        negative_power = (joystick_power * Math.sin(orientation));
+        positive_power = (orientation != 0) ? (joystick_power * Math.cos(orientation)) :
                 negative_power;
 
         // This is all we need to actually move the robot, method decs in Core.java

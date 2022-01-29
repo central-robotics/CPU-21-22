@@ -34,7 +34,7 @@ public class Vuforia {
     public Vuforia(Hardware hardware)
     {
         this.hardware = hardware;
-        initializeVuforia();
+        //initializeVuforia();
     }
 
     private void initializeVuforia()

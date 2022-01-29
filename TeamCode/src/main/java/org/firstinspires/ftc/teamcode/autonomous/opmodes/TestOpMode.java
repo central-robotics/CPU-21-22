@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp
 public class TestOpMode extends OpMode {
@@ -37,6 +38,43 @@ public class TestOpMode extends OpMode {
 
         rightback = hardwareMap.dcMotor.get("rightBackMotor");
         rightback.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        boxServo = hardwareMap.servo.get("boxServo");
+        boxServo.setDirection(Servo.Direction.FORWARD);
+        boxServo.setPosition(0.5
+        );
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        rightback.setPower(1);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        rightfront.setPower(1);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        leftfront.setPower(1);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        leftback.setPower(1);
         intakeMotor.setPower(1);
     }
 

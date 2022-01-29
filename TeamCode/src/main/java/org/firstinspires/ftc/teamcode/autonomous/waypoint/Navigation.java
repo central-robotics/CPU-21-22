@@ -10,6 +10,8 @@ import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
 import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.Path;
+import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.SplinePath;
+import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.util.SplineHelper;
 
 import java.util.ArrayList;
 
@@ -48,6 +50,26 @@ public class Navigation {
         pipeline.add(path);
     }
 
+    public void calculateSplines() throws Exception {
+        SplineHelper helper = new SplineHelper();
+
+        for (Path p : pipeline)
+        {
+            if (p.getClass() == SplinePath.class)
+            {
+                float[] x = new float[p.points.length];
+                float[] y = new float[p.points.length];
+                for (int i = 0; i < p.points.length - 1; i++)
+                {
+                    x[i] = (float) p.points[i].x;
+                    y[i] = (float) p.points[i].y;
+                }
+
+                ((SplinePath) p).spline = helper.calculateSpline(x, y, 400);
+            }
+        }
+    }
+
     public void addWayPointToQueue(Waypoint waypoint)
     {
         if (!Constants.IS_BLUE_TEAM) {
@@ -59,8 +81,6 @@ public class Navigation {
 
     public void executeTask()
     {
-
-
         for (int i = 0; i < pipeline.size(); i++)
         {
             Path path = pipeline.get(i);
@@ -76,9 +96,20 @@ public class Navigation {
                 //nothing
             }
 
-            drive.driveAlongPath(path);
+            try {
+                drive.driveAlongPath(path);
+            } catch (Exception e) {
+                 telem.update();
+                e.printStackTrace();
+            }
+
+            if (opMode.isStopRequested())
+                break;
+
+            //actions.executeTask(i);
         }
-        for (int i = 0; i < waypoints.size(); i++)
+
+        /*for (int i = 0; i < waypoints.size(); i++)
         {
             Waypoint waypoint = waypoints.get(i);
 
@@ -109,6 +140,6 @@ public class Navigation {
             actions.executeTask(i);
         }
 
-        waypoints.clear();
+        waypoints.clear();*/
     }
 }
