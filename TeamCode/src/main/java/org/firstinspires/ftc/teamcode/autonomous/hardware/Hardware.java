@@ -43,7 +43,7 @@ public class Hardware {
         leftBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         rightFrontMotor = hardware.dcMotor.get("rightFrontMotor");
-        rightFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightFrontMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         rightFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

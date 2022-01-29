@@ -20,7 +20,7 @@ public class Core extends OpMode {
         leftfront.setDirection(DcMotorSimple.Direction.FORWARD);
 
         rightfront = hardwareMap.dcMotor.get("rightFrontMotor");
-        rightfront.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightfront.setDirection(DcMotorSimple.Direction.FORWARD);
 
         leftback = hardwareMap.dcMotor.get("leftBackMotor");
         leftback.setDirection(DcMotorSimple.Direction.FORWARD);
