@@ -21,6 +21,7 @@ public class Hardware {
     public Servo boxServo, constraintServo;
     public BNO055IMU gyro;
     public WebcamName camera;
+    public boolean intakeSpinning = false;
 
     public Hardware (HardwareMap hardware)
     {
