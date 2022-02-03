@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.autonomous.Constants;
 import org.firstinspires.ftc.teamcode.autonomous.control.PID;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
@@ -12,19 +13,19 @@ import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Velocity;
 import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.LinearPath;
 import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.Path;
-import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.SplinePath;
+import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.util.ParametricSpline;
+import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.util.SplineHelper;
 
 public class Drive {
-    private Localization localization;
-    private Hardware hardware;
+    private final Localization localization;
+    private final Hardware hardware;
     private PID controller;
     private PID thetaController;
     private Position position;
     private Position prevPosition;
-    private ElapsedTime runtime;
-    private LinearOpMode opMode;
+    private final ElapsedTime runtime;
+    private final LinearOpMode opMode;
     private float dist;
-    private int index = 0;
 
     public Drive(Localization localization, Hardware hardware, ElapsedTime runtime, LinearOpMode opMode) {
         this.localization = localization;
@@ -36,8 +37,8 @@ public class Drive {
     }
     private void initializeDrive()
     {
-        PIDCoefficients coefficients = new PIDCoefficients(0.005, 0.00001, 0);
-        PIDCoefficients thetaCoefficients = new PIDCoefficients(0.07, 0.0001, 0);
+        PIDCoefficients coefficients = new PIDCoefficients(0.0115, 0.00006, 0);
+        PIDCoefficients thetaCoefficients = new PIDCoefficients(0.22, 0.0004, 0);
 
         controller = new PID(coefficients);
         thetaController = new PID(thetaCoefficients);
@@ -53,7 +54,7 @@ public class Drive {
 
 
         //Assume that starting position has been reached. Drive to target specified by waypoint.
-        while(((Math.abs(destination.x - position.x) > 5) || (Math.abs(destination.y - position.y) > 5) || !thetaFinished) && !opMode.isStopRequested()) {
+        while(((Math.abs(destination.x - position.x) > 8) || (Math.abs(destination.y - position.y) > 8) || !thetaFinished) && !opMode.isStopRequested()) {
             position = localization.getRobotPosition();
             localization.increment(position);
             thetaFinished = false;
@@ -74,26 +75,26 @@ public class Drive {
                 thetaFinished = true;
             }
 
-            setMotorPowers(destination, thetaError, isCounterClockwise);
+            //setMotorPowers(destination, thetaError, isCounterClockwise);
         }
 
         controller.resetSum();
     }
 
-    public void driveAlongPath(Path path) throws Exception {
+    public void driveAlongPath(Path path, Telemetry telem) {
 
         if (path.getClass() == LinearPath.class) {
             for (int i = 0; i < path.points.length; i++) {
+                Position target = path.points[i];
                 boolean thetaFinished = false;
                 dist = 0;
-                index = 0;
 
-                while (((Math.abs(path.points[i].x - position.x) > 5) || (Math.abs(path.points[i].y - position.y) > 5) || !thetaFinished) && !opMode.isStopRequested()) {
+                while (((Math.abs(target.x - position.x) > 8) || (Math.abs(target.y - position.y) > 8) || !thetaFinished) && !opMode.isStopRequested()) {
                     position = localization.getRobotPosition();
                     localization.increment(position);
                     thetaFinished = false;
 
-                    double thetaError = path.points[i].t - position.t;
+                    double thetaError = target.t - position.t;
                     boolean isCounterClockwise = false;
 
                     if ((thetaError) > 0 && (thetaError < Math.PI)) {
@@ -102,48 +103,72 @@ public class Drive {
 
                     if ((thetaError) < 0 && (thetaError < -Math.PI)) {
                         isCounterClockwise = true;
-                        thetaError = path.points[i].t - position.t + (2 * Math.PI);
+                        thetaError = target.t - position.t + (2 * Math.PI);
                     }
 
                     if (thetaError < Constants.THETA_TOLERANCE) {
                         thetaFinished = true;
                     }
 
-                    setLinearPowers(path, i, thetaError, isCounterClockwise);
+                    setLinearPowers(target, thetaError, isCounterClockwise, telem);
+                }
+                controller.resetSum();
+                thetaController.resetSum();
+            }
+        } else
+        {
+            SplineHelper splineHelper = new SplineHelper();
+
+            double[] x, y;
+            x = new double[path.points.length];
+            y = new double[path.points.length];
+
+            for (int i = 0; i < path.points.length; i++)
+            {
+                x[i] = path.points[i].x;
+                y[i] = path.points[i].y;
+            }
+
+            ParametricSpline spline = splineHelper.computeSpline(x, y);
+
+            for (int i = 0; i < path.points.length; i++)
+            {
+                while (((Math.abs(path.points[i].x - position.x) > 5) || (Math.abs(path.points[i].y - position.y) > 5) && !opMode.isStopRequested())) {
+                    position = localization.getRobotPosition();
+                    localization.increment(position);
+
+                    setSplinePowers(path, i, spline);
                 }
             }
         }
     }
 
-    public void setSplinePowers(Path path) throws Exception {
-        SplinePath sPath = (SplinePath) path;
-
+    public void setSplinePowers(Path path, int index, ParametricSpline spline) {
         position = localization.getRobotPosition();
         localization.increment(position);
 
         dist += Math.sqrt(Math.pow(position.x - prevPosition.x, 2) + Math.pow(position.y - prevPosition.y, 2));
-        float t = dist / sPath.spline.dist;
-
-        double orientation = Math.atan(sPath.spline.ySpline.computeDerivative(t) / sPath.spline.xSpline.computeDerivative(t)) - Math.PI / 4 - position.t;
+        double t = dist / spline.splineDistance;
+        double orientation = Math.atan(spline.getDerivative(t));
 
         if (path.points[path.points.length - 1].x - position.x < 0)
             orientation += Math.PI;
 
-        double magnitude = 0.05f; //Random value until PID can be integrated into splines.
+        double magnitude = Math.abs(spline.getCurvature(t)) + 0.1;
         double negativePower;
         double positivePower;
 
         if (orientation == 1)
             positivePower = 1;
         else
-            positivePower = magnitude * (1-t) * Math.cos(orientation);
+            positivePower = magnitude * (1-dist) * Math.cos(orientation);
 
-        negativePower = magnitude * (1-t) * Math.sin(orientation);
+        negativePower = magnitude * (1-dist) * Math.sin(orientation);
 
         hardware.setMotorValues(positivePower, negativePower);
     }
 
-    public void setLinearPowers(Path path, int index, double thetaError, boolean isCounterClockwise)
+    public void setLinearPowers(Position target, double thetaError, boolean isCounterClockwise, Telemetry telem)
     {
         if (opMode.isStopRequested())
             return;
@@ -151,15 +176,23 @@ public class Drive {
         position = localization.getRobotPosition();
         localization.increment(position);
 
+        telem.addData("TARGET POS X", target.x);
+        telem.addData("TARGET POS Y", target.y);
+        telem.addData("TARGET POS T", target.t);
+        telem.addData("CURRENT POS X", position.x);
+        telem.addData("CURRENT POS Y", position.y);
+        telem.addData("CURRENT POS T", position.t);
+        telem.update();
+
         Velocity velocity = localization.getRobotVelocity(runtime);
         double orientation, magnitude, negOutput, posOutput;
 
-        if (path.points[index].x - position.x > 0)
-            orientation = Math.atan(controller.getSlope(path.points[index], position)) - Math.PI / 4 - position.t;
+        if (target.x - position.x > 0)
+            orientation = Math.atan(controller.getSlope(target, position)) - Math.PI / 4 - position.t;
         else
-            orientation = Math.atan(controller.getSlope(path.points[index], position)) + Math.PI - Math.PI / 4 - position.t;
+            orientation = Math.atan(controller.getSlope(target, position)) + Math.PI - Math.PI / 4 - position.t;
 
-        double error = Math.sqrt(Math.pow(path.points[index].y - position.y, 2) + Math.pow(path.points[index].x - position.x, 2));
+        double error = Math.sqrt(Math.pow(target.y - position.y, 2) + Math.pow(target.x - position.x, 2));
         double speed = Math.sqrt(Math.pow(velocity.dy, 2) + Math.pow(velocity.dx, 2));
 
         magnitude = controller.getOutput(error, speed);
@@ -181,10 +214,5 @@ public class Drive {
         }
 
         hardware.setMotorValuesWithRotation(0.1 * posOutput, 0.1 * negOutput, (isCounterClockwise ? -1 : 1) * thetaOutput);
-    }
-
-    public void setMotorPowers(Position waypointPos, double thetaError, boolean isCounterClockwise)
-    {
-
     }
 }

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.autonomous.waypoint.path.util;
+package org.firstinspires.ftc.teamcode.autonomous.waypoint.path.util.oldCode;
 
 public class MatrixSolver {
     //Represents each diagonal in tridiagonal matrix.

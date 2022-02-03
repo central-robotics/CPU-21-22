@@ -28,66 +28,20 @@ public class PlaceCubeAction extends Action {
     }
 
     @Override
-    public void execute(Hardware hardware, Localization localization, Vuforia vuforia) {
+    public void execute(Hardware hardware, Localization localization, Vuforia vuforia, ObjectDetector detector) {
+        ObjectDetector.BarcodeLocation location = detector.getRecognition();
 
-        ObjectDetector objectDetector = new ObjectDetector(hardware, vuforia);
-
-        Position position = new Position();
-
-        //SHIPPING HUB COORD.
-        position.x = 1000;
-        position.y = 1000;
-
-        Position currentPosition = localization.getRobotPosition();
-
-
-        ArmLevel armLevel = ArmLevel.MIDDLE;
-
-
-        navigation.drive.driveToTarget(position);
-
-        switch (armLevel)
+        if (Constants.IS_LEFT_OPMODE)
         {
-            case BOTTOM:
-                break;
-            case MIDDLE:
-                break;
-            case TOP:
-                break;
-        }
-    }
-
-    private void moveArm(ArmLevel armLevel, Hardware hardware)
-    {
-        double targetPos = 700;
-
-        switch (armLevel) {
-            case BOTTOM:
-                targetPos = 400;
-                break;
-            case MIDDLE:
-                targetPos = 700;
-                break;
-            case TOP:
-                targetPos = 1000;
-                break;
+            Position pos = new Position(746, 1220, 0);
+        } else
+        {
+            Position pos = new Position(746, 1830, 0);
         }
 
-        PIDCoefficients armCoefficients = new PIDCoefficients(-0.05, 0, 0);
-        PID pid = new PID(armCoefficients);
-
-        while (Math.abs(hardware.intakeMotor.getCurrentPosition()) > targetPos - 20
-                && Math.abs(hardware.intakeMotor.getCurrentPosition()) < targetPos + 20)
+        while (true)
         {
 
         }
-    }
-
-    private enum ArmLevel
-    {
-        BOTTOM,
-        MIDDLE,
-        TOP,
-        CAP
     }
 }

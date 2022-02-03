@@ -50,35 +50,6 @@ public class Navigation {
         pipeline.add(path);
     }
 
-    public void calculateSplines() throws Exception {
-        SplineHelper helper = new SplineHelper();
-
-        for (Path p : pipeline)
-        {
-            if (p.getClass() == SplinePath.class)
-            {
-                float[] x = new float[p.points.length];
-                float[] y = new float[p.points.length];
-                for (int i = 0; i < p.points.length - 1; i++)
-                {
-                    x[i] = (float) p.points[i].x;
-                    y[i] = (float) p.points[i].y;
-                }
-
-                ((SplinePath) p).spline = helper.calculateSpline(x, y, 400);
-            }
-        }
-    }
-
-    public void addWayPointToQueue(Waypoint waypoint)
-    {
-        if (!Constants.IS_BLUE_TEAM) {
-            waypoint.startingPos.x *= -1;
-            waypoint.targetPos.x *= -1;
-        }
-        waypoints.add(waypoint);
-    }
-
     public void executeTask()
     {
         for (int i = 0; i < pipeline.size(); i++)
@@ -89,6 +60,7 @@ public class Navigation {
                 break;
 
             double time = runtime.milliseconds();
+
             hardware.setAllMotorPowers(0);
 
             while (runtime.milliseconds() - time < 500)
@@ -96,12 +68,7 @@ public class Navigation {
                 //nothing
             }
 
-            try {
-                drive.driveAlongPath(path);
-            } catch (Exception e) {
-                 telem.update();
-                e.printStackTrace();
-            }
+            drive.driveAlongPath(path, telem);
 
             if (opMode.isStopRequested())
                 break;

@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.autonomous.actions.util.ObjectDetector;
+import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
 import org.firstinspires.ftc.teamcode.autonomous.vision.Vuforia;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
@@ -14,8 +16,9 @@ public class AutonCore {
         runtime = new ElapsedTime();
         Hardware hardware = new Hardware(opMode.hardwareMap);
         Vuforia vuforia = new Vuforia(hardware);
+        ObjectDetector detector = new ObjectDetector(hardware, vuforia);
         Localization localization = new Localization(hardware, vuforia, opMode.telemetry, initialX, initialY, initialTheta);
-        Instructions instructions = new Instructions(hardware, localization, runtime, opMode.telemetry, opMode, vuforia, initialX, initialY, initialTheta);
+        Instructions instructions = new Instructions(hardware, localization, runtime, opMode.telemetry, opMode, vuforia, detector, initialX, initialY, initialTheta);
 
         opMode.waitForStart();
 
@@ -28,6 +31,20 @@ public class AutonCore {
         } while (runtime.milliseconds() < 500);*/
 
         runtime.reset();
+
+        /*while(true)
+        {
+            Position pos = localization.getRobotPosition();
+            localization.increment(pos);
+            opMode.telemetry.addData("X", pos.x);
+            opMode.telemetry.addData("Y", pos.y);
+            opMode.telemetry.addData("T", pos.t);
+            opMode.telemetry.addData("0", hardware.leftFrontMotor.getCurrentPosition());
+            opMode.telemetry.addData("1", hardware.rightFrontMotor.getCurrentPosition());
+            opMode.telemetry.addData("2", hardware.rightBackMotor.getCurrentPosition());
+            opMode.telemetry.addData("3", hardware.leftBackMotor.getCurrentPosition());
+            opMode.telemetry.update();
+        }*/
 
         instructions.runTasks();
         opMode.stop();

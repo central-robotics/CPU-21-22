@@ -12,6 +12,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.teamcode.autonomous.Constants;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
 
 public class Hardware {
     public DcMotor leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor;
@@ -21,14 +23,17 @@ public class Hardware {
     public Servo boxServo, constraintServo;
     public BNO055IMU gyro;
     public WebcamName camera;
+    public OpenCvCamera openCvCamera;
+    public HardwareMap map;
     public boolean intakeSpinning = false;
 
     public Hardware (HardwareMap hardware)
     {
+        map = hardware;
         initializeGyro(hardware);
         initializeDriveMotors(hardware);
         initializeAccessoryMotors(hardware);
-        //initializeWebcam(hardware);
+        initializeWebcam(hardware);
     }
 
     private void initializeDriveMotors(HardwareMap hardware)
@@ -111,6 +116,7 @@ public class Hardware {
 
     private void initializeWebcam(HardwareMap hardware)
     {
-        camera = hardware.get(WebcamName.class, "PrimaryWebcam");
+        camera = hardware.get(WebcamName.class, "cam");
+        openCvCamera = OpenCvCameraFactory.getInstance().createWebcam(camera);
     }
 }

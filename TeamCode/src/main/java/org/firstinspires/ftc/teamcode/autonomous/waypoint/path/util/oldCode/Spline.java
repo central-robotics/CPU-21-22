@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.autonomous.waypoint.path.util;
+package org.firstinspires.ftc.teamcode.autonomous.waypoint.path.util.oldCode;
 
 //CREDIT TO RYAN SEGHERS FOR A FAST INTERPRETATION OF THE CUBIC SPLINE.
 public class Spline {

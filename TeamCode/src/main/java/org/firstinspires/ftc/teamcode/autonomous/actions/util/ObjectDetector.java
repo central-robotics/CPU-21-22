@@ -12,9 +12,19 @@ import org.firstinspires.ftc.teamcode.autonomous.Constants;
 import org.firstinspires.ftc.teamcode.autonomous.actions.PlaceCubeAction;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.vision.Vuforia;
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.Rect;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvPipeline;
+import org.outoftheboxrobotics.tensorflowapi.ImageClassification.TFICBuilder;
+import org.outoftheboxrobotics.tensorflowapi.ImageClassification.TensorImageClassifier;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ObjectDetector {
@@ -22,6 +32,7 @@ public class ObjectDetector {
     private OpenCvCamera camera;
     private ElementPipeline pipeline;
     private Hardware hardware;
+    private TensorImageClassifier imageClassifier;
 
     public ObjectDetector(Hardware hardware, Vuforia vuforia)
     {
@@ -34,7 +45,14 @@ public class ObjectDetector {
 
     private void initializeObjectDetector()
     {
-        OpenCvCamera camera = OpenCvCameraFactory.getInstance().createVuforiaPassthrough(vuforia.vuforiaLocalizer, vuforia.parameters);
+        try {
+            imageClassifier = new TFICBuilder(hardware.map, "model.tflite", "NoTeamElement", "TeamElement").setQuantized(true).setNumThreads(2).useNNAPI().build();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //OpenCvCamera camera = OpenCvCameraFactory.getInstance().createVuforiaPassthrough(vuforia.vuforiaLocalizer, vuforia.parameters);
+        camera = hardware.openCvCamera;
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
@@ -52,7 +70,48 @@ public class ObjectDetector {
     //To allow the robot to figure out the position of any element without training an AI model, we will figure out which barcode we can't see.
     public BarcodeLocation getRecognition()
     {
-        return BarcodeLocation.values()[pipeline.getElementIndex()];
+        Mat mat = pipeline.getMat();
+
+        Mat[] submats = new Mat[3];
+
+        Mat rawLeftMat = mat.submat(new Rect(0, 0, Constants.WEBCAM_SECTION_WIDTH, Constants.WEBCAM_HEIGHT));
+        Mat leftMat = new Mat();
+        Imgproc.resize(rawLeftMat, leftMat, new Size(224, 224));
+
+        Mat rawCenterMat = mat.submat(new Rect(Constants.WEBCAM_SECTION_WIDTH, 0, Constants.WEBCAM_SECTION_WIDTH, Constants.WEBCAM_HEIGHT));
+        Mat centerMat = new Mat();
+        Imgproc.resize(rawCenterMat, centerMat, new Size(224, 224));
+
+        Mat rawRightMat = mat.submat(new Rect(Constants.WEBCAM_SECTION_WIDTH, 0, Constants.WEBCAM_SECTION_WIDTH, Constants.WEBCAM_HEIGHT));
+        Mat rightMat = new Mat();
+        Imgproc.resize(rawRightMat, rightMat, new Size(224, 224));
+
+        submats[0] = leftMat;
+        submats[1] = centerMat;
+        submats[2] = rightMat;
+
+        float highestConfidence = 0;
+        int elementIndex = 1;
+
+        for (int i = 0; i < submats.length; i++)
+        {
+            float confidence = getConfidence(imageClassifier.recognize(submats[i]));
+
+            if (confidence > highestConfidence)
+            {
+                highestConfidence = confidence;
+                elementIndex = i;
+            }
+        }
+
+        return BarcodeLocation.values()[elementIndex];
+    }
+
+    private float getConfidence(List<TensorImageClassifier.Recognition> output) {
+        if (output.size() < 2) {
+            return -1;
+        }
+        return output.get(0).getTitle().equals("TeamElement") ? output.get(0).getConfidence() : output.get(1).getConfidence();
     }
 
     public enum BarcodeLocation

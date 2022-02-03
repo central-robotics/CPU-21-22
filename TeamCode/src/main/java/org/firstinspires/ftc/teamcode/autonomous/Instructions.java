@@ -9,12 +9,14 @@ import org.firstinspires.ftc.teamcode.autonomous.actions.PlaceCubeAction;
 import org.firstinspires.ftc.teamcode.autonomous.actions.PlaceElementAction;
 import org.firstinspires.ftc.teamcode.autonomous.actions.SpinCarouselAction;
 import org.firstinspires.ftc.teamcode.autonomous.actions.SpinIntakeAction;
+import org.firstinspires.ftc.teamcode.autonomous.actions.util.ObjectDetector;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
 import org.firstinspires.ftc.teamcode.autonomous.vision.Vuforia;
 import org.firstinspires.ftc.teamcode.autonomous.waypoint.Navigation;
 import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.LinearPath;
+import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.SplinePath;
 
 /*
 The Instructions class contains a map of waypoints and actions. It outlines all of the
@@ -27,22 +29,22 @@ public class Instructions {
     public Navigation navigation;
     public Actions actions;
 
-    public Instructions(Hardware hardware, Localization localization, ElapsedTime runtime, Telemetry telemetry, LinearOpMode opMode, Vuforia vuforia, double initialX, double initialY, double initialTheta)
+    public Instructions(Hardware hardware, Localization localization, ElapsedTime runtime, Telemetry telemetry, LinearOpMode opMode, Vuforia vuforia, ObjectDetector detector, double initialX, double initialY, double initialTheta)
     {
-        registerActions(hardware, localization, vuforia);
+        registerActions(hardware, localization, vuforia, detector);
         registerNav(hardware, localization, runtime, actions, telemetry, opMode, initialX, initialY, initialTheta);
     }
 
     //Enter robot actions into this class.
-    private void registerActions(Hardware hardware, Localization localization, Vuforia vuforia)
+    private void registerActions(Hardware hardware, Localization localization, Vuforia vuforia, ObjectDetector detector)
     {
-        actions = new Actions(hardware, localization, vuforia);
+        actions = new Actions(hardware, localization, vuforia, detector);
 
         if (!Constants.IS_BLUE_TEAM) //RED ALLIANCE
         {
             if (Constants.IS_LEFT_OPMODE) //CAROUSEL SIDE
             {
-                actions.addTask(new PlaceCubeAction(0, navigation));
+                //actions.addTask(new PlaceCubeAction(0, navigation));
                 actions.addTask(new SpinCarouselAction(1));
             } else
             {
@@ -52,24 +54,24 @@ public class Instructions {
                 {
                     actions.addTask(new SpinIntakeAction(1 + (i * 3)));
                     actions.addTask(new SpinIntakeAction(2 + (i * 3)));
-                    actions.addTask(new PlaceElementAction(3+ (i*3)));
+                    //actions.addTask(new PlaceElementAction(3+ (i*3)));
                 }
             }
         } else //BLUE ALLIANCE
         {
             if (Constants.IS_LEFT_OPMODE) //WAREHOUSE SIDE
             {
-                actions.addTask(new PlaceCubeAction(0, navigation));
+                //actions.addTask(new PlaceCubeAction(0, navigation));
 
                 for (int i = 0; i < Constants.WAREHOUSE_ELEMENTS; i++)
                 {
                     actions.addTask(new SpinIntakeAction(1 + (i * 3)));
                     actions.addTask(new SpinIntakeAction(2 + (i * 3)));
-                    actions.addTask(new PlaceElementAction(3+ (i*3)));
+                    //actions.addTask(new PlaceElementAction(3+ (i*3)));
                 }
             } else
             {
-                actions.addTask(new PlaceCubeAction(0, navigation));
+               // actions.addTask(new PlaceCubeAction(0, navigation));
                 actions.addTask(new SpinCarouselAction(1));
             }
         }
@@ -124,8 +126,8 @@ public class Instructions {
                 for (int i = 0; i < Constants.WAREHOUSE_ELEMENTS; i++) {
 
                     LinearPath p1 = new LinearPath(new Position[]{
-                            new Position(243, 1828, 0),
-                            new Position(243, 2743, 0)
+                            new Position(243, 2200, Math.PI),
+                            new Position(243, 2743, Math.PI)
                     });
 
                     navigation.addPathToPipeline(p1);
@@ -133,8 +135,8 @@ public class Instructions {
                     //START SPINNING INTAKE
 
                     LinearPath p2 = new LinearPath(new Position[]{
-                            new Position(243, 3139, 0),
-                            new Position(243, 3200, 0)
+                            new Position(243, 3139, Math.PI),
+                            new Position(243, 3200, Math.PI)
                     });
 
                     navigation.addPathToPipeline(p2);
@@ -142,7 +144,7 @@ public class Instructions {
                     //GO BACK TO HUB
 
                     LinearPath p3 = new LinearPath(new Position[]{
-                            new Position(243, 1828, 0),
+                            new Position(243, 1828, Math.PI),
                             new Position(768, 1524, initialTheta)
                     });
 

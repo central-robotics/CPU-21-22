@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.autonomous.actions;
 
+import org.firstinspires.ftc.teamcode.autonomous.actions.util.ObjectDetector;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
 import org.firstinspires.ftc.teamcode.autonomous.vision.Vuforia;
@@ -12,12 +13,14 @@ public class Actions {
     private final Hardware hardware;
     private final Localization localization;
     private final Vuforia vuforia;
+    private final ObjectDetector detector;
 
-    public Actions(Hardware hardware, Localization localization, Vuforia vuforia)
+    public Actions(Hardware hardware, Localization localization, Vuforia vuforia, ObjectDetector detector)
     {
         this.hardware = hardware;
         this.localization = localization;
         this.vuforia = vuforia;
+        this.detector = detector;
     }
 
     public void addTask(Action action)
@@ -31,7 +34,7 @@ public class Actions {
         hardware.setAllMotorPowers(0);
         for (Action task : actions) {
             if (task.index == index) {
-                task.execute(hardware, localization, vuforia);
+                task.execute(hardware, localization, vuforia, detector);
                 return;
             }
         }

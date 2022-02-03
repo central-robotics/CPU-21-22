@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 public abstract class Path {
     public Position[] points;
-    public float[] xs, ys;
 
     public Path(Position[] points) {
         this.points = points;

@@ -17,5 +17,8 @@ public final class Constants {
     public static final double DIST_TO_BARCODE = 700;
     public static final double DIST_BETWEEN_BARCODE = 200;
     public static final int HUE_TARGET = 359; //ELEMENT COLOR FOR DETECTION
-    public static final int WAREHOUSE_ELEMENTS = 3;
+    public static final int WAREHOUSE_ELEMENTS = 1;
+    public static final int WEBCAM_WIDTH = 1280;
+    public static final int WEBCAM_HEIGHT = 720;
+    public static final int WEBCAM_SECTION_WIDTH = 427;
 }
