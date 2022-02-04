@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 public class Localization {
     private Position newPosition; //Current robot position. This is used for comparing current robot position to previously recorded robot position.
     private Position previousRobotPosition;
+    private Position prevDeltaPos;
     private final Encoder encoder; //Contains all logic for encoder based localization.
     private Vision vision; //Contains all logic for vision based localization.
     private final ElapsedTime runtime;
@@ -25,6 +26,7 @@ public class Localization {
             newPosition = new Position(-xOffset, yOffset, -initialTheta + 2 * Math.PI);
         }
         previousRobotPosition = new Position();
+        prevDeltaPos = new Position(0,0,0);
         encoder = new Encoder(hardware, initialTheta);
         vision = new Vision(vuforia);
         runtime = new ElapsedTime();
@@ -54,5 +56,14 @@ public class Localization {
     {
         currentTime = runtime.milliseconds();
         return encoder.getRobotVelocity(previousRobotPosition, newPosition, previousTime, currentTime);
+    }
+
+    public double getDeltaDistance()
+    {
+        Position deltaPos = encoder.getRawPosition();
+        double dp = encoder.getDistanceTraveled(prevDeltaPos, deltaPos);
+
+        prevDeltaPos = deltaPos;
+        return dp;
     }
 }

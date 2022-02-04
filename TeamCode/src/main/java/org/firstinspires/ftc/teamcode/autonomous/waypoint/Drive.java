@@ -44,7 +44,6 @@ public class Drive {
         thetaController = new PID(thetaCoefficients);
 
         position = new Position();
-        prevPosition = new Position();
     }
 
     public void driveToTarget(Position destination)
@@ -131,39 +130,57 @@ public class Drive {
 
             ParametricSpline spline = splineHelper.computeSpline(x, y);
 
-            for (int i = 0; i < path.points.length; i++)
-            {
-                while (((Math.abs(path.points[i].x - position.x) > 5) || (Math.abs(path.points[i].y - position.y) > 5) && !opMode.isStopRequested())) {
-                    position = localization.getRobotPosition();
-                    localization.increment(position);
+            while (((Math.abs(path.points[path.points.length - 1].x - position.x) > 5) || (Math.abs(path.points[path.points.length - 1].y - position.y) > 5) && !opMode.isStopRequested())) {
+                position = localization.getRobotPosition();
+                localization.increment(position);
 
-                    setSplinePowers(path, i, spline);
-                }
+                setSplinePowers(path, spline, telem);
             }
+
+            /*for (int i = 0; i < path.points.length; i++)
+            {
+
+            }*/
         }
     }
 
-    public void setSplinePowers(Path path, int index, ParametricSpline spline) {
+    public void setSplinePowers(Path path, ParametricSpline spline, Telemetry telem) {
+        if (opMode.isStopRequested())
+            opMode.stop();
+
         position = localization.getRobotPosition();
         localization.increment(position);
 
-        dist += Math.sqrt(Math.pow(position.x - prevPosition.x, 2) + Math.pow(position.y - prevPosition.y, 2));
-        double t = dist / spline.splineDistance;
-        double orientation = Math.atan(spline.getDerivative(t));
+        dist += localization.getDeltaDistance();
+        double t = dist;
 
-        if (path.points[path.points.length - 1].x - position.x < 0)
-            orientation += Math.PI;
 
-        double magnitude = Math.abs(spline.getCurvature(t)) + 0.1;
+        double orientation;
+
+        if (spline.xSpline.derivative().value(t) > 0)
+            orientation = Math.atan(spline.getDerivative(t)) - Math.PI / 4;
+        else
+            orientation = Math.atan(spline.getDerivative(t)) + Math.PI - Math.PI / 4;
+
+        telem.addData("TARGET POS X", Math.abs(path.points[path.points.length - 1].x));
+        telem.addData("TARGET POS Y", Math.abs(path.points[path.points.length - 1].y));
+        telem.addData("TARGET POS T", Math.abs(path.points[path.points.length - 1].t));
+        telem.addData("CURRENT POS X", position.x);
+        telem.addData("CURRENT POS Y", position.y);
+        telem.addData("CURRENT POS T", position.t);
+        telem.addData("D", spline.getDerivative(t));
+        telem.update();
+
         double negativePower;
         double positivePower;
 
-        if (orientation == 1)
-            positivePower = 1;
-        else
-            positivePower = magnitude * (1-dist) * Math.cos(orientation);
 
-        negativePower = magnitude * (1-dist) * Math.sin(orientation);
+        negativePower = 0.3 * Math.sin(orientation);
+
+        if (orientation == 0)
+            positivePower = negativePower;
+        else
+            positivePower = 0.3 * Math.cos(orientation);
 
         hardware.setMotorValues(positivePower, negativePower);
     }

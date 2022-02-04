@@ -29,8 +29,7 @@ public class ParametricSpline {
 
     public double getCurvature(double t)
     {
-        return Math.abs(yPrimet.polynomialSplineDerivative().value(t) /
-                xPrimet.polynomialSplineDerivative().value(t))
-                / Math.pow(1 + Math.pow(getDerivative(t), 2), 3/2);
+        return (Math.abs((xPrimet.value(t)*yPrimet.polynomialSplineDerivative().value(t))
+                - (yPrimet.value(t) * xPrimet.derivative().value(t))))/(Math.pow(Math.pow(xPrimet.value(t), 2) + Math.pow(yPrimet.value(t), 2), 3/2));
     }
 }

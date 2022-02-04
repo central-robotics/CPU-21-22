@@ -95,6 +95,25 @@ public class Encoder {
         return robotPosition;
     }
 
+    public Position getRawPosition()
+    {
+        int lfPos, rfPos, rbPos, lbPos;
+
+        lfPos = _hardware.leftFrontMotor.getCurrentPosition();
+        rfPos = _hardware.rightFrontMotor.getCurrentPosition();
+        rbPos = _hardware.rightBackMotor.getCurrentPosition();
+        lbPos = _hardware.leftBackMotor.getCurrentPosition();
+
+        return new Position((lfPos + rbPos)/2d, (rfPos + lbPos)/2d, 0);
+    }
+
+    public double getDistanceTraveled(Position prevRawPosition, Position rawPosition){
+        double posDelta = (rawPosition.x - prevRawPosition.x) * Constants.DISTANCE_PER_TICK;
+        double negDelta = (rawPosition.y - prevRawPosition.y) * Constants.DISTANCE_PER_TICK;
+
+        return Math.sqrt(Math.pow(posDelta, 2) + Math.pow(negDelta, 2));
+    }
+
     public Velocity getRobotVelocity(Position previousPosition, Position currentPosition, double previousTime, double currentTime)
     {
         Velocity robotVelocity = new Velocity();

@@ -46,7 +46,7 @@ public class ObjectDetector {
     private void initializeObjectDetector()
     {
         try {
-            imageClassifier = new TFICBuilder(hardware.map, "model.tflite", "NoTeamElement", "TeamElement").setQuantized(true).setNumThreads(2).useNNAPI().build();
+            imageClassifier = new TFICBuilder(hardware.map, "model.tflite", "NoTeamElement", "TeamElement").setQuantized(true).build();
         } catch (IOException e) {
             e.printStackTrace();
         }

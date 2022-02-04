@@ -48,7 +48,7 @@ public class Instructions {
                 actions.addTask(new SpinCarouselAction(1));
             } else
             {
-                actions.addTask(new PlaceCubeAction(0, navigation));
+                //actions.addTask(new PlaceCubeAction(0, navigation));
 
                 for (int i = 0; i < Constants.WAREHOUSE_ELEMENTS; i++)
                 {
@@ -90,6 +90,7 @@ public class Instructions {
         {
             if (Constants.IS_LEFT_OPMODE) //CAROUSEL SIDE
             {
+
                 LinearPath p0 = new LinearPath(new Position[]{
                         new Position(304.8, initialY, initialTheta)
                 });
@@ -216,6 +217,14 @@ public class Instructions {
                 //PARK AND GET OUT OF WAY
             } else
             {
+                SplinePath path = new SplinePath(new Position[]{
+                        new Position(304.8, initialY, initialTheta),
+                        new Position(350.5, 350.5, 0),
+                        new Position(914.4, 304.8, 0),
+                });
+
+                navigation.addPathToPipeline(path);
+
                 LinearPath p0 = new LinearPath(new Position[]{
                         new Position(304.8, initialY, initialTheta)
                 });
