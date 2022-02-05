@@ -23,6 +23,7 @@ public class Drive {
     private PID thetaController;
     private Position position;
     private Position prevPosition;
+    private int splinePoint = 0;
     private final ElapsedTime runtime;
     private final LinearOpMode opMode;
     private float dist;
@@ -44,6 +45,7 @@ public class Drive {
         thetaController = new PID(thetaCoefficients);
 
         position = new Position();
+
     }
 
     public void driveToTarget(Position destination)
@@ -118,19 +120,41 @@ public class Drive {
         {
             SplineHelper splineHelper = new SplineHelper();
 
+            position = localization.getRobotPosition();
+            localization.increment(position);
+
+            prevPosition = position;
+
             double[] x, y;
-            x = new double[path.points.length];
-            y = new double[path.points.length];
+            x = new double[path.points.length + 1];
+            y = new double[path.points.length + 1];
+
+            //We want the first point of the spline to be where the robot is.
+            //This is because the spline controller mathematically assumes that the first control point has been reached.
+            x[0] = position.x;
+            y[0] = position.y;
 
             for (int i = 0; i < path.points.length; i++)
             {
-                x[i] = path.points[i].x;
-                y[i] = path.points[i].y;
+                x[i+1] = path.points[i].x;
+                y[i+1] = path.points[i].y;
             }
+
+            Position[] newPoints = new Position[x.length];
+
+            for (int i = 0; i < x.length; i++)
+            {
+                newPoints[i] = new Position(x[i], y[i], 0);
+            }
+
+            path.points = newPoints;
 
             ParametricSpline spline = splineHelper.computeSpline(x, y);
 
-            while (((Math.abs(path.points[path.points.length - 1].x - position.x) > 5) || (Math.abs(path.points[path.points.length - 1].y - position.y) > 5) && !opMode.isStopRequested())) {
+            while (((Math.abs(path.points[path.points.length - 1].x - position.x) > 5) || (Math.abs(path.points[path.points.length - 1].y - position.y) > 5) && !opMode.isStopRequested()))
+            {
+                if (dist >= spline.splineDistance - 5)
+                    break;
                 position = localization.getRobotPosition();
                 localization.increment(position);
 
@@ -151,36 +175,61 @@ public class Drive {
         position = localization.getRobotPosition();
         localization.increment(position);
 
-        dist += localization.getDeltaDistance();
+
+
+        //The distance of the spline is calculated in accordance to the secant lines between the control points on the spline.
+        //To somewhat accurately measure where we are on the spline, we must calculate where we are along the secant line, not the curve.
+        //To do this, we perform the law of cosines to obtain cos B, and then use a simple trig ratio to calculate where the robot is on the secant line.
+        dist += Math.sqrt(Math.pow(position.x - prevPosition.x, 2) + Math.pow(position.y - prevPosition.y, 2));
+
+        prevPosition = position;
         double t = dist;
+
+        if (t >= spline.splineDistance - 5)
+            return;
 
 
         double orientation;
 
         if (spline.xSpline.derivative().value(t) > 0)
-            orientation = Math.atan(spline.getDerivative(t)) - Math.PI / 4;
+            orientation = Math.atan(spline.getDerivative(t)) - (Math.PI / 4) + (Math.PI / 2);
         else
-            orientation = Math.atan(spline.getDerivative(t)) + Math.PI - Math.PI / 4;
+            orientation = Math.atan(spline.getDerivative(t)) + Math.PI - Math.PI / 4 + (Math.PI / 2);
+
+        if (!Constants.IS_BLUE_TEAM)
+            orientation += Math.PI;
+
+        double speed = Math.abs(0.5 - (spline.getCurvature(t) * 100));
+
+        if (speed < 0.15)
+            speed = 0.15;
 
         telem.addData("TARGET POS X", Math.abs(path.points[path.points.length - 1].x));
         telem.addData("TARGET POS Y", Math.abs(path.points[path.points.length - 1].y));
         telem.addData("TARGET POS T", Math.abs(path.points[path.points.length - 1].t));
+        telem.addData("DESIRED POS X", spline.xSpline.value(t));
+        telem.addData("DESIRED POS Y", spline.ySpline.value(t));
+        telem.addData("T", dist);
         telem.addData("CURRENT POS X", position.x);
         telem.addData("CURRENT POS Y", position.y);
         telem.addData("CURRENT POS T", position.t);
+        telem.addData("SPEED", speed);
+        telem.addData("ORIENTATION", orientation + Math.PI / 4);
         telem.addData("D", spline.getDerivative(t));
         telem.update();
 
-        double negativePower;
-        double positivePower;
+        double negativePower = 0;
+        double positivePower = 0;
 
+        if (Double.isNaN(speed))
+            speed = 0.5;
 
-        negativePower = 0.3 * Math.sin(orientation);
+        negativePower = speed * Math.sin(orientation);
 
         if (orientation == 0)
             positivePower = negativePower;
         else
-            positivePower = 0.3 * Math.cos(orientation);
+            positivePower = speed * Math.cos(orientation);
 
         hardware.setMotorValues(positivePower, negativePower);
     }

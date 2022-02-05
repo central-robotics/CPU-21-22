@@ -154,8 +154,10 @@ public class Instructions {
                     //PLACE CUBE
                 }
 
-                LinearPath p4 = new LinearPath(new Position[]{
+                SplinePath p4 = new SplinePath(new Position[]{
                         new Position(243, 1828, 0),
+                        new Position(243, 2200, 0),
+                        new Position(243, 2500, 0),
                         new Position(243, 3000, 0),
                         new Position(700, 3000, 0)
                 });
@@ -206,8 +208,10 @@ public class Instructions {
                     //PLACE CUBE
                 }
 
-                LinearPath p4 = new LinearPath(new Position[]{
+                SplinePath p4 = new SplinePath(new Position[]{
                         new Position(243, 1828, 0),
+                        new Position(243, 2200, 0),
+                        new Position(243, 2500, 0),
                         new Position(243, 3000, 0),
                         new Position(700, 3000, 0)
                 });
@@ -217,14 +221,6 @@ public class Instructions {
                 //PARK AND GET OUT OF WAY
             } else
             {
-                SplinePath path = new SplinePath(new Position[]{
-                        new Position(304.8, initialY, initialTheta),
-                        new Position(350.5, 350.5, 0),
-                        new Position(914.4, 304.8, 0),
-                });
-
-                navigation.addPathToPipeline(path);
-
                 LinearPath p0 = new LinearPath(new Position[]{
                         new Position(304.8, initialY, initialTheta)
                 });

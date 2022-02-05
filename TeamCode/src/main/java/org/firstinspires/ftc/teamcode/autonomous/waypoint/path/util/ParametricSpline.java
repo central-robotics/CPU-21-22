@@ -10,9 +10,10 @@ public class ParametricSpline {
     public PolynomialSplineFunction ySpline;
     private final PolynomialSplineFunction xPrimet;
     private final PolynomialSplineFunction yPrimet;
-    public double splineDistance;
+    public final double splineDistance;
+    public final double[] secantDistances;
 
-    public ParametricSpline(PolynomialSplineFunction f0, PolynomialSplineFunction f1, double dist)
+    public ParametricSpline(PolynomialSplineFunction f0, PolynomialSplineFunction f1, double dist, double[] distances)
     {
 
         xSpline = f0;
@@ -20,6 +21,7 @@ public class ParametricSpline {
         xPrimet = xSpline.polynomialSplineDerivative();
         yPrimet = ySpline.polynomialSplineDerivative();
         splineDistance = dist;
+        secantDistances = distances;
     }
 
     public double getDerivative(double t)
