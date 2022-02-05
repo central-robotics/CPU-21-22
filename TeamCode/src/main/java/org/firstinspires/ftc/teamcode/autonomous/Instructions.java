@@ -48,7 +48,7 @@ public class Instructions {
                 actions.addTask(new SpinCarouselAction(1));
             } else
             {
-                //actions.addTask(new PlaceCubeAction(0, navigation));
+                actions.addTask(new PlaceCubeAction(0, navigation));
 
                 for (int i = 0; i < Constants.WAREHOUSE_ELEMENTS; i++)
                 {
@@ -153,6 +153,12 @@ public class Instructions {
 
                     //PLACE CUBE
                 }
+
+                LinearPath p3 = new LinearPath(new Position[]{
+                        new Position(243, 1828, initialTheta),
+                });
+
+                navigation.addPathToPipeline(p3);
 
                 SplinePath p4 = new SplinePath(new Position[]{
                         new Position(243, 1828, 0),

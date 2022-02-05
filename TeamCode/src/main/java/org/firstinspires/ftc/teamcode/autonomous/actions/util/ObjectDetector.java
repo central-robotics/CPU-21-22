@@ -29,10 +29,12 @@ import java.util.List;
 
 public class ObjectDetector {
     private Vuforia vuforia;
+    public BarcodeLocation location;
     private OpenCvCamera camera;
     private ElementPipeline pipeline;
     private Hardware hardware;
     private TensorImageClassifier imageClassifier;
+    private volatile Boolean cameraReady = false;
 
     public ObjectDetector(Hardware hardware, Vuforia vuforia)
     {
@@ -58,6 +60,7 @@ public class ObjectDetector {
             public void onOpened() {
                 camera.startStreaming(1280, 720);
                 camera.setPipeline(pipeline);
+                cameraReady = true;
             }
 
             @Override
@@ -65,9 +68,83 @@ public class ObjectDetector {
 
             }
         });
+
+        while (!cameraReady) {
+            //Do nothing
+        }
+
+        location = calculateState();
+
     }
 
-    //To allow the robot to figure out the position of any element without training an AI model, we will figure out which barcode we can't see.
+    public BarcodeLocation calculateState() {
+        camera.stopStreaming();
+        camera.closeCameraDevice();
+        BarcodeLocation teamElementLocation;
+        System.out.println("handleMat")
+        ;
+        if (imageClassifier == null || pipeline.getMat() == null) {
+            return null;
+        }
+
+        Mat mat = pipeline.getMat();
+        // todo: these threshold values probably need to be changed
+        Mat rawLeftMat = mat.submat(new Rect(0, 0, Constants.WEBCAM_SECTION_WIDTH, Constants.WEBCAM_HEIGHT));
+        Mat leftMat = new Mat();
+        Imgproc.resize(rawLeftMat, leftMat, new Size(224, 224));
+
+        List<TensorImageClassifier.Recognition> leftOutput = imageClassifier.recognize(leftMat);
+
+        float leftConfidence = getConfidence(leftOutput);
+
+        if (leftConfidence > 0.5) {
+            teamElementLocation = BarcodeLocation.LEFT;
+            return teamElementLocation;
+        }
+
+        Mat rawCenterMat = mat.submat(new Rect(Constants.WEBCAM_SECTION_WIDTH, 0, Constants.WEBCAM_SECTION_WIDTH, Constants.WEBCAM_HEIGHT));
+        Mat centerMat = new Mat();
+
+        Imgproc.resize(rawCenterMat, centerMat, new Size(224, 224));
+
+        List<TensorImageClassifier.Recognition> centerOutput = imageClassifier.recognize(centerMat);
+        float centerConfidence = getConfidence(centerOutput);
+
+        if (centerConfidence > 0.5) {
+            teamElementLocation = BarcodeLocation.CENTER;
+            return teamElementLocation;
+        }
+
+        if (leftConfidence > 0.2 || centerConfidence > 0.2) {
+            Mat rawRightMat = mat.submat(new Rect(Constants.WEBCAM_SECTION_WIDTH, 0, Constants.WEBCAM_SECTION_WIDTH, Constants.WEBCAM_HEIGHT));
+            Mat rightMat = new Mat();
+
+            Imgproc.resize(rawRightMat, rightMat, new Size(224, 224));
+
+            List<TensorImageClassifier.Recognition> rightOutput = imageClassifier.recognize(rightMat);
+
+            float rightConfidence = getConfidence(rightOutput);
+
+            if (rightConfidence > centerConfidence) {
+                if (rightConfidence > leftConfidence) {
+                    teamElementLocation = BarcodeLocation.RIGHT;
+                } else {
+                    teamElementLocation = BarcodeLocation.CENTER;
+                }
+
+            } else if (centerConfidence > leftConfidence) {
+                teamElementLocation = BarcodeLocation.CENTER;
+            } else {
+                teamElementLocation = BarcodeLocation.LEFT;
+            }
+        } else {
+            teamElementLocation = BarcodeLocation.RIGHT;
+        }
+
+        return teamElementLocation;
+    }
+
+    @Deprecated
     public BarcodeLocation getRecognition()
     {
         Mat mat = pipeline.getMat();

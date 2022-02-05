@@ -29,19 +29,13 @@ public class PlaceCubeAction extends Action {
 
     @Override
     public void execute(Hardware hardware, Localization localization, Vuforia vuforia, ObjectDetector detector) {
-        ObjectDetector.BarcodeLocation location = detector.getRecognition();
-
+        ObjectDetector.BarcodeLocation location = detector.location;
         if (Constants.IS_LEFT_OPMODE)
         {
             Position pos = new Position(746, 1220, 0);
         } else
         {
             Position pos = new Position(746, 1830, 0);
-        }
-
-        while (true)
-        {
-
         }
     }
 }
