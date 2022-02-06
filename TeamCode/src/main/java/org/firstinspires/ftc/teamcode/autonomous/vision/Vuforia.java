@@ -20,7 +20,6 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 
 public class Vuforia {
     private Hardware hardware;
-
     public VuforiaLocalizer vuforiaLocalizer; //Vuforia instance
     public VuforiaTrackables targets; //Vuforia image
     public VuforiaLocalizer.Parameters parameters;

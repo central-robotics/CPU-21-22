@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.autonomous.actions;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -29,13 +30,55 @@ public class PlaceCubeAction extends Action {
 
     @Override
     public void execute(Hardware hardware, Localization localization, Vuforia vuforia, ObjectDetector detector) {
-        ObjectDetector.BarcodeLocation location = detector.location;
-        if (Constants.IS_LEFT_OPMODE)
+        ObjectDetector.BarcodeLocation location = detector.calculateState();
+
+        double slideLevel = 5;
+
+        switch (location)
         {
-            Position pos = new Position(746, 1220, 0);
+            case LEFT:
+                if (Constants.IS_BLUE_TEAM)
+                    slideLevel = 10000;
+                else
+                    slideLevel = 0;
+                break;
+            case CENTER:
+                slideLevel = 5000;
+                break;
+            case RIGHT:
+                if (Constants.IS_BLUE_TEAM)
+                    slideLevel = 0;
+                else
+                    slideLevel = 10000;
+                break;
+            default:
+                break;
+        }
+        if (Constants.IS_BLUE_TEAM)
+        {
+            if (Constants.IS_LEFT_OPMODE)
+            {
+                Position pos = new Position(700, 1830, Constants.CURRENT_INITIAL_THETA);
+
+            } else
+            {
+                Position pos = new Position(700, 1234, Constants.CURRENT_INITIAL_THETA);
+            }
         } else
         {
-            Position pos = new Position(746, 1830, 0);
+            if (Constants.IS_LEFT_OPMODE)
+            {
+                Position pos = new Position(700, 1234, Constants.CURRENT_INITIAL_THETA);
+            } else
+            {
+                Position pos = new Position(700, 1830, Constants.CURRENT_INITIAL_THETA);
+            }
+
+            while (Math.abs(hardware.armMotor.getCurrentPosition()) < slideLevel)
+                hardware.armMotor.setPower(0.4);
+            hardware.armMotor.setPower(0.1);
+
+
         }
     }
 }

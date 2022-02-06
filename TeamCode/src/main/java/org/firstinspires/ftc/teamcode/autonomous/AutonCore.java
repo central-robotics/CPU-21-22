@@ -3,23 +3,26 @@ package org.firstinspires.ftc.teamcode.autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.autonomous.actions.util.ObjectDetector;
-import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
+import org.firstinspires.ftc.teamcode.autonomous.instructions.Instructions;
 import org.firstinspires.ftc.teamcode.autonomous.vision.Vuforia;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
 
 public class AutonCore {
     public static ElapsedTime runtime;
+    public static Telemetry telem;
 
     public void runCore(double initialX, double initialY, double initialTheta, LinearOpMode opMode) {
         runtime = new ElapsedTime();
         Hardware hardware = new Hardware(opMode.hardwareMap);
-        Vuforia vuforia = new Vuforia(hardware);
+        Vuforia vuforia = null;
+        Constants.CURRENT_INITIAL_THETA = initialTheta;
         ObjectDetector detector = new ObjectDetector(hardware, vuforia);
         Localization localization = new Localization(hardware, vuforia, opMode.telemetry, initialX, initialY, initialTheta);
         Instructions instructions = new Instructions(hardware, localization, runtime, opMode.telemetry, opMode, vuforia, detector, initialX, initialY, initialTheta);
-
+        telem = opMode.telemetry;
         opMode.waitForStart();
 
         hardware.constraintServo.setPosition(0);

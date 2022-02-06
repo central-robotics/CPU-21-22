@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.teamcode.autonomous.AutonCore;
 import org.firstinspires.ftc.teamcode.autonomous.Constants;
 import org.firstinspires.ftc.teamcode.autonomous.actions.PlaceCubeAction;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
@@ -19,6 +20,7 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.outoftheboxrobotics.tensorflowapi.ImageClassification.TFICBuilder;
 import org.outoftheboxrobotics.tensorflowapi.ImageClassification.TensorImageClassifier;
@@ -55,12 +57,15 @@ public class ObjectDetector {
 
         //OpenCvCamera camera = OpenCvCameraFactory.getInstance().createVuforiaPassthrough(vuforia.vuforiaLocalizer, vuforia.parameters);
         camera = hardware.openCvCamera;
+        camera.setPipeline(pipeline);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
-                camera.startStreaming(1280, 720);
-                camera.setPipeline(pipeline);
+                camera.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
+
                 cameraReady = true;
+                AutonCore.telem.addLine("Webcam ready");
+                AutonCore.telem.update();
             }
 
             @Override
@@ -68,13 +73,6 @@ public class ObjectDetector {
 
             }
         });
-
-        while (!cameraReady) {
-            //Do nothing
-        }
-
-        location = calculateState();
-
     }
 
     public BarcodeLocation calculateState() {
@@ -88,6 +86,7 @@ public class ObjectDetector {
         }
 
         Mat mat = pipeline.getMat();
+        int width = mat.width(), height = mat.height();
         // todo: these threshold values probably need to be changed
         Mat rawLeftMat = mat.submat(new Rect(0, 0, Constants.WEBCAM_SECTION_WIDTH, Constants.WEBCAM_HEIGHT));
         Mat leftMat = new Mat();
