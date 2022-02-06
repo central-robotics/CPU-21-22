@@ -30,11 +30,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ObjectDetector {
-    private Vuforia vuforia;
+    private final Vuforia vuforia;
     public BarcodeLocation location;
     private OpenCvCamera camera;
-    private ElementPipeline pipeline;
-    private Hardware hardware;
+    private final ElementPipeline pipeline;
+    private final Hardware hardware;
     private TensorImageClassifier imageClassifier;
     private volatile Boolean cameraReady = false;
 
@@ -192,6 +192,6 @@ public class ObjectDetector {
 
     public enum BarcodeLocation
     {
-        LEFT, CENTER, RIGHT;
+        LEFT, CENTER, RIGHT
     }
 }

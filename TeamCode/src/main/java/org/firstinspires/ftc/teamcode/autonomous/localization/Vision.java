@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.autonomous.Constants;
 import org.firstinspires.ftc.teamcode.autonomous.vision.Vuforia;
 
 public class Vision {
-    private Vuforia vuforia;
+    private final Vuforia vuforia;
     private OpenGLMatrix location;
     public Boolean targetVisible = false;
 

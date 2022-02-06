@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.autonomous.waypoint;
+package org.firstinspires.ftc.teamcode.autonomous.nav;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -9,9 +9,7 @@ import org.firstinspires.ftc.teamcode.autonomous.actions.Actions;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
-import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.Path;
-import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.SplinePath;
-import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.util.SplineHelper;
+import org.firstinspires.ftc.teamcode.autonomous.nav.path.Path;
 
 import java.util.ArrayList;
 

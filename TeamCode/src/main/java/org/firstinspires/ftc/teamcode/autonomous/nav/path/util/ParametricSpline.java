@@ -1,9 +1,6 @@
-package org.firstinspires.ftc.teamcode.autonomous.waypoint.path.util;
+package org.firstinspires.ftc.teamcode.autonomous.nav.path.util;
 
-import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
-import org.apache.commons.math3.geometry.Point;
-import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
 
 public class ParametricSpline {
     public PolynomialSplineFunction xSpline;

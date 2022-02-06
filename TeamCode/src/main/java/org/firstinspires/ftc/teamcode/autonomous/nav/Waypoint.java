@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.autonomous.waypoint;
+package org.firstinspires.ftc.teamcode.autonomous.nav;
 
 import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
 

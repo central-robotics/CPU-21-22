@@ -1,13 +1,14 @@
-package org.firstinspires.ftc.teamcode.autonomous.waypoint.path.util.oldCode;
+package org.firstinspires.ftc.teamcode.autonomous.nav.path.util.oldCode;
 
 //CREDIT TO RYAN SEGHERS FOR A FAST INTERPRETATION OF THE CUBIC SPLINE.
 public class Spline {
     private float[] a, b; //Coefficients
-    private float[] x, y; //Points
+    private final float[] x;
+    private final float[] y; //Points
     private float[] xOrig, yOrig; //Saved points
     private float firstSlope = Float.NaN;
     private float lastSlope = Float.NaN;
-    private float dist = 0;
+    private final float dist = 0;
     private int lastIndex;
 
     public Spline(float[] x, float[] y, float firstSlope, float lastSlope) throws Exception {

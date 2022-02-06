@@ -14,7 +14,7 @@ public class Encoder {
 
     //Position of encoder on each motor respectively. We need to store this so that we can subtract these values from current position to get displacement.
     private int lastLfPos, lastRfPos, lastRbPos, lastLbPos;
-    private double initialTheta;
+    private final double initialTheta;
 
     public Encoder(Hardware hardware, double initialTheta)
     {

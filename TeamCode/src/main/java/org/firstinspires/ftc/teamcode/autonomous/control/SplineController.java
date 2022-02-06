@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode.autonomous.control;
 
-import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.util.oldCode.ComputedSpline;
+import org.firstinspires.ftc.teamcode.autonomous.nav.path.util.oldCode.ComputedSpline;
 
 public class SplineController {
-    private ComputedSpline computedSpline;
+    private final ComputedSpline computedSpline;
     public SplineController(ComputedSpline spline)
     {
         computedSpline = spline;

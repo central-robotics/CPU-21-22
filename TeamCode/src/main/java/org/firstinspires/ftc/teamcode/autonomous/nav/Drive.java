@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.autonomous.waypoint;
+package org.firstinspires.ftc.teamcode.autonomous.nav;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
@@ -11,10 +11,10 @@ import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Velocity;
-import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.LinearPath;
-import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.Path;
-import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.util.ParametricSpline;
-import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.util.SplineHelper;
+import org.firstinspires.ftc.teamcode.autonomous.nav.path.LinearPath;
+import org.firstinspires.ftc.teamcode.autonomous.nav.path.Path;
+import org.firstinspires.ftc.teamcode.autonomous.nav.path.util.ParametricSpline;
+import org.firstinspires.ftc.teamcode.autonomous.nav.path.util.SplineHelper;
 
 public class Drive {
     private final Localization localization;
@@ -24,7 +24,7 @@ public class Drive {
     private PID thetaLinearController;
     private Position position;
     private Position prevPosition;
-    private int splinePoint = 0;
+    private final int splinePoint = 0;
     private final ElapsedTime runtime;
     private final LinearOpMode opMode;
     private float dist;
@@ -221,11 +221,7 @@ public class Drive {
             thetaFinished = false;
 
             double thetaError = target.t - position.t;
-            boolean isCounterClockwise = false;
-
-            if ((thetaError) > 0 && (thetaError < Math.PI)) {
-                isCounterClockwise = true;
-            }
+            boolean isCounterClockwise = (thetaError) > 0 && (thetaError < Math.PI);
 
             if ((thetaError) < 0 && (thetaError < -Math.PI)) {
                 isCounterClockwise = true;
@@ -282,11 +278,7 @@ public class Drive {
             thetaFinished = false;
 
             double thetaError = destination.t - position.t;
-            boolean isCounterClockwise = false;
-
-            if ((thetaError) > 0 && (thetaError < Math.PI) ) {
-                isCounterClockwise = true;
-            }
+            boolean isCounterClockwise = (thetaError) > 0 && (thetaError < Math.PI);
 
             if ((thetaError) < 0 && (thetaError < -Math.PI)) {
                 isCounterClockwise = true;

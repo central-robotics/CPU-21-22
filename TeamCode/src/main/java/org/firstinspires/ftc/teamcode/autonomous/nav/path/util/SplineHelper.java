@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode.autonomous.waypoint.path.util;
+package org.firstinspires.ftc.teamcode.autonomous.nav.path.util;
 
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
-import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.util.oldCode.ComputedSpline;
-import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.util.oldCode.Spline;
+import org.firstinspires.ftc.teamcode.autonomous.nav.path.util.oldCode.ComputedSpline;
+import org.firstinspires.ftc.teamcode.autonomous.nav.path.util.oldCode.Spline;
 
 public final class SplineHelper {
     public ParametricSpline computeSpline(double[] x, double[] y)

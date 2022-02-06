@@ -6,22 +6,15 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.autonomous.Constants;
 import org.firstinspires.ftc.teamcode.autonomous.actions.Actions;
-import org.firstinspires.ftc.teamcode.autonomous.actions.PlaceCubeAction;
-import org.firstinspires.ftc.teamcode.autonomous.actions.PlaceElementAction;
-import org.firstinspires.ftc.teamcode.autonomous.actions.SpinCarouselAction;
-import org.firstinspires.ftc.teamcode.autonomous.actions.SpinIntakeAction;
 import org.firstinspires.ftc.teamcode.autonomous.actions.util.ObjectDetector;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.instructions.strategy.CarouselStrategy;
 import org.firstinspires.ftc.teamcode.autonomous.instructions.strategy.Strategy;
 import org.firstinspires.ftc.teamcode.autonomous.instructions.strategy.WarehouseStrategy;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
-import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
 import org.firstinspires.ftc.teamcode.autonomous.vision.Vuforia;
-import org.firstinspires.ftc.teamcode.autonomous.waypoint.Navigation;
-import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.LinearPath;
-import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.Path;
-import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.SplinePath;
+import org.firstinspires.ftc.teamcode.autonomous.nav.Navigation;
+import org.firstinspires.ftc.teamcode.autonomous.nav.path.Path;
 
 /*
 The Instructions class contains a map of waypoints and actions. It outlines all of the

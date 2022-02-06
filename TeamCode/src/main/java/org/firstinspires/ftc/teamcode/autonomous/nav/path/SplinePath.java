@@ -1,7 +1,6 @@
-package org.firstinspires.ftc.teamcode.autonomous.waypoint.path;
+package org.firstinspires.ftc.teamcode.autonomous.nav.path;
 
 import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
-import org.firstinspires.ftc.teamcode.autonomous.waypoint.path.util.oldCode.ComputedSpline;
 
 public class SplinePath extends Path{
     public SplinePath(Position[] points) {

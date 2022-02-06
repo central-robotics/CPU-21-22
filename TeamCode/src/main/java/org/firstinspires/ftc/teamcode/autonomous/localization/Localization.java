@@ -12,7 +12,7 @@ public class Localization {
     private Position previousRobotPosition;
     private Position prevDeltaPos;
     private final Encoder encoder; //Contains all logic for encoder based localization.
-    private Vision vision; //Contains all logic for vision based localization.
+    private final Vision vision; //Contains all logic for vision based localization.
     private final ElapsedTime runtime;
     private double currentTime;
     private double previousTime;

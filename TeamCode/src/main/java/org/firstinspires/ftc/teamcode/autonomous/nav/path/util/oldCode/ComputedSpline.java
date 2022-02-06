@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.autonomous.waypoint.path.util.oldCode;
+package org.firstinspires.ftc.teamcode.autonomous.nav.path.util.oldCode;
 
 public class ComputedSpline {
 

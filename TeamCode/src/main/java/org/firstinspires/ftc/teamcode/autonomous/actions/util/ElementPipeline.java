@@ -10,7 +10,7 @@ import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 public class ElementPipeline extends OpenCvPipeline {
-    private int elementIndex = 0; //0 = LEFT, 1 = CENTER, 2 = RIGHT
+    private final int elementIndex = 0; //0 = LEFT, 1 = CENTER, 2 = RIGHT
     private Mat mat;
 
     @Override
