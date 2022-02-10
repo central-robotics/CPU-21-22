@@ -11,6 +11,7 @@ public class TeleOpHardware {
     public DcMotor carouselMotor, slideMotor, intakeMotor;
     public Servo boxServo;
     public Servo constraintServo;
+    public Servo sweeperServo;
     public BNO055IMU imu;
 
     public void init(HardwareMap hardwareMap)
@@ -38,6 +39,8 @@ public class TeleOpHardware {
         intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         boxServo = hardwareMap.get(Servo.class, "boxServo");
+
+        sweeperServo = hardwareMap.get(Servo.class, "sweeperServo");
 
         constraintServo = hardwareMap.get(Servo.class, "constraintServo");
 

@@ -12,6 +12,7 @@ public class DriveLoop {
     double positive_power, negative_power, rot_power;
     double joystick_x, joystick_y, joystick_power;
     double orientation;
+    double intakePower;
     Orientation gyro_angles;
     long prevTime = System.currentTimeMillis();
 
@@ -21,9 +22,6 @@ public class DriveLoop {
         {
             moveIntake(1, hardware);
         }
-
-        if (opMode.gamepad1.square)
-            moveIntake(0.0001, hardware);
 
         if (opMode.gamepad1.b)
         {
@@ -92,7 +90,13 @@ public class DriveLoop {
 
     public void moveIntake(double power, TeleOpHardware hardware)
     {
-        hardware.intakeMotor.setPower(power);
+        if (intakePower == 1) {
+            hardware.intakeMotor.setPower(0.0001);
+            intakePower = 0.0001;
+        } else {
+            hardware.intakeMotor.setPower(1);
+            intakePower = 1;
+        }
     }
 
     public void moveCarousel(double power, TeleOpHardware hardware)
