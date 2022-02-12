@@ -13,4 +13,5 @@ import java.util.ArrayList;
 public interface Strategy {
     Actions registerActions(Hardware hardware, Localization localization, Navigation navigation, Vuforia vuforia, ObjectDetector detector);
     ArrayList<Path> registerPath(double initialY, double initialTheta);
+    void setNav(Navigation nav);
 }

@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.autonomous.vision.Vuforia;
 import java.util.ArrayList;
 
 public class CarouselStrategy implements Strategy {
+
     @Override
     public Actions registerActions(Hardware hardware, Localization localization, Navigation navigation, Vuforia vuforia, ObjectDetector detector) {
         Actions actions = new Actions(hardware, localization, vuforia, detector);
@@ -30,14 +31,42 @@ public class CarouselStrategy implements Strategy {
     public ArrayList<Path> registerPath(double initialY, double initialTheta) {
         ArrayList<Path> path = new ArrayList<>();
 
+        Position pos;
+
+        if (Constants.IS_BLUE_TEAM)
+        {
+
+            if (Constants.IS_LEFT_OPMODE)
+            {
+                pos = new Position(700, 1830, Constants.CURRENT_INITIAL_THETA);
+
+            } else
+            {
+                pos = new Position(700, 1234, Constants.CURRENT_INITIAL_THETA);
+            }
+
+        } else
+        {
+
+            if (Constants.IS_LEFT_OPMODE)
+            {
+                pos = new Position(700, 1234, Constants.CURRENT_INITIAL_THETA);
+            } else
+            {
+                pos = new Position(700, 1830, Constants.CURRENT_INITIAL_THETA);
+            }
+
+        }
+
         LinearPath p0 = new LinearPath(new Position[]{
-                new Position(304.8, initialY, initialTheta)
+                new Position(304.8, initialY, initialTheta),
+                pos
         });
 
         path.add(p0);
 
         //Rotate robot in the case that the carousel is on the opposite side of the robot.
-        double rotation = Constants.IS_BLUE_TEAM ? initialTheta : 0;
+        double rotation = Constants.IS_BLUE_TEAM ? initialTheta + (Math.PI  / 4): (3 * Math.PI ) / 4;
 
         LinearPath p1 = new LinearPath(new Position[]{
                 new Position(350.5, 350.5, rotation)
@@ -46,11 +75,16 @@ public class CarouselStrategy implements Strategy {
         path.add(p1);
 
         LinearPath p2 = new LinearPath(new Position[]{
-                new Position(914.4, 304.8, rotation),
+                new Position(914.4, 304.8, initialTheta),
         });
 
         path.add(p2);
 
         return path;
+    }
+
+    @Override
+    public void setNav(Navigation nav) {
+
     }
 }

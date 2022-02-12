@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class RedOpMode extends OpMode {
     private TeleOpHardware hardware;
     private DriveLoop loop;
+
     @Override
     public void init() {
         TeleOpConstants.isBlueOpMode = false;

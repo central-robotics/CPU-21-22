@@ -13,11 +13,18 @@ public class DriveLoop {
     double joystick_x, joystick_y, joystick_power;
     double orientation;
     double intakePower;
+    double sweeperPos;
     Orientation gyro_angles;
     long prevTime = System.currentTimeMillis();
 
     public void loop(TeleOpHardware hardware, OpMode opMode)
     {
+        double sliderPos = hardware.slideMotor.getCurrentPosition();
+        boolean changeBoxPos = false;
+
+        if (Math.abs(sliderPos) > 200)
+            changeBoxPos = true;
+
         if (opMode.gamepad1.a)
         {
             moveIntake(1, hardware);
@@ -36,8 +43,19 @@ public class DriveLoop {
             moveBoxServo(1, hardware);
         } else
         {
-            moveBoxServo(0.61, hardware);
+            if (changeBoxPos)
+                moveBoxServo(0.5, hardware);
+            else
+                moveBoxServo(0.68, hardware);
+
+            changeBoxPos = false;
         }
+
+        if (opMode.gamepad1.x)
+            hardware.sweeperServo.setPosition(0.49);
+        else
+            hardware.sweeperServo.setPosition(1);
+
 
         if (opMode.gamepad1.right_bumper)
         {
@@ -113,6 +131,19 @@ public class DriveLoop {
     public void moveBoxServo(double pos, TeleOpHardware hardware)
     {
         hardware.boxServo.setPosition(pos);
+    }
+
+    public void moveSweeper(double pos, TeleOpHardware hardware)
+    {
+        if (sweeperPos == 0.49) {
+
+            sweeperPos = 0;
+        } else
+        {
+            hardware.sweeperServo.setPosition(0.49);
+            sweeperPos = 0.49;
+        }
+        hardware.sweeperServo.setPosition(pos);
     }
 
     public void move(double posinput, double neginput, double rotinput, TeleOpHardware hardware)

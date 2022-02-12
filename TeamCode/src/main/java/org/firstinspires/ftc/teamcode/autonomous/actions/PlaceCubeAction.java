@@ -10,11 +10,15 @@ import org.firstinspires.ftc.teamcode.autonomous.control.PID;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
+import org.firstinspires.ftc.teamcode.autonomous.nav.path.LinearPath;
 import org.firstinspires.ftc.teamcode.autonomous.vision.Vuforia;
 import org.firstinspires.ftc.teamcode.autonomous.nav.Navigation;
 
 public class PlaceCubeAction extends Action {
     private final Navigation navigation;
+
+    private double armPos;
+    private double prevArmPos;
 
     public PlaceCubeAction(int index, Navigation navigation) {
         super(index);
@@ -25,7 +29,7 @@ public class PlaceCubeAction extends Action {
     public void execute(Hardware hardware, Localization localization, Vuforia vuforia, ObjectDetector detector) {
         ObjectDetector.BarcodeLocation location = detector.calculateState();
 
-        PID slidePID = new PID(new PIDCoefficients(0.3, 0, 0));
+        PID slidePID = new PID(new PIDCoefficients(0.008, 0.00005, 0));
 
         double slideLevel = 5;
 
@@ -33,82 +37,97 @@ public class PlaceCubeAction extends Action {
         {
             case LEFT:
                 if (Constants.IS_BLUE_TEAM)
-                    slideLevel = 600;
+                    slideLevel = 500;
                 else
                     slideLevel = 0;
                 break;
             case CENTER:
-                slideLevel = 250;
+                slideLevel = 200;
                 break;
             case RIGHT:
                 if (Constants.IS_BLUE_TEAM)
                     slideLevel = 0;
                 else
-                    slideLevel = 600;
+                    slideLevel = 500;
                 break;
             default:
                 break;
         }
         if (Constants.IS_BLUE_TEAM)
         {
-            if (Constants.IS_LEFT_OPMODE)
+            Position pos;
+
+            if (!Constants.IS_LEFT_OPMODE)
             {
-                Position pos = new Position(700, 1830, Constants.CURRENT_INITIAL_THETA);
+                pos = new Position(700, 1830, Constants.CURRENT_INITIAL_THETA);
 
             } else
             {
-                Position pos = new Position(700, 1234, Constants.CURRENT_INITIAL_THETA);
+                pos = new Position(700, 1234, Constants.CURRENT_INITIAL_THETA);
             }
+
+            moveToLevel(slideLevel, hardware, slidePID);
         } else
         {
-            if (Constants.IS_LEFT_OPMODE)
+            Position pos;
+
+            if (!Constants.IS_LEFT_OPMODE)
             {
-                Position pos = new Position(700, 1234, Constants.CURRENT_INITIAL_THETA);
+                pos = new Position(700, 1234, Constants.CURRENT_INITIAL_THETA);
             } else
             {
-                Position pos = new Position(700, 1830, Constants.CURRENT_INITIAL_THETA);
+                pos = new Position(700, 1830, Constants.CURRENT_INITIAL_THETA);
             }
 
-            while (Math.abs(hardware.armMotor.getCurrentPosition()) < slideLevel) {
-                hardware.armMotor.setPower(-0.8);
-                AutonCore.telem.addData("ticks", hardware.armMotor.getCurrentPosition());
-                AutonCore.telem.update();
-
-            }
-
-            hardware.armMotor.setPower(0);
-
-            while (hardware.boxServo.getPosition() < 0.83)
-                hardware.boxServo.setPosition(0.85);
-
-
-            while (Math.abs(hardware.armMotor.getCurrentPosition()) > 50)
-                hardware.armMotor.setPower(0.3);
-
-            hardware.boxServo.setPosition(0.61);
-
+            moveToLevel(slideLevel, hardware, slidePID);
 
         }
     }
 
     private void moveToLevel(double ticks, Hardware hardware, PID pid)
     {
-        double pos = hardware.armMotor.getCurrentPosition();
-
-        while (Math.abs(pos) < ticks - 5)
-        {
-            hardware.armMotor.setPower(pid.getOutput(ticks - pos, 0));
-            pos = hardware.armMotor.getCurrentPosition();
-        }
+        armPos = hardware.armMotor.getCurrentPosition();
 
         ElapsedTime time = new ElapsedTime();
 
-        while (time.milliseconds() < )
-
-        while (Math.abs(pos) > 30)
+        while (armPos < ticks - 20)
         {
-            hardware.armMotor.setPower(pid.getOutput(ticks - pos, 0));
-            pos = hardware.armMotor.getCurrentPosition();
+            if (armPos > 200) {
+                hardware.boxServo.setPosition(0.50);
+            }
+
+            double error = ticks - armPos;
+
+            hardware.armMotor.setPower(0.2 * pid.getOutput(error, 0));
+
+            armPos = hardware.armMotor.getCurrentPosition();
+
+            AutonCore.telem.addData("TARGET POS", ticks);
+            AutonCore.telem.addData("CURRENT POS", armPos);
+            AutonCore.telem.update();
+        }
+
+        time.reset();
+
+        hardware.boxServo.setPosition(1);
+
+        while (time.milliseconds() < 2000) {
+
+        }
+
+
+        armPos = hardware.armMotor.getCurrentPosition();
+
+        while (armPos > 10)
+        {
+            if (armPos < 300)
+                hardware.boxServo.setPosition(0.7);
+
+            double error = 10 - armPos;
+
+            hardware.armMotor.setPower(0.2 * pid.getOutput(error, 0));
+
+            armPos = hardware.armMotor.getCurrentPosition();
         }
     }
 }
