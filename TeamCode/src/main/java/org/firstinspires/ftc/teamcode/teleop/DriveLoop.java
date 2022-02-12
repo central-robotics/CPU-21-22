@@ -13,12 +13,14 @@ public class DriveLoop {
     double joystick_x, joystick_y, joystick_power;
     double orientation;
     double intakePower;
-    double sweeperPos;
+    boolean turboEnabled;
     Orientation gyro_angles;
     long prevTime = System.currentTimeMillis();
 
     public void loop(TeleOpHardware hardware, OpMode opMode)
     {
+        if (opMode.gamepad1.left_bumper && opMode.gamepad1.right_bumper)
+            turboEnabled =! turboEnabled;
         double sliderPos = hardware.slideMotor.getCurrentPosition();
         boolean changeBoxPos = false;
 
@@ -52,9 +54,9 @@ public class DriveLoop {
         }
 
         if (opMode.gamepad1.x)
-            hardware.sweeperServo.setPosition(0.49);
+            moveSweeper(0.49, hardware);
         else
-            hardware.sweeperServo.setPosition(1);
+            moveSweeper(1, hardware);
 
 
         if (opMode.gamepad1.right_bumper)
@@ -68,10 +70,13 @@ public class DriveLoop {
 
         prevTime = System.currentTimeMillis();
         // Get all the info we from the gamepad
-        joystick_y = opMode.gamepad1.left_stick_y;
+        joystick_y = opMode.gamepad1.left_stick_y < 0 ? Math.pow(opMode.gamepad1.left_stick_y, 2) :
+                -Math.pow(opMode.gamepad1.left_stick_y, 2);
         joystick_x = (opMode.gamepad1.left_stick_x == 0) ? 0.000001 :
-                opMode.gamepad1.left_stick_x;
-        rot_power = 1 * (opMode.gamepad1.right_stick_x);
+                (opMode.gamepad1.left_stick_x > 0 ? Math.pow(opMode.gamepad1.left_stick_x, 2) :
+                        -Math.pow(opMode.gamepad1.left_stick_x, 2));
+
+        rot_power = 0.7 * (opMode.gamepad1.right_stick_x);
 
 
 
@@ -93,7 +98,7 @@ public class DriveLoop {
         positive_power = (orientation != 0) ? (joystick_power * Math.cos(orientation)) :
                 negative_power;
 
-        if (opMode.gamepad1.x){
+        if (turboEnabled){
             move(2 * positive_power, 2 * negative_power, 2 * rot_power, hardware);
         }
         else {
@@ -121,10 +126,10 @@ public class DriveLoop {
     {
         if (TeleOpConstants.isBlueOpMode)
         {
-            hardware.carouselMotor.setPower(power);
+            hardware.carouselMotor.setPower(-power);
         } else
         {
-            hardware.carouselMotor.setPower(-power);
+            hardware.carouselMotor.setPower(power);
         }
     }
 
@@ -135,14 +140,6 @@ public class DriveLoop {
 
     public void moveSweeper(double pos, TeleOpHardware hardware)
     {
-        if (sweeperPos == 0.49) {
-
-            sweeperPos = 0;
-        } else
-        {
-            hardware.sweeperServo.setPosition(0.49);
-            sweeperPos = 0.49;
-        }
         hardware.sweeperServo.setPosition(pos);
     }
 
