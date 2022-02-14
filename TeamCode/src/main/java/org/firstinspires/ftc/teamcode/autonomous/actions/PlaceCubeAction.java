@@ -8,9 +8,11 @@ import org.firstinspires.ftc.teamcode.autonomous.Constants;
 import org.firstinspires.ftc.teamcode.autonomous.actions.util.ObjectDetector;
 import org.firstinspires.ftc.teamcode.autonomous.control.PID;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
+import org.firstinspires.ftc.teamcode.autonomous.instructions.Instructions;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
 import org.firstinspires.ftc.teamcode.autonomous.nav.path.LinearPath;
+import org.firstinspires.ftc.teamcode.autonomous.nav.path.Path;
 import org.firstinspires.ftc.teamcode.autonomous.vision.Vuforia;
 import org.firstinspires.ftc.teamcode.autonomous.nav.Navigation;
 
@@ -28,8 +30,7 @@ public class PlaceCubeAction extends Action {
     @Override
     public void execute(Hardware hardware, Localization localization, Vuforia vuforia, ObjectDetector detector) {
         ObjectDetector.BarcodeLocation location = detector.calculateState();
-
-        PID slidePID = new PID(new PIDCoefficients(0.008, 0.00005, 0));
+        PID slidePID = new PID(new PIDCoefficients(0.008, 0.0001, 0));
 
         double slideLevel = 5;
 
@@ -53,36 +54,41 @@ public class PlaceCubeAction extends Action {
             default:
                 break;
         }
+
+        Position pos;
+
         if (Constants.IS_BLUE_TEAM)
         {
-            Position pos;
 
-            if (!Constants.IS_LEFT_OPMODE)
+            if (Constants.IS_LEFT_OPMODE)
             {
-                pos = new Position(700, 1830, Constants.CURRENT_INITIAL_THETA);
+                pos = new Position(600, 1830, Constants.CURRENT_INITIAL_THETA - 0.5);
 
             } else
             {
-                pos = new Position(700, 1234, Constants.CURRENT_INITIAL_THETA);
+                pos = new Position(600, 1234, Constants.CURRENT_INITIAL_THETA + 0.5);
             }
-
-            moveToLevel(slideLevel, hardware, slidePID);
         } else
         {
-            Position pos;
 
-            if (!Constants.IS_LEFT_OPMODE)
+            if (Constants.IS_LEFT_OPMODE)
             {
-                pos = new Position(700, 1234, Constants.CURRENT_INITIAL_THETA);
+                pos = new Position(650, 1234, Constants.CURRENT_INITIAL_THETA - 0.5);
             } else
             {
-                pos = new Position(700, 1830, Constants.CURRENT_INITIAL_THETA);
+                pos = new Position(650, 1830, Constants.CURRENT_INITIAL_THETA + 0.5);
             }
-
-            moveToLevel(slideLevel, hardware, slidePID);
-
         }
+
+        if (!Constants.IS_BLUE_TEAM)
+            pos.x *= -1;
+
+        Instructions.navigation.drive.driveToTarget(pos);
+
+        moveToLevel(slideLevel, hardware, slidePID);
     }
+
+
 
     private void moveToLevel(double ticks, Hardware hardware, PID pid)
     {
@@ -118,12 +124,18 @@ public class PlaceCubeAction extends Action {
 
         armPos = hardware.armMotor.getCurrentPosition();
 
-        while (armPos > 10)
+        while (armPos > 20)
         {
+            if (armPos < 100)
+                break;
+
+            if (ticks == 0)
+                break;
+
             if (armPos < 300)
                 hardware.boxServo.setPosition(0.7);
 
-            double error = 10 - armPos;
+            double error = 20 - armPos;
 
             hardware.armMotor.setPower(0.2 * pid.getOutput(error, 0));
 

@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.autonomous.AutonCore;
 import org.firstinspires.ftc.teamcode.autonomous.Constants;
 import org.firstinspires.ftc.teamcode.autonomous.control.PID;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
@@ -264,7 +265,6 @@ public class Drive {
         hardware.setAllMotorPowers((isCounterClockwise ? 1 : -1) * thetaOutput);
     }
 
-    @Deprecated
     public void driveToTarget(Position destination)
     {
         boolean thetaFinished = false;
@@ -289,7 +289,7 @@ public class Drive {
                 thetaFinished = true;
             }
 
-            //setMotorPowers(destination, thetaError, isCounterClockwise);
+            setLinearPowers(destination, thetaError, isCounterClockwise, AutonCore.telem);
         }
 
         controller.resetSum();

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -23,9 +24,11 @@ public class AutonCore {
         Localization localization = new Localization(hardware, vuforia, opMode.telemetry, initialX, initialY, initialTheta);
         Instructions instructions = new Instructions(hardware, localization, runtime, opMode.telemetry, opMode, vuforia, detector, initialX, initialY, initialTheta);
         telem = opMode.telemetry;
-        opMode.waitForStart();
 
         hardware.constraintServo.setPosition(0);
+
+        opMode.waitForStart();
+
 
         runtime.reset();
 

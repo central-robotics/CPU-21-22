@@ -37,36 +37,8 @@ public class WarehouseStrategy implements Strategy {
     public ArrayList<Path> registerPath(double initialY, double initialTheta) {
         ArrayList<Path> path = new ArrayList<>();
 
-        Position pos;
-
-        if (Constants.IS_BLUE_TEAM)
-        {
-
-            if (Constants.IS_LEFT_OPMODE)
-            {
-                pos = new Position(700, 1830, Constants.CURRENT_INITIAL_THETA);
-
-            } else
-            {
-                pos = new Position(700, 1234, Constants.CURRENT_INITIAL_THETA);
-            }
-
-        } else
-        {
-
-            if (Constants.IS_LEFT_OPMODE)
-            {
-                pos = new Position(700, 1234, Constants.CURRENT_INITIAL_THETA);
-            } else
-            {
-                pos = new Position(700, 1830, Constants.CURRENT_INITIAL_THETA);
-            }
-
-        }
-
         LinearPath p0 = new LinearPath(new Position[]{
-                new Position(304.8, initialY, initialTheta),
-                pos
+                new Position(304.8, initialY, initialTheta)
         });
 
         path.add(p0);

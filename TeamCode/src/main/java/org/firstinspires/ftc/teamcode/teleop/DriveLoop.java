@@ -24,7 +24,7 @@ public class DriveLoop {
         double sliderPos = hardware.slideMotor.getCurrentPosition();
         boolean changeBoxPos = false;
 
-        if (Math.abs(sliderPos) > 200)
+        if (Math.abs(sliderPos) > 300)
             changeBoxPos = true;
 
         if (opMode.gamepad1.a)
@@ -34,7 +34,7 @@ public class DriveLoop {
 
         if (opMode.gamepad1.b)
         {
-            moveCarousel(0.7, hardware);
+            moveCarousel(0.5, hardware);
         } else if (!opMode.gamepad1.b)
         {
             moveCarousel(0.0001, hardware);
@@ -48,7 +48,7 @@ public class DriveLoop {
             if (changeBoxPos)
                 moveBoxServo(0.5, hardware);
             else
-                moveBoxServo(0.68, hardware);
+                moveBoxServo(0.64, hardware);
 
             changeBoxPos = false;
         }
@@ -61,16 +61,16 @@ public class DriveLoop {
 
         if (opMode.gamepad1.right_bumper)
         {
-            moveSlider(.9, hardware);
+            moveSlider(.75, hardware);
         } else if (opMode.gamepad1.left_bumper)
-            moveSlider(-.4, hardware);
+            moveSlider(-.35, hardware);
 
         if (!opMode.gamepad1.right_bumper && !opMode.gamepad1.left_bumper)
             moveSlider(0.00001, hardware);
 
         prevTime = System.currentTimeMillis();
         // Get all the info we from the gamepad
-        joystick_y = opMode.gamepad1.left_stick_y < 0 ? Math.pow(opMode.gamepad1.left_stick_y, 2) :
+        joystick_y = opMode.gamepad1.left_stick_y > 0 ? Math.pow(opMode.gamepad1.left_stick_y, 2) :
                 -Math.pow(opMode.gamepad1.left_stick_y, 2);
         joystick_x = (opMode.gamepad1.left_stick_x == 0) ? 0.000001 :
                 (opMode.gamepad1.left_stick_x > 0 ? Math.pow(opMode.gamepad1.left_stick_x, 2) :

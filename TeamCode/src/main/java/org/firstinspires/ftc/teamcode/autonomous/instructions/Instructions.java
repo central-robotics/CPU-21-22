@@ -24,7 +24,7 @@ isolating these instructions to a separate class, rather than clogging up the Au
 This class also provides a method of disposing resources.
  */
 public class Instructions {
-    public Navigation navigation;
+    public static Navigation navigation;
     public Actions actions;
 
     public Instructions(Hardware hardware, Localization localization, ElapsedTime runtime, Telemetry telemetry, LinearOpMode opMode, Vuforia vuforia, ObjectDetector detector, double initialX, double initialY, double initialTheta)

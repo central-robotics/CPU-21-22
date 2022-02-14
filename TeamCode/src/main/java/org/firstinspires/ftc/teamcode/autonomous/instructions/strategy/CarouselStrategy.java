@@ -38,11 +38,11 @@ public class CarouselStrategy implements Strategy {
 
             if (Constants.IS_LEFT_OPMODE)
             {
-                pos = new Position(700, 1830, Constants.CURRENT_INITIAL_THETA);
+                pos = new Position(650, 1830, Constants.CURRENT_INITIAL_THETA - 0.5);
 
             } else
             {
-                pos = new Position(700, 1234, Constants.CURRENT_INITIAL_THETA);
+                pos = new Position(650, 1234, Constants.CURRENT_INITIAL_THETA + 0.5);
             }
 
         } else
@@ -50,10 +50,10 @@ public class CarouselStrategy implements Strategy {
 
             if (Constants.IS_LEFT_OPMODE)
             {
-                pos = new Position(700, 1234, Constants.CURRENT_INITIAL_THETA);
+                pos = new Position(650, 1234, Constants.CURRENT_INITIAL_THETA - 0.5);
             } else
             {
-                pos = new Position(700, 1830, Constants.CURRENT_INITIAL_THETA);
+                pos = new Position(650, 1830, Constants.CURRENT_INITIAL_THETA + 0.5);
             }
 
         }
@@ -66,10 +66,10 @@ public class CarouselStrategy implements Strategy {
         path.add(p0);
 
         //Rotate robot in the case that the carousel is on the opposite side of the robot.
-        double rotation = Constants.IS_BLUE_TEAM ? initialTheta + (Math.PI  / 4): (3 * Math.PI ) / 4;
+        double rotation = Constants.IS_BLUE_TEAM ? initialTheta - ( 5  *Math.PI) / 4 : (3 * Math.PI ) / 4;
 
         LinearPath p1 = new LinearPath(new Position[]{
-                new Position(350.5, 350.5, rotation)
+                new Position(150.5, 150.5, rotation)
         });
 
         path.add(p1);
