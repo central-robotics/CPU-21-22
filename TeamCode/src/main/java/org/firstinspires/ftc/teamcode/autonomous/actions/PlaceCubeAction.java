@@ -57,26 +57,44 @@ public class PlaceCubeAction extends Action {
 
         Position pos;
 
+        double x;
+
+        switch ((int) slideLevel)
+        {
+            case 0:
+                x = 750;
+                break;
+            case 200:
+                x = 650;
+                break;
+            case 500:
+                x = 550;
+                break;
+            default:
+                x = 650;
+                break;
+        }
+
         if (Constants.IS_BLUE_TEAM)
         {
 
             if (Constants.IS_LEFT_OPMODE)
             {
-                pos = new Position(600, 1830, Constants.CURRENT_INITIAL_THETA - 0.5);
+                pos = new Position(x, 1830, Constants.CURRENT_INITIAL_THETA - 0.5);
 
             } else
             {
-                pos = new Position(600, 1234, Constants.CURRENT_INITIAL_THETA + 0.5);
+                pos = new Position(x, 1234, Constants.CURRENT_INITIAL_THETA + 0.5);
             }
         } else
         {
 
             if (Constants.IS_LEFT_OPMODE)
             {
-                pos = new Position(650, 1234, Constants.CURRENT_INITIAL_THETA - 0.5);
+                pos = new Position(x, 1234, Constants.CURRENT_INITIAL_THETA - 0.5);
             } else
             {
-                pos = new Position(650, 1830, Constants.CURRENT_INITIAL_THETA + 0.5);
+                pos = new Position(x, 1830, Constants.CURRENT_INITIAL_THETA + 0.5);
             }
         }
 
