@@ -34,6 +34,8 @@ public class TeleOpHardware {
         slideMotor = hardwareMap.dcMotor.get("slideMotor");
         slideMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slideMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         intakeMotor = hardwareMap.dcMotor.get("intakeMotor");
         intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);

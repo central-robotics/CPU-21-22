@@ -19,8 +19,12 @@ public class DriveLoop {
 
     public void loop(TeleOpHardware hardware, OpMode opMode)
     {
-        if (opMode.gamepad1.left_bumper && opMode.gamepad1.right_bumper)
-            turboEnabled =! turboEnabled;
+        if (opMode.gamepad1.right_trigger != 0)
+        {
+            turboEnabled = true;
+        } else {
+            turboEnabled = false;
+        }
         double sliderPos = hardware.slideMotor.getCurrentPosition();
         boolean changeBoxPos = false;
 
@@ -42,13 +46,13 @@ public class DriveLoop {
 
         if (opMode.gamepad1.y)
         {
-            moveBoxServo(1, hardware);
+            moveBoxServo(.99, hardware);
         } else
         {
             if (changeBoxPos)
                 moveBoxServo(0.5, hardware);
             else
-                moveBoxServo(0.64, hardware);
+                moveBoxServo(0.7, hardware);
 
             changeBoxPos = false;
         }
@@ -63,7 +67,7 @@ public class DriveLoop {
         {
             moveSlider(.75, hardware);
         } else if (opMode.gamepad1.left_bumper)
-            moveSlider(-.35, hardware);
+            moveSlider(-.1, hardware);
 
         if (!opMode.gamepad1.right_bumper && !opMode.gamepad1.left_bumper)
             moveSlider(0.00001, hardware);

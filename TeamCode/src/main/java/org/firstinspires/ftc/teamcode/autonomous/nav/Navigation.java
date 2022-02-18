@@ -74,37 +74,6 @@ public class Navigation {
             actions.executeTask(i);
         }
 
-        /*for (int i = 0; i < waypoints.size(); i++)
-        {
-            Waypoint waypoint = waypoints.get(i);
-
-            if (opMode.isStopRequested())
-                break;
-
-            double time = runtime.milliseconds();
-            hardware.setAllMotorPowers(0);
-
-            while (runtime.milliseconds() - time < 500)
-            {
-                //nothing
-            }
-
-            telem.addData("starting T", waypoint.startingPos.t);
-            telem.addData("target T", waypoint.targetPos.t);
-
-            drive.driveToTarget(waypoint.startingPos);
-
-            if (opMode.isStopRequested())
-                break;
-
-            drive.driveToTarget(waypoint.targetPos);
-
-            if (opMode.isStopRequested())
-                break;
-
-            actions.executeTask(i);
-        }*/
-
         waypoints.clear();
     }
 }

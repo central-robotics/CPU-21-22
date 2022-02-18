@@ -31,36 +31,8 @@ public class CarouselStrategy implements Strategy {
     public ArrayList<Path> registerPath(double initialY, double initialTheta) {
         ArrayList<Path> path = new ArrayList<>();
 
-        Position pos;
-
-        if (Constants.IS_BLUE_TEAM)
-        {
-
-            if (Constants.IS_LEFT_OPMODE)
-            {
-                pos = new Position(650, 1830, Constants.CURRENT_INITIAL_THETA - 0.5);
-
-            } else
-            {
-                pos = new Position(650, 1234, Constants.CURRENT_INITIAL_THETA + 0.5);
-            }
-
-        } else
-        {
-
-            if (Constants.IS_LEFT_OPMODE)
-            {
-                pos = new Position(650, 1234, Constants.CURRENT_INITIAL_THETA - 0.5);
-            } else
-            {
-                pos = new Position(650, 1830, Constants.CURRENT_INITIAL_THETA + 0.5);
-            }
-
-        }
-
         LinearPath p0 = new LinearPath(new Position[]{
-                new Position(304.8, initialY, initialTheta),
-                pos
+                new Position(304.8, initialY, initialTheta)
         });
 
         path.add(p0);
@@ -69,7 +41,7 @@ public class CarouselStrategy implements Strategy {
         double rotation = Constants.IS_BLUE_TEAM ? initialTheta - ( 5  *Math.PI) / 4 : (3 * Math.PI ) / 4;
 
         LinearPath p1 = new LinearPath(new Position[]{
-                new Position(150.5, 150.5, rotation)
+                new Position(250.5, 250.5, rotation)
         });
 
         path.add(p1);

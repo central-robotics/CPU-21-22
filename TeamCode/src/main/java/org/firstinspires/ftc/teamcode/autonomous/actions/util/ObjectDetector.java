@@ -140,6 +140,8 @@ public class ObjectDetector {
             teamElementLocation = BarcodeLocation.RIGHT;
         }
 
+
+
         return teamElementLocation;
     }
 

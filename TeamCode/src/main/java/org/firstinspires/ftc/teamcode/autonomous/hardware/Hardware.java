@@ -19,7 +19,7 @@ public class Hardware {
     public DcMotor leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor;
     public DcMotor carouselMotor;
     public DcMotor armMotor;
-    public DcMotor intakeMotor;
+    public DcMotorEx intakeMotor;
     public Servo boxServo, constraintServo;
     public BNO055IMU gyro;
     public WebcamName camera;
@@ -97,7 +97,7 @@ public class Hardware {
         armMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        intakeMotor = hardware.dcMotor.get("intakeMotor");
+        intakeMotor = hardware.get(DcMotorEx.class, "intakeMotor");
         intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 

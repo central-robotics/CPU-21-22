@@ -41,41 +41,31 @@ public class TestOpMode extends OpMode {
 
         boxServo = hardwareMap.servo.get("boxServo");
         boxServo.setDirection(Servo.Direction.FORWARD);
-        boxServo.setPosition(0.5
-        );
+        boxServo.setPosition(0.25);
 
         try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            Thread.sleep(2000);
+        } catch (Exception e) {
+
         }
 
-        rightback.setPower(1);
+        boxServo.setPosition(0.5);
 
         try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            Thread.sleep(2000);
+        } catch (Exception e) {
+
         }
 
-        rightfront.setPower(1);
+        boxServo.setPosition(0.75);
 
         try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            Thread.sleep(2000);
+        } catch (Exception e) {
+
         }
 
-        leftfront.setPower(1);
-
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        leftback.setPower(1);
-        intakeMotor.setPower(1);
+        boxServo.setPosition(1);
     }
 
     @Override

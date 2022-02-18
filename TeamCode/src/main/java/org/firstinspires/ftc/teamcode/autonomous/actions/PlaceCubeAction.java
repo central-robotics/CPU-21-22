@@ -29,6 +29,7 @@ public class PlaceCubeAction extends Action {
 
     @Override
     public void execute(Hardware hardware, Localization localization, Vuforia vuforia, ObjectDetector detector) {
+
         ObjectDetector.BarcodeLocation location = detector.calculateState();
         PID slidePID = new PID(new PIDCoefficients(0.008, 0.0001, 0));
 
@@ -36,20 +37,20 @@ public class PlaceCubeAction extends Action {
 
         switch (location)
         {
-            case LEFT:
+            case RIGHT:
                 if (Constants.IS_BLUE_TEAM)
-                    slideLevel = 500;
+                    slideLevel = 610;
                 else
                     slideLevel = 0;
                 break;
             case CENTER:
-                slideLevel = 200;
+                slideLevel = 300;
                 break;
-            case RIGHT:
+            case LEFT:
                 if (Constants.IS_BLUE_TEAM)
                     slideLevel = 0;
                 else
-                    slideLevel = 500;
+                    slideLevel = 610;
                 break;
             default:
                 break;
@@ -58,20 +59,24 @@ public class PlaceCubeAction extends Action {
         Position pos;
 
         double x;
-
+        double y;
         switch ((int) slideLevel)
         {
             case 0:
-                x = 750;
+                x = 970;
+                y = 1740;
                 break;
-            case 200:
-                x = 650;
+            case 300:
+                x = 775;
+                y = 1795;
                 break;
-            case 500:
-                x = 550;
+            case 610:
+                x = 785;
+                y = 1785;
                 break;
             default:
-                x = 650;
+                x = 800;
+                y = 1760;
                 break;
         }
 
@@ -80,21 +85,21 @@ public class PlaceCubeAction extends Action {
 
             if (Constants.IS_LEFT_OPMODE)
             {
-                pos = new Position(x, 1830, Constants.CURRENT_INITIAL_THETA - 0.5);
+                pos = new Position(x, y, Constants.CURRENT_INITIAL_THETA - 0.65);
 
             } else
             {
-                pos = new Position(x, 1234, Constants.CURRENT_INITIAL_THETA + 0.5);
+                pos = new Position(x, 1234, Constants.CURRENT_INITIAL_THETA + 0.65);
             }
         } else
         {
 
             if (Constants.IS_LEFT_OPMODE)
             {
-                pos = new Position(x, 1234, Constants.CURRENT_INITIAL_THETA - 0.5);
+                pos = new Position(x, 1234, Constants.CURRENT_INITIAL_THETA - 0.65);
             } else
             {
-                pos = new Position(x, 1830, Constants.CURRENT_INITIAL_THETA + 0.5);
+                pos = new Position(x, y, Constants.CURRENT_INITIAL_THETA + 0.65);
             }
         }
 
@@ -103,21 +108,29 @@ public class PlaceCubeAction extends Action {
 
         Instructions.navigation.drive.driveToTarget(pos);
 
-        moveToLevel(slideLevel, hardware, slidePID);
+        moveToLevel(slideLevel, hardware, slidePID, localization);
     }
 
 
 
-    private void moveToLevel(double ticks, Hardware hardware, PID pid)
+    private void moveToLevel(double ticks, Hardware hardware, PID pid, Localization localization)
     {
+
+        hardware.setAllMotorPowers(0);
+
         armPos = hardware.armMotor.getCurrentPosition();
 
         ElapsedTime time = new ElapsedTime();
 
+        boolean begunCorrect = false;
+
         while (armPos < ticks - 20)
         {
-            if (armPos > 200) {
-                hardware.boxServo.setPosition(0.50);
+            if (armPos > 60 && ticks != 0 && !begunCorrect) {
+                begunCorrect = true;
+                new Thread(() -> {
+                    hardware.boxServo.setPosition(0.35);
+                }).start();
             }
 
             double error = ticks - armPos;
@@ -133,11 +146,31 @@ public class PlaceCubeAction extends Action {
 
         time.reset();
 
-        hardware.boxServo.setPosition(1);
+        hardware.setAllMotorPowers(0);
 
-        while (time.milliseconds() < 2000) {
+        new Thread(() -> {
+            hardware.boxServo.setPosition(1);
+        }).start();
 
+        time.reset();
+
+        while (time.milliseconds() < 500)
+        {
+            //Nothing
         }
+
+
+        while (hardware.boxServo.getPosition() < 0.95)
+        {
+            //Do nothing
+        }
+
+        Position newPos = localization.getRobotPosition();
+
+        newPos.x -= 200;
+        newPos.y += 200;
+
+        Instructions.navigation.drive.driveToTarget(newPos);
 
 
         armPos = hardware.armMotor.getCurrentPosition();

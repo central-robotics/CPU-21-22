@@ -26,7 +26,7 @@ public class WarehouseStrategy implements Strategy {
         for (int i = 0; i < Constants.WAREHOUSE_ELEMENTS; i++)
         {
             actions.addTask(new SpinIntakeAction(1 + (i * 3)));
-            actions.addTask(new SpinIntakeAction(2 + (i * 3)));
+            //actions.addTask(new SpinIntakeAction(2 + (i * 3)));
             //actions.addTask(new PlaceElementAction(3+ (i*3)));
         }
 
@@ -66,18 +66,19 @@ public class WarehouseStrategy implements Strategy {
                     new Position(768, 1524, initialTheta)
             });
 
-            path.add(p3);
+            //path.add(p3);
         }
 
         SplinePath p4 = new SplinePath(new Position[]{
-                new Position(243, 1828, 0),
-                new Position(243, 2200, 0),
-                new Position(243, 2500, 0),
-                new Position(243, 3000, 0),
-                new Position(700, 3000, 0)
+                new Position(495, 1500, 0),
+                new Position(290, 1710, 0),
+                new Position(204, 2090, 0),
+                new Position(196, 2704, 0),
+                new Position(414, 2980, 0),
+                new Position(757,3067,0)
         });
 
-        path.add(p4);
+        //path.add(p4);
 
         return path;
     }
