@@ -39,18 +39,18 @@ public class PlaceCubeAction extends Action {
         {
             case RIGHT:
                 if (Constants.IS_BLUE_TEAM)
-                    slideLevel = 610;
+                    slideLevel = 565;
                 else
-                    slideLevel = 0;
+                    slideLevel = 70;
                 break;
             case CENTER:
                 slideLevel = 300;
                 break;
             case LEFT:
                 if (Constants.IS_BLUE_TEAM)
-                    slideLevel = 0;
+                    slideLevel = 70;
                 else
-                    slideLevel = 610;
+                    slideLevel = 565;
                 break;
             default:
                 break;
@@ -60,25 +60,101 @@ public class PlaceCubeAction extends Action {
 
         double x;
         double y;
-        switch ((int) slideLevel)
+
+        if (Constants.IS_BLUE_TEAM)
         {
-            case 0:
-                x = 970;
-                y = 1740;
-                break;
-            case 300:
-                x = 775;
-                y = 1795;
-                break;
-            case 610:
-                x = 785;
-                y = 1785;
-                break;
-            default:
-                x = 800;
-                y = 1760;
-                break;
+            if (Constants.IS_LEFT_OPMODE) //BLUE WAREHOUSE
+            {
+                switch ((int) slideLevel)
+                {
+                    case 70:
+                        x = 975;
+                        y = 1565;
+                        break;
+                    case 300:
+                        x = 795;
+                        y = 1695;
+                        break;
+                    case 565:
+                        x = 785;
+                        y = 1785;
+                        break;
+                    default:
+                        x = 800;
+                        y = 1760;
+                        break;
+                }
+            } else
+            {
+                switch ((int) slideLevel) //BLUE CAROUSEL
+                {
+                    case 70:
+                        x = 975;
+                        y = 1565;
+                        break;
+                    case 300:
+                        x = 795;
+                        y = 1695;
+                        break;
+                    case 565:
+                        x = 785;
+                        y = 1785;
+                        break;
+                    default:
+                        x = 800;
+                        y = 1760;
+                        break;
+                }
+            }
+        } else
+        {
+            if (Constants.IS_LEFT_OPMODE) //RED CAROUSEL
+            {
+                switch ((int) slideLevel)
+                {
+                    case 70:
+                        x = 775;
+                        y = 1074;
+                        break;
+                    case 300:
+                        x = 745;
+                        y = 1104;
+                        break;
+                    case 565:
+                        x = 715;
+                        y = 1134;
+                        break;
+                    default:
+                        x = 800;
+                        y = 1134;
+                        break;
+                }
+            } else //RED WAREHOUSE
+            {
+                switch ((int) slideLevel)
+                {
+                    case 70:
+                        x = 975;
+                        y = 1565;
+                        break;
+                    case 300:
+                        x = 795;
+                        y = 1695;
+                        break;
+                    case 565:
+                        x = 785;
+                        y = 1785;
+                        break;
+                    default:
+                        x = 800;
+                        y = 1760;
+                        break;
+                }
+            }
         }
+
+
+
 
         if (Constants.IS_BLUE_TEAM)
         {
@@ -89,14 +165,14 @@ public class PlaceCubeAction extends Action {
 
             } else
             {
-                pos = new Position(x, 1234, Constants.CURRENT_INITIAL_THETA + 0.65);
+                pos = new Position(x, y, Constants.CURRENT_INITIAL_THETA + 0.65);
             }
         } else
         {
 
             if (Constants.IS_LEFT_OPMODE)
             {
-                pos = new Position(x, 1234, Constants.CURRENT_INITIAL_THETA - 0.65);
+                pos = new Position(x, y, Constants.CURRENT_INITIAL_THETA - 0.65);
             } else
             {
                 pos = new Position(x, y, Constants.CURRENT_INITIAL_THETA + 0.65);
@@ -115,14 +191,13 @@ public class PlaceCubeAction extends Action {
 
     private void moveToLevel(double ticks, Hardware hardware, PID pid, Localization localization)
     {
-
-        hardware.setAllMotorPowers(0);
-
         armPos = hardware.armMotor.getCurrentPosition();
 
         ElapsedTime time = new ElapsedTime();
 
         boolean begunCorrect = false;
+
+        hardware.setAllMotorPowers(0);
 
         while (armPos < ticks - 20)
         {
@@ -148,13 +223,18 @@ public class PlaceCubeAction extends Action {
 
         hardware.setAllMotorPowers(0);
 
+        while (time.milliseconds() < 500)
+        {
+            //Nothing
+        }
+
         new Thread(() -> {
             hardware.boxServo.setPosition(1);
         }).start();
 
         time.reset();
 
-        while (time.milliseconds() < 500)
+        while (time.milliseconds() < 1500)
         {
             //Nothing
         }
@@ -167,8 +247,34 @@ public class PlaceCubeAction extends Action {
 
         Position newPos = localization.getRobotPosition();
 
-        newPos.x -= 200;
-        newPos.y += 200;
+        if (Constants.IS_BLUE_TEAM)
+        {
+
+            if (Constants.IS_LEFT_OPMODE)
+            {
+                newPos.x -= 200;
+                newPos.y += 200;
+
+            } else
+            {
+                newPos.x -= 200;
+                newPos.y -= 0;
+            }
+
+        } else
+        {
+
+            if (Constants.IS_LEFT_OPMODE)
+            {
+                newPos.x += 200;
+                newPos.y -= 0;
+            } else
+            {
+                newPos.x -= 200;
+                newPos.y += 200;
+            }
+        }
+
 
         Instructions.navigation.drive.driveToTarget(newPos);
 

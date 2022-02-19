@@ -28,7 +28,7 @@ public class DriveLoop {
         double sliderPos = hardware.slideMotor.getCurrentPosition();
         boolean changeBoxPos = false;
 
-        if (Math.abs(sliderPos) > 300)
+        if (Math.abs(sliderPos) > 100)
             changeBoxPos = true;
 
         if (opMode.gamepad1.a)
@@ -52,7 +52,7 @@ public class DriveLoop {
             if (changeBoxPos)
                 moveBoxServo(0.5, hardware);
             else
-                moveBoxServo(0.7, hardware);
+                moveBoxServo(0.665, hardware);
 
             changeBoxPos = false;
         }
@@ -65,9 +65,9 @@ public class DriveLoop {
 
         if (opMode.gamepad1.right_bumper)
         {
-            moveSlider(.75, hardware);
+            moveSlider(.76, hardware);
         } else if (opMode.gamepad1.left_bumper)
-            moveSlider(-.1, hardware);
+            moveSlider(-.3, hardware);
 
         if (!opMode.gamepad1.right_bumper && !opMode.gamepad1.left_bumper)
             moveSlider(0.00001, hardware);

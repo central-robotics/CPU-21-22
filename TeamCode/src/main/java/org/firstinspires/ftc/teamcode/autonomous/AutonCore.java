@@ -26,7 +26,7 @@ public class AutonCore {
         telem = opMode.telemetry;
 
         hardware.constraintServo.setPosition(0);
-        hardware.boxServo.setPosition(.69);
+        hardware.boxServo.setPosition(.66);
 
         opMode.waitForStart();
 
