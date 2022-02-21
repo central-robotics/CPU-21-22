@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.autonomous.control;
+package org.firstinspires.ftc.teamcode.shared.control;
 
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 

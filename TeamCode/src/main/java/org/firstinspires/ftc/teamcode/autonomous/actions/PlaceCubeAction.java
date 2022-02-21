@@ -6,13 +6,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.autonomous.AutonCore;
 import org.firstinspires.ftc.teamcode.autonomous.Constants;
 import org.firstinspires.ftc.teamcode.autonomous.actions.util.ObjectDetector;
-import org.firstinspires.ftc.teamcode.autonomous.control.PID;
+import org.firstinspires.ftc.teamcode.shared.control.PID;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.instructions.Instructions;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Position;
-import org.firstinspires.ftc.teamcode.autonomous.nav.path.LinearPath;
-import org.firstinspires.ftc.teamcode.autonomous.nav.path.Path;
 import org.firstinspires.ftc.teamcode.autonomous.vision.Vuforia;
 import org.firstinspires.ftc.teamcode.autonomous.nav.Navigation;
 

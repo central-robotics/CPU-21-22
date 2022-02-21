@@ -2,13 +2,15 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class TeleOpHardware {
     public DcMotor lf, lb, rf, rb;
-    public DcMotor carouselMotor, slideMotor, intakeMotor;
+    public DcMotor carouselMotor, slideMotor;
+    public DcMotorEx intakeMotor;
     public Servo boxServo;
     public Servo constraintServo;
     public Servo sweeperServo;
@@ -37,7 +39,7 @@ public class TeleOpHardware {
         slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slideMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        intakeMotor = hardwareMap.dcMotor.get("intakeMotor");
+        intakeMotor = hardwareMap.get(DcMotorEx.class, "intakeMotor");
         intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         boxServo = hardwareMap.get(Servo.class, "boxServo");
