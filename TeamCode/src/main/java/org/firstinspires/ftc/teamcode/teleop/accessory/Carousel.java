@@ -46,6 +46,8 @@ public final class Carousel {
                 if (!carouselThreadRunning.get())
                     break;
             }
+
+            carouselThreadRunning.set(false);
         }).start();
 
     }
