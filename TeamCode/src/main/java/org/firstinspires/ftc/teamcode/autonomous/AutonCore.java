@@ -3,13 +3,20 @@ package org.firstinspires.ftc.teamcode.autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.ReadWriteFile;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.autonomous.actions.util.ObjectDetector;
 import org.firstinspires.ftc.teamcode.autonomous.instructions.Instructions;
 import org.firstinspires.ftc.teamcode.autonomous.vision.Vuforia;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
+
+import java.io.File;
 
 public class AutonCore {
     public static ElapsedTime runtime;
@@ -26,7 +33,7 @@ public class AutonCore {
         telem = opMode.telemetry;
 
         hardware.constraintServo.setPosition(0);
-        hardware.boxServo.setPosition(.66);
+        hardware.boxServo.setPosition(.68);
 
         opMode.waitForStart();
 
@@ -54,6 +61,10 @@ public class AutonCore {
         }*/
 
         instructions.runTasks();
+
+        File headingfile = AppUtil.getInstance().getSettingsFile("headingFile");
+        ReadWriteFile.writeFile(headingfile, String.valueOf(hardware.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle));
+
         opMode.stop();
     }
 }

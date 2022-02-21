@@ -89,7 +89,7 @@ public class DriveLoop {
 
         // Pull raw orientation values from the gyro
         gyro_angles = hardware.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
-        double theta = gyro_angles.firstAngle; // Add pi for CPU's robot
+        double theta = gyro_angles.firstAngle + TeleOpConstants.imuHeading; // Add pi for CPU's robot
 
 
         // Turn the joystick coordinates into an angle in radians

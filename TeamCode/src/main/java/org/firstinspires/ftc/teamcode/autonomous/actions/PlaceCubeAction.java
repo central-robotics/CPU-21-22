@@ -37,20 +37,14 @@ public class PlaceCubeAction extends Action {
 
         switch (location)
         {
-            case RIGHT:
-                if (Constants.IS_BLUE_TEAM)
-                    slideLevel = 565;
-                else
-                    slideLevel = 70;
+            case LEFT:
+                slideLevel = 70;
                 break;
             case CENTER:
-                slideLevel = 300;
+                slideLevel = 260;
                 break;
-            case LEFT:
-                if (Constants.IS_BLUE_TEAM)
-                    slideLevel = 70;
-                else
-                    slideLevel = 565;
+            case RIGHT:
+                slideLevel = 565;
                 break;
             default:
                 break;
@@ -69,19 +63,19 @@ public class PlaceCubeAction extends Action {
                 {
                     case 70:
                         x = 975;
-                        y = 1565;
+                        y = 1715;
                         break;
-                    case 300:
+                    case 260:
                         x = 795;
-                        y = 1695;
+                        y = 1845;
                         break;
                     case 565:
                         x = 785;
-                        y = 1785;
+                        y = 1935;
                         break;
                     default:
-                        x = 800;
-                        y = 1760;
+                        x = 795;
+                        y = 1695;
                         break;
                 }
             } else
@@ -89,20 +83,20 @@ public class PlaceCubeAction extends Action {
                 switch ((int) slideLevel) //BLUE CAROUSEL
                 {
                     case 70:
-                        x = 975;
-                        y = 1565;
+                        x = 945;
+                        y = 1395;
                         break;
-                    case 300:
+                    case 260:
                         x = 795;
-                        y = 1695;
+                        y = 1330;
                         break;
                     case 565:
-                        x = 785;
-                        y = 1785;
+                        x = 745;
+                        y = 1330;
                         break;
                     default:
-                        x = 800;
-                        y = 1760;
+                        x = 745;
+                        y = 1254;
                         break;
                 }
             }
@@ -113,20 +107,20 @@ public class PlaceCubeAction extends Action {
                 switch ((int) slideLevel)
                 {
                     case 70:
-                        x = 775;
-                        y = 1074;
+                        x = 900;
+                        y = 1185;
                         break;
-                    case 300:
-                        x = 745;
-                        y = 1104;
+                    case 260:
+                        x = 765;
+                        y = 1134;
                         break;
                     case 565:
                         x = 715;
                         y = 1134;
                         break;
                     default:
-                        x = 800;
-                        y = 1134;
+                        x = 745;
+                        y = 1104;
                         break;
                 }
             } else //RED WAREHOUSE
@@ -134,16 +128,16 @@ public class PlaceCubeAction extends Action {
                 switch ((int) slideLevel)
                 {
                     case 70:
-                        x = 975;
-                        y = 1565;
+                        x = 995;
+                        y = 1545;
                         break;
-                    case 300:
-                        x = 795;
-                        y = 1695;
+                    case 260:
+                        x = 805;
+                        y = 1685;
                         break;
                     case 565:
-                        x = 785;
-                        y = 1785;
+                        x = 820;
+                        y = 1750;
                         break;
                     default:
                         x = 800;
@@ -238,7 +232,6 @@ public class PlaceCubeAction extends Action {
         {
             //Nothing
         }
-
 
         while (hardware.boxServo.getPosition() < 0.95)
         {

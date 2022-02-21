@@ -41,13 +41,15 @@ public class CarouselStrategy implements Strategy {
         double rotation = Constants.IS_BLUE_TEAM ? initialTheta - ( 5  *Math.PI) / 4 : (3 * Math.PI ) / 4;
 
         LinearPath p1 = new LinearPath(new Position[]{
-                new Position(250.5, 250.5, rotation)
+                new Position(380, 500, rotation),
+                new Position(350, 60, rotation)
+
         });
 
         path.add(p1);
 
         LinearPath p2 = new LinearPath(new Position[]{
-                new Position(914.4, 304.8, initialTheta),
+                new Position(990, 70, initialTheta),
         });
 
         path.add(p2);
