@@ -84,6 +84,5 @@ public class TestOpMode extends OpMode {
             if (gamepad1.b)
                 boxServo.setPosition(0.000001);
 
-
     }
 }

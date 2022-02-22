@@ -48,7 +48,7 @@ public class WarehouseStrategy implements Strategy {
         for (int i = 0; i < Constants.WAREHOUSE_ELEMENTS; i++) {
 
             LinearPath p1 = new LinearPath(new Position[]{
-                    new Position(243, 2200, Math.PI),
+                    new Position(243, 1900, Math.PI),
                     new Position(243, 2743, Math.PI)
             });
 
