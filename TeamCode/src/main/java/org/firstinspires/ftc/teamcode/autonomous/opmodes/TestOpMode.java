@@ -41,7 +41,7 @@ public class TestOpMode extends OpMode {
 
         boxServo = hardwareMap.servo.get("boxServo");
         boxServo.setDirection(Servo.Direction.FORWARD);
-        boxServo.setPosition(0.25);
+        boxServo.setPosition(0);
 
         try {
             Thread.sleep(2000);
