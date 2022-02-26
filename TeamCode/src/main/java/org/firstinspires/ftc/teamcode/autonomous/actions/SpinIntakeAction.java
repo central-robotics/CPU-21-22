@@ -15,6 +15,7 @@ public class SpinIntakeAction extends Action{
     }
 
     @Override
+
     public void execute(Hardware hardware, Localization localization, Vuforia vuforia, ObjectDetector detector) {
         if (!hardware.intakeSpinning) {
             hardware.intakeMotor.setPower(-1);

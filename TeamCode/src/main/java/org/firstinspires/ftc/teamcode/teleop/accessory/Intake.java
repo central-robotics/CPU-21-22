@@ -22,11 +22,13 @@ public final class Intake {
 
     private static void startThread(TeleOpHardware hardware, Gamepad gamepad)
     {
+        intakeThreadRunning.set(true);
+
         new Thread(() ->
         {
             hardware.intakeMotor.setPower(1);
 
-            while (!intakeThreadRunning.get())
+            while (intakeThreadRunning.get())
             {
                 if (hardware.intakeMotor.getCurrent(CurrentUnit.AMPS) > 4.85)
                     gamepad.rumble(500);
@@ -34,6 +36,8 @@ public final class Intake {
 
             hardware.intakeMotor.setPower(0.001);
         }).start();
+
+        intakeThreadRunning.set(false);
 
     }
 

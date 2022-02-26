@@ -32,6 +32,8 @@ public class TeleOpHardware {
 
         carouselMotor = hardwareMap.dcMotor.get("carouselMotor");
         carouselMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        carouselMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        carouselMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         slideMotor = hardwareMap.dcMotor.get("slideMotor");
         slideMotor.setDirection(DcMotorSimple.Direction.REVERSE);
