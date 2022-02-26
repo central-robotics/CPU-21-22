@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.teleop.accessory;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 
 import org.firstinspires.ftc.teamcode.shared.control.PID;
@@ -32,22 +33,32 @@ public final class Carousel {
         else
             carouselSpinFactor.set(1);
 
+        carouselThreadRunning.set(true);
+
         new Thread(() ->
         {
-            PID carouselPID = new PID(new PIDCoefficients(0.001, 0, 0));
-            double target = hardware.carouselMotor.getTargetPosition() + 4000;
-            double current = hardware.carouselMotor.getCurrentPosition();
+            double target = Math.abs(hardware.carouselMotor.getTargetPosition() + 4000);
+            double current = Math.abs(hardware.carouselMotor.getCurrentPosition());
 
             while (current < target)
             {
-                hardware.carouselMotor.setPower(carouselPID.getOutput(target - current, 0));
-                current = hardware.carouselMotor.getCurrentPosition();
+                double error = current / target;
+
+                hardware.carouselMotor.setPower(((0.3 * Math.pow(error, 0.5)) + 0.7) * carouselSpinFactor.get());
+                current = Math.abs(hardware.carouselMotor.getCurrentPosition());
 
                 if (!carouselThreadRunning.get())
                     break;
             }
 
+
+
             carouselThreadRunning.set(false);
+
+            hardware.carouselMotor.setPower(0);
+
+            hardware.carouselMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            hardware.carouselMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }).start();
 
     }

@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.teleop.nav.Drive;
 public class DriveLoop {
     boolean turboEnabled;
     long prevTime = System.currentTimeMillis();
+    double carouselCooldown = 0, intakeCooldown = 0;
 
     public void loop(TeleOpHardware hardware, OpMode opMode)
     {
@@ -29,11 +30,25 @@ public class DriveLoop {
         if (Math.abs(sliderPos) > 100)
             changeBoxPos = true;
 
-        if (opMode.gamepad1.a)
-            Intake.spinIntake(hardware, opMode.gamepad1);
+        if (opMode.gamepad1.a) {
+            if (intakeCooldown == 0)
+            {
+                Intake.spinIntake(hardware, opMode.gamepad1);
+                intakeCooldown = System.currentTimeMillis() + 200;
+            } else
+                if (prevTime > intakeCooldown)
+                    intakeCooldown = 0;
+        }
 
-        if (opMode.gamepad1.b)
-            Carousel.spinCarousel(hardware);
+        if (opMode.gamepad1.b) {
+            if (carouselCooldown == 0)
+            {
+                Carousel.spinCarousel(hardware);
+                carouselCooldown = System.currentTimeMillis() + 200;
+            } else
+            if (prevTime > carouselCooldown)
+                carouselCooldown= 0;
+        }
 
         if (opMode.gamepad1.y)
         {

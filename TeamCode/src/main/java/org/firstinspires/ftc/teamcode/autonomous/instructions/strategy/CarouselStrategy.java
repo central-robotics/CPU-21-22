@@ -42,14 +42,14 @@ public class CarouselStrategy implements Strategy {
 
         LinearPath p1 = new LinearPath(new Position[]{
                 new Position(380, 500, rotation),
-                new Position(350, 60, rotation)
+                new Position(350, 200, rotation)
 
         });
 
         path.add(p1);
 
         LinearPath p2 = new LinearPath(new Position[]{
-                new Position(990, 70, initialTheta),
+                new Position(970, 70, initialTheta),
         });
 
         path.add(p2);
