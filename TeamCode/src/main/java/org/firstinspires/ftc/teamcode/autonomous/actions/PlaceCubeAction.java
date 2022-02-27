@@ -196,7 +196,7 @@ public class PlaceCubeAction extends Action {
             if (armPos > 60 && ticks != 0 && !begunCorrect) {
                 begunCorrect = true;
                 new Thread(() -> {
-                    hardware.boxServo.setPosition(0.35);
+                    hardware.boxServo.setPosition(0.5);
                 }).start();
             }
 
@@ -221,7 +221,7 @@ public class PlaceCubeAction extends Action {
         }
 
         new Thread(() -> {
-            hardware.boxServo.setPosition(1);
+            hardware.boxServo.setPosition(0);
         }).start();
 
         time.reset();
@@ -231,7 +231,7 @@ public class PlaceCubeAction extends Action {
             //Nothing
         }
 
-        while (hardware.boxServo.getPosition() < 0.95)
+        while (hardware.boxServo.getPosition() > 0.05)
         {
             //Do nothing
         }
@@ -268,6 +268,15 @@ public class PlaceCubeAction extends Action {
 
 
         Instructions.navigation.drive.driveToTarget(newPos);
+
+        hardware.boxServo.setPosition(0.7);
+
+        time.reset();
+
+        while (time.milliseconds() < 1500)
+        {
+            //Nothing
+        }
 
 
         armPos = hardware.armMotor.getCurrentPosition();

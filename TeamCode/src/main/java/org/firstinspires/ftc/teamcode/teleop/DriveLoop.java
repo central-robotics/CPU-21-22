@@ -16,6 +16,7 @@ public class DriveLoop {
     long prevTime = System.currentTimeMillis();
     double carouselCooldown = 0, intakeCooldown = 0;
 
+
     public void loop(TeleOpHardware hardware, OpMode opMode)
     {
         if (opMode.gamepad1.right_trigger != 0)
@@ -63,11 +64,15 @@ public class DriveLoop {
             changeBoxPos = false;
         }
 
-        if (opMode.gamepad1.x)
-            moveSweeper(0.49, hardware);
-        else
-            moveSweeper(1, hardware);
 
+        /*if (opMode.gamepad1.x) {
+            moveSweeper(0.49, hardware);
+        }
+        else {
+            moveSweeper(1, hardware);
+        }
+
+         */
 
         if (opMode.gamepad1.right_bumper)
         {
@@ -81,6 +86,12 @@ public class DriveLoop {
         prevTime = System.currentTimeMillis();
 
         Drive.moveRobot(opMode.gamepad1, hardware, turboEnabled);
+
+        opMode.telemetry.addData("intakeRunning", Intake.intakeRunning);
+        opMode.telemetry.addData("intakeThreadRunning", Intake.intakeThreadRunning);
+        opMode.telemetry.addData("amin", Intake.amin);
+        opMode.telemetry.addData("sam", Intake.sam);
+
     }
 
     public void moveSlider(double power, TeleOpHardware hardware)
@@ -98,5 +109,8 @@ public class DriveLoop {
     {
         hardware.sweeperServo.setPosition(pos);
     }
+
+
+
 
 }

@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
+import org.firstinspires.ftc.teamcode.teleop.accessory.Intake;
 
 import java.io.File;
 
@@ -29,5 +30,9 @@ public class BlueOpMode extends OpMode {
     @Override
     public void loop() {
         loop.loop(hardware, this);
+    }
+
+    public void stop() {
+        Intake.intakeThreadRunning = false;
     }
 }
