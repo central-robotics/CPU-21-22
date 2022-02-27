@@ -45,6 +45,7 @@ public class PlaceCubeAction extends Action {
                 slideLevel = 565;
                 break;
             default:
+                slideLevel = 260;
                 break;
         }
 
@@ -195,9 +196,7 @@ public class PlaceCubeAction extends Action {
         {
             if (armPos > 60 && ticks != 0 && !begunCorrect) {
                 begunCorrect = true;
-                new Thread(() -> {
-                    hardware.boxServo.setPosition(0.5);
-                }).start();
+                hardware.boxServo.setPosition(0.5);
             }
 
             double error = ticks - armPos;
@@ -215,25 +214,17 @@ public class PlaceCubeAction extends Action {
 
         hardware.setAllMotorPowers(0);
 
-        while (time.milliseconds() < 500)
-        {
-            //Nothing
-        }
-
-        new Thread(() -> {
-            hardware.boxServo.setPosition(0);
-        }).start();
-
         time.reset();
-
-        while (time.milliseconds() < 1500)
-        {
-            //Nothing
-        }
 
         while (hardware.boxServo.getPosition() > 0.05)
         {
+            hardware.boxServo.setPosition(0.02);
             //Do nothing
+        }
+
+        while (time.milliseconds() < 500)
+        {
+
         }
 
         Position newPos = localization.getRobotPosition();
@@ -269,8 +260,6 @@ public class PlaceCubeAction extends Action {
 
         Instructions.navigation.drive.driveToTarget(newPos);
 
-        hardware.boxServo.setPosition(0.7);
-
         time.reset();
 
         while (time.milliseconds() < 1500)
@@ -288,9 +277,6 @@ public class PlaceCubeAction extends Action {
 
             if (ticks == 0)
                 break;
-
-            if (armPos < 300)
-                hardware.boxServo.setPosition(0.7);
 
             double error = 20 - armPos;
 

@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ReadWriteFile;
 
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
+import org.firstinspires.ftc.teamcode.teleop.accessory.Intake;
 
 import java.io.File;
 
@@ -28,5 +29,10 @@ public class RedOpMode extends OpMode {
     public void loop() {
 
         loop.loop(hardware, this);
+    }
+
+    public void stop()
+    {
+        Intake.intakeThreadRunning = false;
     }
 }

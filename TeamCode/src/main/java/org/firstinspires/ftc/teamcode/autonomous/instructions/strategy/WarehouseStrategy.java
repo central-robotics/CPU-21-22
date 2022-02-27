@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.autonomous.instructions.strategy;
 import org.firstinspires.ftc.teamcode.autonomous.Constants;
 import org.firstinspires.ftc.teamcode.autonomous.actions.Actions;
 import org.firstinspires.ftc.teamcode.autonomous.actions.PlaceCubeAction;
+import org.firstinspires.ftc.teamcode.autonomous.actions.PlaceElementAction;
 import org.firstinspires.ftc.teamcode.autonomous.actions.SpinIntakeAction;
 import org.firstinspires.ftc.teamcode.autonomous.actions.util.ObjectDetector;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
@@ -26,8 +27,7 @@ public class WarehouseStrategy implements Strategy {
         for (int i = 0; i < Constants.WAREHOUSE_ELEMENTS; i++)
         {
             actions.addTask(new SpinIntakeAction(1 + (i * 3)));
-            //actions.addTask(new SpinIntakeAction(2 + (i * 3)));
-            //actions.addTask(new PlaceElementAction(3+ (i*3)));
+            actions.addTask(new PlaceElementAction(3 + (i*3)));
         }
 
         return actions;
@@ -57,7 +57,6 @@ public class WarehouseStrategy implements Strategy {
             LinearPath p2 = new LinearPath(new Position[]{
                     new Position(243, 3139, Math.PI),
                     new Position(243, 3200, Math.PI),
-                    new Position(600, 3200, Math.PI)
             });
 
             path.add(p2);
@@ -67,7 +66,7 @@ public class WarehouseStrategy implements Strategy {
                     new Position(768, 1524, initialTheta)
             });
 
-            //path.add(p3);
+            path.add(p3);
         }
 
         SplinePath p4 = new SplinePath(new Position[]{

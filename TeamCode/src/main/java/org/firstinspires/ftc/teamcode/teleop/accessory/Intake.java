@@ -38,26 +38,26 @@ public final class Intake {
                 hardware.intakeMotor.setPower(1);
                 amin = hardware.intakeMotor.getCurrent(CurrentUnit.AMPS);
                 if (Math.abs(hardware.intakeMotor.getCurrent(CurrentUnit.AMPS)) > 3) {
-                    sam = 1;
                     while (hardware.intakeMotor.getCurrent(CurrentUnit.AMPS) > 1) {
-
                     }
-                    sam = 2;
                     ElapsedTime time = new ElapsedTime();
                     time.reset();
                     while (time.milliseconds() < 1000){
 
                     }
-                    sam = 3;
-                    DriveLoop driveLoop = new DriveLoop();
-                    driveLoop.moveSweeper(0.49, hardware);
+
+                    hardware.sweeperMoving.set(true);
+
+                    hardware.sweeperServo.setPosition(0.49);
+
                     time.reset();
 
-                    while (time.milliseconds() < 2000){
+                    while (time.milliseconds() < 300){
 
                     }
-                    sam = 4;
-                    driveLoop.moveSweeper(1, hardware);
+                    hardware.sweeperServo.setPosition(1);
+
+                    hardware.sweeperMoving.set(false);
 
 
                     //hardware.intakeMotor.setPower(0.001);

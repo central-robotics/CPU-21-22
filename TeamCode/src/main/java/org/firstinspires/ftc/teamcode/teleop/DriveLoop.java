@@ -65,14 +65,12 @@ public class DriveLoop {
         }
 
 
-        /*if (opMode.gamepad1.x) {
+        if (opMode.gamepad1.x && !hardware.sweeperMoving.get()) {
             moveSweeper(0.49, hardware);
         }
-        else {
+        else if (!hardware.sweeperMoving.get()) {
             moveSweeper(1, hardware);
         }
-
-         */
 
         if (opMode.gamepad1.right_bumper)
         {

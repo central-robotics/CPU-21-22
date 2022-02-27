@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class TeleOpHardware {
     public DcMotor lf, lb, rf, rb;
     public DcMotor carouselMotor, slideMotor;
@@ -15,6 +17,9 @@ public class TeleOpHardware {
     public Servo constraintServo;
     public Servo sweeperServo;
     public BNO055IMU imu;
+
+    public AtomicBoolean sweeperMoving = new AtomicBoolean(false);
+
 
     public void init(HardwareMap hardwareMap)
     {
