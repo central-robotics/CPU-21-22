@@ -32,7 +32,7 @@ public class PlaceElementAction extends Action{
 
         time.reset();
 
-        while (time.milliseconds() < 1000)
+        while (time.milliseconds() < 400)
         {
             //Nothing
         }

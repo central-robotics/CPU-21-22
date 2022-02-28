@@ -23,6 +23,7 @@ public class Drive {
     private PID controller;
     private PID thetaSplineController;
     private PID thetaLinearController;
+    private PID slowController;
     private Position position;
     private Position prevPosition;
     private final int splinePoint = 0;
@@ -43,10 +44,12 @@ public class Drive {
         PIDCoefficients coefficients = new PIDCoefficients(0.0115, 0.00006, 0);
         PIDCoefficients thetaLinCoefficients = new PIDCoefficients(0.22, 0.0004, 0);
         PIDCoefficients thetaSplCoefficients = new PIDCoefficients(0.10, 0.0004, 0);
+        PIDCoefficients slowCoefficients = new PIDCoefficients(0.007, 0.00006, 0);
 
         controller = new PID(coefficients);
         thetaLinearController = new PID(thetaLinCoefficients);
         thetaSplineController = new PID(thetaSplCoefficients);
+        slowController = new PID(slowCoefficients);
 
 
         position = new Position();
@@ -163,7 +166,7 @@ public class Drive {
         hardware.setMotorValues(positivePower, negativePower);
     }
 
-    public void setLinearPowers(Position target, double thetaError, boolean isCounterClockwise, Telemetry telem)
+    public void setLinearPowers(Position target, double thetaError, boolean isCounterClockwise, Telemetry telem, boolean slow)
     {
         if (opMode.isStopRequested())
             return;
@@ -190,7 +193,11 @@ public class Drive {
         double error = Math.sqrt(Math.pow(target.y - position.y, 2) + Math.pow(target.x - position.x, 2));
         double speed = Math.sqrt(Math.pow(velocity.dy, 2) + Math.pow(velocity.dx, 2));
 
-        magnitude = controller.getOutput(error, speed);
+        if (slow)
+            magnitude = slowController.getOutput(error, speed);
+        else
+            magnitude = controller.getOutput(error, speed);
+
 
         if (error < 3) { // Make magnitude 0 if error is too low to matter
             magnitude = 0;
@@ -216,6 +223,16 @@ public class Drive {
         boolean thetaFinished = false;
         dist = 0;
 
+        Position pos = localization.getRobotPosition();
+        localization.increment(pos);
+
+        double distToNext = Math.sqrt(Math.pow(target.x - pos.x, 2) + Math.pow(target.y - pos.y, 2));
+
+        boolean slow = false;
+
+        if (distToNext > 1000)
+            slow = true;
+
         while (((Math.abs(target.x - position.x) > 8) || (Math.abs(target.y - position.y) > 8) || !thetaFinished) && !opMode.isStopRequested()) {
             position = localization.getRobotPosition();
             localization.increment(position);
@@ -234,7 +251,7 @@ public class Drive {
             }
 
             if (path.getClass() == LinearPath.class)
-                setLinearPowers(target, thetaError, isCounterClockwise, telem);
+                setLinearPowers(target, thetaError, isCounterClockwise, telem, slow);
             else
             {
                 if (dist >= spline.splineDistance - 5)
@@ -289,7 +306,7 @@ public class Drive {
                 thetaFinished = true;
             }
 
-            setLinearPowers(destination, thetaError, isCounterClockwise, AutonCore.telem);
+            setLinearPowers(destination, thetaError, isCounterClockwise, AutonCore.telem, false);
         }
 
         controller.resetSum();

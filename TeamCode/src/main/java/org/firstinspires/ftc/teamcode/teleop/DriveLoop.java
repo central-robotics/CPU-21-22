@@ -11,6 +11,10 @@ import org.firstinspires.ftc.teamcode.teleop.accessory.Carousel;
 import org.firstinspires.ftc.teamcode.teleop.accessory.Intake;
 import org.firstinspires.ftc.teamcode.teleop.nav.Drive;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+
 public class DriveLoop {
     boolean turboEnabled;
     long prevTime = System.currentTimeMillis();

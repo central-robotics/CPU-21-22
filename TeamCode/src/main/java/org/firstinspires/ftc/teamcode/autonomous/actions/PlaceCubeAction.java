@@ -196,7 +196,11 @@ public class PlaceCubeAction extends Action {
         {
             if (armPos > 60 && ticks != 0 && !begunCorrect) {
                 begunCorrect = true;
-                hardware.boxServo.setPosition(0.5);
+                new Thread(() ->
+                {
+                    hardware.boxServo.setPosition(0.42);
+                }).start();
+                // could also break after only one run due to thread
             }
 
             double error = ticks - armPos;
@@ -214,15 +218,11 @@ public class PlaceCubeAction extends Action {
 
         hardware.setAllMotorPowers(0);
 
-        time.reset();
-
-        while (hardware.boxServo.getPosition() > 0.05)
-        {
+        new Thread(() -> {
             hardware.boxServo.setPosition(0.02);
-            //Do nothing
-        }
+        }).start();
 
-        while (time.milliseconds() < 500)
+        while (time.milliseconds() < 300)
         {
 
         }
@@ -262,7 +262,13 @@ public class PlaceCubeAction extends Action {
 
         time.reset();
 
-        while (time.milliseconds() < 1500)
+        new Thread(() ->
+        {
+            hardware.boxServo.setPosition(0.7);
+        }).start();
+
+
+        while (time.milliseconds() < 200)
         {
             //Nothing
         }

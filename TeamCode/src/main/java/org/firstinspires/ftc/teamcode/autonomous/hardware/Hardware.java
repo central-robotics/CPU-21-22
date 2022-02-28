@@ -15,6 +15,9 @@ import org.firstinspires.ftc.teamcode.autonomous.Constants;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+
 public class Hardware {
     public DcMotor leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor;
     public DcMotor carouselMotor;
@@ -26,6 +29,7 @@ public class Hardware {
     public OpenCvCamera openCvCamera;
     public HardwareMap map;
     public boolean intakeSpinning = false;
+    public AtomicInteger boxServoPosition = new AtomicInteger(700);
 
     public Hardware (HardwareMap hardware)
     {
