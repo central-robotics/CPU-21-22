@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class DriveLoop {
     boolean turboEnabled;
+    boolean upward = true;
     long prevTime = System.currentTimeMillis();
     double carouselCooldown = 0, intakeCooldown = 0;
 
@@ -32,8 +33,9 @@ public class DriveLoop {
         double sliderPos = hardware.slideMotor.getCurrentPosition();
         boolean changeBoxPos = false;
 
-        if (Math.abs(sliderPos) > 100)
+        if (Math.abs(sliderPos) > 100 && upward) {
             changeBoxPos = true;
+        }
 
         if (opMode.gamepad1.a) {
             if (intakeCooldown == 0)
@@ -63,9 +65,9 @@ public class DriveLoop {
             if (changeBoxPos)
                 moveBoxServo(0.5, hardware);
             else
-                moveBoxServo(0.7, hardware);
+                moveBoxServo(0.68, hardware);
 
-            changeBoxPos = false;
+            // changeBoxPos = false;
         }
 
 
@@ -79,8 +81,11 @@ public class DriveLoop {
         if (opMode.gamepad1.right_bumper)
         {
             moveSlider(.76, hardware);
-        } else if (opMode.gamepad1.left_bumper)
+            upward = true;
+        } else if (opMode.gamepad1.left_bumper) {
             moveSlider(-.3, hardware);
+            upward = false;
+        }
 
         if (!opMode.gamepad1.right_bumper && !opMode.gamepad1.left_bumper)
             moveSlider(0.00001, hardware);
