@@ -63,7 +63,7 @@ public class WarehouseStrategy implements Strategy {
 
             LinearPath p3 = new LinearPath(new Position[]{
                     new Position(243, 1828, Math.PI),
-                    new Position(768, 1524, initialTheta)
+                    new Position(768, 1150, initialTheta)
             });
 
             path.add(p3);

@@ -28,7 +28,7 @@ public class PlaceCubeAction extends Action {
     @Override
     public void execute(Hardware hardware, Localization localization, Vuforia vuforia, ObjectDetector detector) {
 
-        ObjectDetector.BarcodeLocation location = detector.calculateState();
+        ObjectDetector.BarcodeLocation location = detector.calculateStateUsingColor();
         PID slidePID = new PID(new PIDCoefficients(0.008, 0.0001, 0));
 
         double slideLevel = 5;

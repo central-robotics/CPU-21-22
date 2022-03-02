@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.autonomous.vision.Vuforia;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -49,11 +50,11 @@ public class ObjectDetector {
 
     private void initializeObjectDetector()
     {
-        try {
+        /*try {
             imageClassifier = new TFICBuilder(hardware.map, "model.tflite", "NoTeamElement", "TeamElement").setQuantized(true).build();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
 
         //OpenCvCamera camera = OpenCvCameraFactory.getInstance().createVuforiaPassthrough(vuforia.vuforiaLocalizer, vuforia.parameters);
         camera = hardware.openCvCamera;
@@ -75,6 +76,71 @@ public class ObjectDetector {
         });
     }
 
+    public BarcodeLocation calculateStateUsingColor()
+    {
+        BarcodeLocation location = BarcodeLocation.CENTER;
+
+        if (pipeline.getMat() == null) {
+            AutonCore.telem.addLine("Last mat is null");
+            AutonCore.telem.update();
+            return BarcodeLocation.CENTER;
+        }
+
+        Mat mat = pipeline.getMat();
+        Mat hsvMat = new Mat();
+
+        Imgproc.cvtColor(mat, hsvMat, Imgproc.COLOR_RGB2HSV);
+        Mat filtered = new Mat();
+        Core.inRange(hsvMat, new Scalar(40, 50, 100), new Scalar(80, 75, 200), filtered);
+
+        int leftMatchingPixels = 0;
+        for (int i = 0; i < Constants.WEBCAM_SECTION_WIDTH; i++) {
+            for (int j = 0; j < Constants.WEBCAM_HEIGHT; j += 5) {
+                double[] pixelVals = filtered.get(j, i);
+                if (pixelVals[0] > 0) { // If is in HSV range, the pixelVals will be {255, 255, 255}
+                    leftMatchingPixels++;
+                }
+            }
+        }
+
+        int centerMatchingPixels = 0;
+        for (int i = Constants.WEBCAM_SECTION_WIDTH; i < Constants.WEBCAM_WIDTH - Constants.WEBCAM_SECTION_WIDTH; i++) {
+            for (int j = 0; j < Constants.WEBCAM_HEIGHT; j += 5) {
+                double[] pixelVals = filtered.get(j, i);
+                if (pixelVals[0] > 0) {
+                    centerMatchingPixels++;
+                }
+            }
+        }
+
+        int rightMatchingPixels = 0;
+        for (int i = Constants.WEBCAM_WIDTH - Constants.WEBCAM_SECTION_WIDTH; i < Constants.WEBCAM_WIDTH; i++) {
+            for (int j = 0; j < Constants.WEBCAM_HEIGHT; j += 5) {
+                double[] pixelVals = filtered.get(j, i);
+                if (pixelVals[0] > 0) {
+                    rightMatchingPixels++;
+                }
+            }
+        }
+
+        if (leftMatchingPixels >= centerMatchingPixels) {
+            if (leftMatchingPixels >= rightMatchingPixels) {
+                location = BarcodeLocation.LEFT;
+            } else {
+                location = BarcodeLocation.RIGHT;
+            }
+        } else if (centerMatchingPixels >= rightMatchingPixels) {
+            location = BarcodeLocation.CENTER;
+        } else {
+            location = BarcodeLocation.RIGHT;
+        }
+        AutonCore.telem.addData("TeamElementLocation: ", location.toString());
+        AutonCore.telem.update();
+
+        return location;
+    }
+
+    @Deprecated
     public BarcodeLocation calculateState() {
         camera.stopStreaming();
         camera.closeCameraDevice();

@@ -29,7 +29,6 @@ public class TestOpMode extends OpMode {
         leftfront = hardwareMap.dcMotor.get("leftFrontMotor");
         leftfront.setDirection(DcMotorSimple.Direction.FORWARD);
 
-
         rightfront = hardwareMap.dcMotor.get("rightFrontMotor");
         rightfront.setDirection(DcMotorSimple.Direction.FORWARD);
 
@@ -39,33 +38,19 @@ public class TestOpMode extends OpMode {
         rightback = hardwareMap.dcMotor.get("rightBackMotor");
         rightback.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        boxServo = hardwareMap.servo.get("boxServo");
-        boxServo.setDirection(Servo.Direction.FORWARD);
-        boxServo.setPosition(0);
+        rightfront.setPower(1);
+        leftfront.setPower(1);
+        leftback.setPower(1);
+        rightback.setPower(1);
 
-        try {
-            Thread.sleep(2000);
-        } catch (Exception e) {
-
+        while (true)
+        {
+            telemetry.addData("LF", leftfront.getCurrentPosition());
+            telemetry.addData("RF", rightfront.getCurrentPosition());
+            telemetry.addData("RB", rightback.getCurrentPosition());
+            telemetry.addData("LB", leftback.getCurrentPosition());
+            telemetry.update();
         }
-
-        boxServo.setPosition(0.5);
-
-        try {
-            Thread.sleep(2000);
-        } catch (Exception e) {
-
-        }
-
-        boxServo.setPosition(0.75);
-
-        try {
-            Thread.sleep(2000);
-        } catch (Exception e) {
-
-        }
-
-        boxServo.setPosition(1);
     }
 
     @Override

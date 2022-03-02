@@ -24,8 +24,9 @@ public class SpinIntakeAction extends Action{
             new Thread(() -> {
                 double start = System.currentTimeMillis();
 
-                while (System.currentTimeMillis() - start < 3000) {
+                while (System.currentTimeMillis() - start < 3500) {
                     if (hardware.intakeMotor.getCurrent(CurrentUnit.AMPS) > 4.85) {
+
                         double intakeStart = System.currentTimeMillis();
 
                         while (System.currentTimeMillis() - intakeStart < 500)
@@ -35,6 +36,8 @@ public class SpinIntakeAction extends Action{
                         break;
                     }
                 }
+
+                hardware.sweeperServo.setPosition(0.49);
 
                 hardware.intakeMotor.setPower(0.001);
 

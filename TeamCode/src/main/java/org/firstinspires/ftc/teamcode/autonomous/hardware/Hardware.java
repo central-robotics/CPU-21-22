@@ -23,7 +23,7 @@ public class Hardware {
     public DcMotor carouselMotor;
     public DcMotor armMotor;
     public DcMotorEx intakeMotor;
-    public Servo boxServo, constraintServo;
+    public Servo boxServo, constraintServo, sweeperServo;
     public BNO055IMU gyro;
     public WebcamName camera;
     public OpenCvCamera openCvCamera;
@@ -107,6 +107,7 @@ public class Hardware {
 
         boxServo = hardware.get(Servo.class, "boxServo");
         constraintServo = hardware.get(Servo.class, "constraintServo");
+        sweeperServo = hardware.get(Servo.class, "sweeperServo");
     }
 
     private void initializeGyro(HardwareMap hardware)

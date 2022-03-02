@@ -12,8 +12,6 @@ public final class Intake {
     //private static final AtomicBoolean intakeThreadRunning = new AtomicBoolean(false);
     public static boolean intakeThreadRunning = false;
     public static boolean intakeRunning = false;
-    public static double amin;
-    public static double sam;
 
     public static void spinIntake(TeleOpHardware hardware, Gamepad gamepad)
     {
@@ -31,13 +29,11 @@ public final class Intake {
 
     private static void startThread(TeleOpHardware hardware, Gamepad gamepad)
     {
-
         new Thread(() ->
         {
             while (intakeThreadRunning == true) {
                 hardware.intakeMotor.setPower(1);
-                amin = hardware.intakeMotor.getCurrent(CurrentUnit.AMPS);
-                if (Math.abs(hardware.intakeMotor.getCurrent(CurrentUnit.AMPS)) > 3) {
+                if (Math.abs(hardware.intakeMotor.getCurrent(CurrentUnit.AMPS)) > 3.5) {
                     while (hardware.intakeMotor.getCurrent(CurrentUnit.AMPS) > 1) {
                     }
                     ElapsedTime time = new ElapsedTime();
@@ -63,7 +59,11 @@ public final class Intake {
                     //hardware.intakeMotor.setPower(0.001);
                 }
 
-
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
 
             hardware.intakeMotor.setPower(0.001);

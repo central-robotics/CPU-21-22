@@ -28,7 +28,7 @@ public final class Carousel {
 
     private static void startThread(TeleOpHardware hardware)
     {
-        if (TeleOpConstants.isBlueOpMode)
+        if (!TeleOpConstants.isBlueOpMode)
             carouselSpinFactor.set(-1);
         else
             carouselSpinFactor.set(1);
@@ -44,7 +44,7 @@ public final class Carousel {
             {
                 double error = current / target;
 
-                hardware.carouselMotor.setPower(((0.3 * Math.pow(error, 0.5)) + 0.7) * carouselSpinFactor.get());
+                hardware.carouselMotor.setPower(0.5 * carouselSpinFactor.get());
                 current = Math.abs(hardware.carouselMotor.getCurrentPosition());
 
                 if (!carouselThreadRunning.get())

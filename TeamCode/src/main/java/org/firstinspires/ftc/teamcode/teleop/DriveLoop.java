@@ -93,12 +93,6 @@ public class DriveLoop {
         prevTime = System.currentTimeMillis();
 
         Drive.moveRobot(opMode.gamepad1, hardware, turboEnabled);
-
-        opMode.telemetry.addData("intakeRunning", Intake.intakeRunning);
-        opMode.telemetry.addData("intakeThreadRunning", Intake.intakeThreadRunning);
-        opMode.telemetry.addData("amin", Intake.amin);
-        opMode.telemetry.addData("sam", Intake.sam);
-
     }
 
     public void moveSlider(double power, TeleOpHardware hardware)
@@ -115,6 +109,17 @@ public class DriveLoop {
     public void moveSweeper(double pos, TeleOpHardware hardware)
     {
         hardware.sweeperServo.setPosition(pos);
+    }
+
+    public void moveCarousel(double power, TeleOpHardware hardware)
+    {
+        if (TeleOpConstants.isBlueOpMode)
+        {
+            hardware.carouselMotor.setPower(-power);
+        } else
+        {
+            hardware.carouselMotor.setPower(power);
+        }
     }
 
 
