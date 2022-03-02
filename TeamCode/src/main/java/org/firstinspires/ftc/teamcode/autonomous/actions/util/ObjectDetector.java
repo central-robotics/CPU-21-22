@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.autonomous.actions.util;
 
 import com.vuforia.Trackable;
 
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
@@ -13,11 +14,7 @@ import org.firstinspires.ftc.teamcode.autonomous.Constants;
 import org.firstinspires.ftc.teamcode.autonomous.actions.PlaceCubeAction;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.vision.Vuforia;
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
-import org.opencv.core.Size;
+import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -74,6 +71,59 @@ public class ObjectDetector {
 
             }
         });
+    }
+
+    public Vector2D calculateObjectVector(double width, Scalar s0, Scalar s1)
+    {
+        if (pipeline.getMat() == null)
+            return null;
+
+        Mat mat = pipeline.getMat();
+        Mat transformedMat= new Mat();
+
+        Imgproc.cvtColor(mat, transformedMat, Imgproc.COLOR_RGB2HSV);
+
+        Mat filteredMat = new Mat();
+
+        Core.inRange(transformedMat, s0, s1, filteredMat);
+
+        Mat contour = new Mat();
+
+        List<MatOfPoint> contours = new ArrayList<>();
+
+        Imgproc.findContours(filteredMat, contours, contour, Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
+
+        double largestArea = 0;
+        int largestIndex = 0;
+        Rect bounding = null;
+
+        for (int i = 0; i < contours.size(); i++)
+        {
+            double area = Imgproc.contourArea(contours.get(i));
+
+            if (area > largestArea)
+            {
+                largestArea = area;
+                largestIndex = i;
+                bounding = Imgproc.boundingRect(contours.get(i));
+            }
+        }
+
+        if (bounding == null)
+            return null;
+
+        double distToObject = (width * Constants.WEBCAM_FOCAL_LENGTH) / bounding.width;
+
+        double center = width / 2;
+        double boundingOffset = bounding.x;
+
+        double angleToObject = ((Constants.WEBCAM_FOV / Constants.WEBCAM_DIST) * (center - boundingOffset))
+                * (Math.PI / 180);
+
+        double y = Math.sin(angleToObject) * distToObject;
+        double x = Math.cos(angleToObject) * distToObject;
+
+        return new Vector2D(x, y);
     }
 
     public BarcodeLocation calculateStateUsingColor()
@@ -143,17 +193,18 @@ public class ObjectDetector {
     @Deprecated
     public BarcodeLocation calculateState() {
         camera.stopStreaming();
-        camera.closeCameraDevice();
         BarcodeLocation teamElementLocation;
-        System.out.println("handleMat")
-        ;
+
+        System.out.println("handleMat");
         if (imageClassifier == null || pipeline.getMat() == null) {
             return null;
         }
 
         Mat mat = pipeline.getMat();
+
         int width = mat.width(), height = mat.height();
         // todo: these threshold values probably need to be changed
+
         Mat rawLeftMat = mat.submat(new Rect(0, 0, Constants.WEBCAM_SECTION_WIDTH, Constants.WEBCAM_HEIGHT));
         Mat leftMat = new Mat();
         Imgproc.resize(rawLeftMat, leftMat, new Size(224, 224));

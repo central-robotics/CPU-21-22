@@ -22,4 +22,7 @@ public final class Constants {
     public static final int WEBCAM_WIDTH = 1280;
     public static final int WEBCAM_HEIGHT = 720;
     public static final int WEBCAM_SECTION_WIDTH = 427;
+    public static final int WEBCAM_FOCAL_LENGTH = 1;
+    public static final int WEBCAM_FOV = 55;
+    public static final int WEBCAM_DIST = 1469;
 }
