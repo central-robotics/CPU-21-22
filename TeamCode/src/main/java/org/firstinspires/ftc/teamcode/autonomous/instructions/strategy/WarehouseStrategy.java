@@ -48,28 +48,35 @@ public class WarehouseStrategy implements Strategy {
         for (int i = 0; i < Constants.WAREHOUSE_ELEMENTS; i++) {
 
             LinearPath p1 = new LinearPath(new Position[]{
-                    new Position(243, 1900, Math.PI),
-                    new Position(243, 2743, Math.PI)
+                    new Position(170, 1900, Math.PI),
+                    new Position(170, 2743, Math.PI)
             });
 
             path.add(p1);
 
             LinearPath p2 = new LinearPath(new Position[]{
-                    new Position(243, 3139, Math.PI),
-                    new Position(243, 3200, Math.PI),
+                    new Position(170, 3139, Math.PI),
+                    new Position(170, 3200, Math.PI),
             });
 
             path.add(p2);
 
             LinearPath p3 = new LinearPath(new Position[]{
-                    new Position(243, 1828, Math.PI),
-                    new Position(768, 1150, initialTheta)
+                    new Position(170, 1828, Math.PI),
+                    new Position(768, 1300, initialTheta)
             });
 
             path.add(p3);
         }
+        LinearPath p5 = new LinearPath(new Position[]{
+                new Position(170, 1150, Math.PI),
+                new Position (220, 3000, Math.PI),
+                new Position(757,3067,0)
+        });
 
-        SplinePath p4 = new SplinePath(new Position[]{
+        path.add(p5);
+
+        /*SplinePath p4 = new SplinePath(new Position[]{
                 new Position(495, 1500, 0),
                 new Position(290, 1710, 0),
                 new Position(204, 2090, 0),
@@ -78,7 +85,7 @@ public class WarehouseStrategy implements Strategy {
                 new Position(757,3067,0)
         });
 
-        //path.add(p4);
+        path.add(p4);*/
 
         return path;
     }

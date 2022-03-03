@@ -41,7 +41,7 @@ public class Drive {
     }
     private void initializeDrive()
     {
-        PIDCoefficients coefficients = new PIDCoefficients(0.0115, 0.00006, 0);
+        PIDCoefficients coefficients = new PIDCoefficients(0.0145, 0.0001, 0);
         PIDCoefficients thetaLinCoefficients = new PIDCoefficients(0.22, 0.0004, 0);
         PIDCoefficients thetaSplCoefficients = new PIDCoefficients(0.10, 0.0004, 0);
         PIDCoefficients slowCoefficients = new PIDCoefficients(0.007, 0.00006, 0);
@@ -226,14 +226,16 @@ public class Drive {
         Position pos = localization.getRobotPosition();
         localization.increment(pos);
 
-        double distToNext = Math.sqrt(Math.pow(target.x - pos.x, 2) + Math.pow(target.y - pos.y, 2));
+        double distToNext = Math.abs(Math.sqrt(Math.pow(Math.abs(target.x) - Math.abs(pos.x), 2) + Math.pow(Math.abs(target.y) - Math.abs(pos.y), 2)));
 
         boolean slow = false;
+
+        slowController.resetSum();
 
         if (distToNext > 1000)
             slow = true;
 
-        while (((Math.abs(target.x - position.x) > 8) || (Math.abs(target.y - position.y) > 8) || !thetaFinished) && !opMode.isStopRequested()) {
+        while (((Math.abs(target.x - position.x) > 15) || (Math.abs(target.y - position.y) > 15) || !thetaFinished) && !opMode.isStopRequested()) {
             position = localization.getRobotPosition();
             localization.increment(position);
             thetaFinished = false;

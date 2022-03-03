@@ -18,18 +18,26 @@ public class SpinIntakeAction extends Action{
 
     public void execute(Hardware hardware, Localization localization, Vuforia vuforia, ObjectDetector detector) {
         if (!hardware.intakeSpinning) {
-            hardware.intakeMotor.setPower(-1);
+            hardware.intakeMotor.setPower(1);
             hardware.intakeSpinning = true;
+
+            ElapsedTime time = new ElapsedTime();
+
+            while (time.milliseconds() < 300)
+            {
+
+            }
+
 
             new Thread(() -> {
                 double start = System.currentTimeMillis();
 
                 while (System.currentTimeMillis() - start < 3500) {
-                    if (hardware.intakeMotor.getCurrent(CurrentUnit.AMPS) > 4.85) {
+                    if (hardware.intakeMotor.getCurrent(CurrentUnit.AMPS) > 3) {
 
                         double intakeStart = System.currentTimeMillis();
 
-                        while (System.currentTimeMillis() - intakeStart < 500)
+                        while (System.currentTimeMillis() - intakeStart < 1500)
                         {
                             //Do nothing
                         }

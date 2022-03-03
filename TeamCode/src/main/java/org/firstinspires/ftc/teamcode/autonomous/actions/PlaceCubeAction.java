@@ -42,7 +42,7 @@ public class PlaceCubeAction extends Action {
                 slideLevel = 260;
                 break;
             case RIGHT:
-                slideLevel = 565;
+                slideLevel = 440;
                 break;
             default:
                 slideLevel = 260;
@@ -68,7 +68,7 @@ public class PlaceCubeAction extends Action {
                         x = 795;
                         y = 1845;
                         break;
-                    case 565:
+                    case 440:
                         x = 785;
                         y = 1935;
                         break;
@@ -89,7 +89,7 @@ public class PlaceCubeAction extends Action {
                         x = 795;
                         y = 1330;
                         break;
-                    case 565:
+                    case 440:
                         x = 745;
                         y = 1330;
                         break;
@@ -113,7 +113,7 @@ public class PlaceCubeAction extends Action {
                         x = 765;
                         y = 1134;
                         break;
-                    case 565:
+                    case 440:
                         x = 715;
                         y = 1134;
                         break;
@@ -134,7 +134,7 @@ public class PlaceCubeAction extends Action {
                         x = 805;
                         y = 1685;
                         break;
-                    case 565:
+                    case 440:
                         x = 820;
                         y = 1750;
                         break;
@@ -222,7 +222,7 @@ public class PlaceCubeAction extends Action {
             hardware.boxServo.setPosition(0.02);
         }).start();
 
-        while (time.milliseconds() < 300)
+        while (time.milliseconds() < 600)
         {
 
         }
@@ -268,7 +268,7 @@ public class PlaceCubeAction extends Action {
         }).start();
 
 
-        while (time.milliseconds() < 200)
+        while (time.milliseconds() < 500)
         {
             //Nothing
         }

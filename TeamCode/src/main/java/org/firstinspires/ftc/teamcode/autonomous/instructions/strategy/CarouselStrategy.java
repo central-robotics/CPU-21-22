@@ -48,8 +48,17 @@ public class CarouselStrategy implements Strategy {
 
         path.add(p1);
 
+        Position pos;
+
+        if (Constants.IS_BLUE_TEAM){
+            pos = new Position(970, 200, initialTheta);
+        }
+        else{
+            pos = new Position(970, 40, initialTheta);
+        }
+
         LinearPath p2 = new LinearPath(new Position[]{
-                new Position(970, 70, initialTheta),
+                pos
         });
 
         path.add(p2);

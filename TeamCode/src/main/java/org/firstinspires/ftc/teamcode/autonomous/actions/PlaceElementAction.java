@@ -20,10 +20,17 @@ public class PlaceElementAction extends Action{
 
         int armPos = hardware.armMotor.getCurrentPosition();
 
-        while (armPos < 545) {
-            double error = 565 - armPos;
+        while (armPos < 440) {
+            double error = 440 - armPos;
             hardware.armMotor.setPower(0.2 * slidePID.getOutput(error, 0));
             armPos = hardware.armMotor.getCurrentPosition();
+
+
+            if (armPos > 60) {
+                {
+                    hardware.boxServo.setPosition(0.42);
+                }
+            }
         }
 
         ElapsedTime time = new ElapsedTime();
@@ -32,17 +39,19 @@ public class PlaceElementAction extends Action{
 
         time.reset();
 
-        while (time.milliseconds() < 1000)
-        {
+        while (time.milliseconds() < 1500) {
             //Nothing
         }
 
-        hardware.boxServo.setPosition(0.7);
+        hardware.boxServo.setPosition(0.68);
+
+        while (time.milliseconds() < 1500) {
+            //Nothing
+        }
 
         armPos = hardware.armMotor.getCurrentPosition();
 
-        while (armPos > 20)
-        {
+        while (armPos > 20) {
             if (armPos < 100)
                 break;
 
