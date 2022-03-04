@@ -39,7 +39,7 @@ public class PlaceCubeAction extends Action {
                 slideLevel = 70;
                 break;
             case CENTER:
-                slideLevel = 260;
+                slideLevel = 110;
                 break;
             case RIGHT:
                 slideLevel = 440;
@@ -64,7 +64,7 @@ public class PlaceCubeAction extends Action {
                         x = 975;
                         y = 1715;
                         break;
-                    case 260:
+                    case 110:
                         x = 795;
                         y = 1845;
                         break;
@@ -85,7 +85,7 @@ public class PlaceCubeAction extends Action {
                         x = 945;
                         y = 1395;
                         break;
-                    case 260:
+                    case 110:
                         x = 795;
                         y = 1330;
                         break;
@@ -109,7 +109,7 @@ public class PlaceCubeAction extends Action {
                         x = 900;
                         y = 1185;
                         break;
-                    case 260:
+                    case 110:
                         x = 765;
                         y = 1134;
                         break;
@@ -127,16 +127,16 @@ public class PlaceCubeAction extends Action {
                 switch ((int) slideLevel)
                 {
                     case 70:
-                        x = 995;
-                        y = 1545;
+                        x = 820;
+                        y = 1690;
                         break;
-                    case 260:
-                        x = 805;
-                        y = 1685;
+                    case 110:
+                        x = 780;
+                        y = 1730;
                         break;
                     case 440:
-                        x = 820;
-                        y = 1750;
+                        x = 740;
+                        y = 1790;
                         break;
                     default:
                         x = 800;
@@ -218,6 +218,8 @@ public class PlaceCubeAction extends Action {
 
         hardware.setAllMotorPowers(0);
 
+        hardware.armMotor.setPower(0.001);
+
         new Thread(() -> {
             hardware.boxServo.setPosition(0.02);
         }).start();
@@ -264,7 +266,7 @@ public class PlaceCubeAction extends Action {
 
         new Thread(() ->
         {
-            hardware.boxServo.setPosition(0.7);
+            hardware.boxServo.setPosition(0.68);
         }).start();
 
 

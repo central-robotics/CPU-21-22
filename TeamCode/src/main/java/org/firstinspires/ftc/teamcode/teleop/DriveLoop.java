@@ -59,8 +59,14 @@ public class DriveLoop {
 
         if (opMode.gamepad1.y)
         {
-            moveBoxServo(0, hardware);
-        } else
+            if (opMode.gamepad1.left_trigger != 0){
+                moveBoxServo(1, hardware);
+            }
+            else {
+                moveBoxServo(0, hardware);
+            }
+        }
+        else
         {
             if (changeBoxPos)
                 moveBoxServo(0.5, hardware);

@@ -20,15 +20,17 @@ public class PlaceElementAction extends Action{
 
         int armPos = hardware.armMotor.getCurrentPosition();
 
+        hardware.boxServo.setPosition(0.68);
+
         while (armPos < 440) {
             double error = 440 - armPos;
             hardware.armMotor.setPower(0.2 * slidePID.getOutput(error, 0));
             armPos = hardware.armMotor.getCurrentPosition();
 
 
-            if (armPos > 60) {
+            if (armPos > 50) {
                 {
-                    hardware.boxServo.setPosition(0.42);
+                    hardware.boxServo.setPosition(0.35);
                 }
             }
         }

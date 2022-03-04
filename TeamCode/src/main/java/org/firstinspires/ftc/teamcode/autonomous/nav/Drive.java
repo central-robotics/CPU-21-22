@@ -166,7 +166,7 @@ public class Drive {
         hardware.setMotorValues(positivePower, negativePower);
     }
 
-    public void setLinearPowers(Position target, double thetaError, boolean isCounterClockwise, Telemetry telem, boolean slow)
+    public void setLinearPowers(Position target, double thetaError, boolean isCounterClockwise, Telemetry telem, boolean slow, Path path)
     {
         if (opMode.isStopRequested())
             return;
@@ -197,6 +197,9 @@ public class Drive {
             magnitude = slowController.getOutput(error, speed);
         else
             magnitude = controller.getOutput(error, speed);
+
+        //if (path.customPID != null)
+            //magnitude = controller.getOutput(error, speed);
 
 
         if (error < 3) { // Make magnitude 0 if error is too low to matter
@@ -253,7 +256,7 @@ public class Drive {
             }
 
             if (path.getClass() == LinearPath.class)
-                setLinearPowers(target, thetaError, isCounterClockwise, telem, slow);
+                setLinearPowers(target, thetaError, isCounterClockwise, telem, slow, path);
             else
             {
                 if (dist >= spline.splineDistance - 5)
@@ -267,6 +270,9 @@ public class Drive {
                     setSplinePowers(path, spline, telem);
             }
         }
+
+        if (path.customPID != null)
+            path.customPID.resetSum();
 
         controller.resetSum();
         thetaLinearController.resetSum();
@@ -308,7 +314,7 @@ public class Drive {
                 thetaFinished = true;
             }
 
-            setLinearPowers(destination, thetaError, isCounterClockwise, AutonCore.telem, false);
+            setLinearPowers(destination, thetaError, isCounterClockwise, AutonCore.telem, false, null);
         }
 
         controller.resetSum();
