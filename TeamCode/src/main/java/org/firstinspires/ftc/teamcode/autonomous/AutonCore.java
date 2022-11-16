@@ -10,9 +10,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
-import org.firstinspires.ftc.teamcode.autonomous.actions.util.ObjectDetector;
+//import org.firstinspires.ftc.teamcode.autonomous.actions.util.ObjectDetector;
 import org.firstinspires.ftc.teamcode.autonomous.instructions.Instructions;
-import org.firstinspires.ftc.teamcode.autonomous.vision.Vuforia;
+//import org.firstinspires.ftc.teamcode.autonomous.vision.Vuforia;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
 
@@ -25,15 +25,15 @@ public class AutonCore {
     public void runCore(double initialX, double initialY, double initialTheta, LinearOpMode opMode) {
         runtime = new ElapsedTime();
         Hardware hardware = new Hardware(opMode.hardwareMap);
-        Vuforia vuforia = null;
+//        Vuforia vuforia = null;
         Constants.CURRENT_INITIAL_THETA = initialTheta;
-        ObjectDetector detector = new ObjectDetector(hardware, vuforia);
-        Localization localization = new Localization(hardware, vuforia, opMode.telemetry, initialX, initialY, initialTheta);
-        Instructions instructions = new Instructions(hardware, localization, runtime, opMode.telemetry, opMode, vuforia, detector, initialX, initialY, initialTheta);
+//        ObjectDetectorctor detector = new ObjectDetector(hardware, vuforia);
+        Localization localization = new Localization(hardware, null, opMode.telemetry, initialX, initialY, initialTheta);
+        Instructions instructions = new Instructions(hardware, localization, runtime, opMode.telemetry, opMode, null, null, initialX, initialY, initialTheta);
         telem = opMode.telemetry;
 
-        hardware.constraintServo.setPosition(0);
-        hardware.boxServo.setPosition(0.68);
+//        hardware.constraintServo.setPosition(0);
+//        hardware.boxServo.setPosition(0.68);
 
         opMode.waitForStart();
 

@@ -5,14 +5,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.autonomous.Constants;
-import org.firstinspires.ftc.teamcode.autonomous.actions.Actions;
-import org.firstinspires.ftc.teamcode.autonomous.actions.util.ObjectDetector;
+//import org.firstinspires.ftc.teamcode.autonomous.actions.Actions;
+//import org.firstinspires.ftc.teamcode.autonomous.actions.util.ObjectDetector;
 import org.firstinspires.ftc.teamcode.autonomous.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.autonomous.instructions.strategy.CarouselStrategy;
 import org.firstinspires.ftc.teamcode.autonomous.instructions.strategy.Strategy;
 import org.firstinspires.ftc.teamcode.autonomous.instructions.strategy.WarehouseStrategy;
 import org.firstinspires.ftc.teamcode.autonomous.localization.Localization;
-import org.firstinspires.ftc.teamcode.autonomous.vision.Vuforia;
+//import org.firstinspires.ftc.teamcode.autonomous.vision.Vuforia;
 import org.firstinspires.ftc.teamcode.autonomous.nav.Navigation;
 import org.firstinspires.ftc.teamcode.autonomous.nav.path.Path;
 
@@ -25,23 +25,23 @@ This class also provides a method of disposing resources.
  */
 public class Instructions {
     public static Navigation navigation;
-    public Actions actions;
+//    public Actions actions;
 
-    public Instructions(Hardware hardware, Localization localization, ElapsedTime runtime, Telemetry telemetry, LinearOpMode opMode, Vuforia vuforia, ObjectDetector detector, double initialX, double initialY, double initialTheta)
+    public Instructions(Hardware hardware, Localization localization, ElapsedTime runtime, Telemetry telemetry, LinearOpMode opMode, Object vuforia, Object detector, double initialX, double initialY, double initialTheta)
     {
         Strategy strategy = getStrategy();
-        registerActions(hardware, localization, vuforia, detector, strategy);
-        registerNav(hardware, localization, runtime, actions, telemetry, opMode, initialX, initialY, initialTheta, strategy);
+//        registerActions(hardware, localization, null, null, strategy);
+        registerNav(hardware, localization, runtime, null, telemetry, opMode, initialX, initialY, initialTheta, strategy);
     }
 
-    private void registerActions(Hardware hardware, Localization localization, Vuforia vuforia, ObjectDetector detector, Strategy strategy)
+    private void registerActions(Hardware hardware, Localization localization, Object vuforia, Object detector, Strategy strategy)
     {
-        actions = strategy.registerActions(hardware, localization, navigation, vuforia, detector);
+//        actions = strategy.registerActions(hardware, localization, navigation, vuforia, detector);
     }
 
-    private void registerNav(Hardware hardware, Localization localization, ElapsedTime runtime, Actions actions, Telemetry telemetry, LinearOpMode opMode, double initialX, double initialY, double initialTheta, Strategy strategy)
+    private void registerNav(Hardware hardware, Localization localization, ElapsedTime runtime, Object actions, Telemetry telemetry, LinearOpMode opMode, double initialX, double initialY, double initialTheta, Strategy strategy)
     {
-        navigation = new Navigation(hardware, localization, runtime, actions, telemetry, opMode);
+        navigation = new Navigation(hardware, localization, runtime, null, telemetry, opMode);
 
         for (Path p : strategy.registerPath(initialY, initialTheta))
             navigation.addPathToPipeline(p);
